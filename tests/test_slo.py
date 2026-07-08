@@ -123,6 +123,10 @@ class OperationalScorerHappyPathTest(unittest.TestCase):
                 "token_efficiency",
                 "error_failure_rate",
                 "latency_under_load",
+                "inter_token_latency",
+                "output_throughput",
+                "tail_latency",
+                "cost_per_million_tokens",
             ],
         )
         self.assertEqual(
@@ -301,6 +305,59 @@ class ValueObjectTest(unittest.TestCase):
                 "pillar_score": None,
             },
         )
+
+
+class InferenceNumbersScoringTest(unittest.TestCase):
+    """The four criteria added to align with the five numbers of inference."""
+
+    # 200 ms TTFT, 1200 ms end-to-end -> 1000 ms generation window; 101 output
+    # tokens -> ITL 10 ms and ~101 tok/s. Single trace -> p99 == p50 (ratio 1.0).
+    TRACE = {
+        "request_started_at": 0,
+        "first_token_at": 0.2,
+        "response_completed_at": 1.2,
+        "input_tokens": 1000,
+        "output_tokens": 101,
+    }
+
+    def _score(self, slo: dict) -> dict:
+        scorer = OperationalScorer(slo=slo)
+        return by_id(scorer.score({"traces": [self.TRACE], "pricing": PRICING}))
+
+    def test_all_four_score_when_slo_is_met(self) -> None:
+        criteria = self._score(
+            {
+                constants.SLO_ITL_MS: 20.0,  # ITL 10 / 20 = 0.5
+                constants.SLO_MIN_TOKENS_PER_SECOND: 50.0,  # 101 tok/s vs min 50
+                constants.SLO_MAX_P99_P50_RATIO: 2.0,  # ratio 1.0 / 2.0 = 0.5
+                constants.SLO_MAX_COST_PER_MILLION_USD: 10.0,  # ~2.55 / 10
+            }
+        )
+        self.assertEqual(criteria["inter_token_latency"]["score"], 5)
+        self.assertEqual(criteria["output_throughput"]["score"], 5)
+        self.assertEqual(criteria["tail_latency"]["score"], 5)
+        self.assertEqual(criteria["cost_per_million_tokens"]["score"], 5)
+
+    def test_throughput_is_higher_is_better(self) -> None:
+        # A minimum the app misses -> worst score (proves the inverted ratio).
+        criteria = self._score({constants.SLO_MIN_TOKENS_PER_SECOND: 500.0})
+        self.assertEqual(criteria["output_throughput"]["score"], 1)
+        self.assertIn("minimum", criteria["output_throughput"]["evidence"])
+
+    def test_inter_token_latency_is_lower_is_better(self) -> None:
+        criteria = self._score({constants.SLO_ITL_MS: 2.0})  # 10 / 2 = 5.0
+        self.assertEqual(criteria["inter_token_latency"]["score"], 1)
+
+    def test_new_criteria_unscored_without_their_slo(self) -> None:
+        criteria = self._score({constants.SLO_P95_LATENCY_MS: 1000.0})
+        for cid in (
+            "inter_token_latency",
+            "output_throughput",
+            "tail_latency",
+            "cost_per_million_tokens",
+        ):
+            with self.subTest(criterion=cid):
+                self.assertIsNone(criteria[cid]["score"])
 
 
 if __name__ == "__main__":

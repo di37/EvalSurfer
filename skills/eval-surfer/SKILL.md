@@ -1,6 +1,6 @@
 ---
 name: eval-surfer
-description: Drive AI application evaluations using the EvalSurfer skill-first workflow. Use when creating AI eval rubrics, reviewing RAG outputs, checking agent tool use, assessing safety, or calculating operational metrics like latency, TTFT, cost, token efficiency, failure rate, and latency under load.
+description: Drive AI application evaluations using the EvalSurfer skill-first workflow. Use when creating AI eval rubrics, reviewing RAG outputs, checking agent tool use, assessing safety, or calculating operational metrics like latency, TTFT, inter-token latency, throughput (tokens per second), P99 tail latency, cost, cost per million tokens, token efficiency, failure rate, and latency under load.
 ---
 
 # EvalSurfer
@@ -25,7 +25,7 @@ echo '{"sample": {"query": "...", "answer": "...", "retrieved_docs": ["..."]}}' 
    It returns the applicable criteria (with a reason for each skip) and a coverage score. The pillars it draws from:
    - **Application Quality**: correctness, relevance, completeness, instruction following, RAG quality, tool use, and multi-turn behavior.
    - **Safety**: toxicity, harmful content, bias/fairness, PII leakage, and jailbreak resistance — assessed by default; opt out only for low-risk targets, and record why.
-   - **Operational**: latency, TTFT, cost, token efficiency, failure rate, and latency under load.
+   - **Operational**: the five numbers of inference — TTFT, inter-token latency, throughput (TPS), P99 tail latency, and $/1M tokens — plus end-to-end and under-load latency, cost per request, token efficiency, and failure rate.
 1. Assess only the applicable criteria. Record each skipped criterion with the planner's reason under `Not assessed`; never guess.
 1. Use `framework.yaml` or `framework.json` for the machine-readable rubric.
 1. If operational traces are provided, calculate metrics with the CLI:

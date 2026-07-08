@@ -13,7 +13,7 @@ or API calls.** Inputs are never mutated (new objects are always returned).
 
 | Module / subpackage | What lives here |
 | --- | --- |
-| [`constants.py`](constants.py) | Every shared constant (all `UPPERCASE`, `Final`): pillars, the 25-criterion catalog, score scales, decisions, severities, signals, SLO fields/bands, diagnostics keys, and framework metadata. The single source of truth the rest of the package imports. |
+| [`constants.py`](constants.py) | Every shared constant (all `UPPERCASE`, `Final`): pillars, the 29-criterion catalog, score scales, decisions, severities, signals, SLO fields/bands, diagnostics keys, and framework metadata. The single source of truth the rest of the package imports. |
 | [`core/`](core/) | Scoring, the adaptive planner, report validation + release gate, and the end-to-end `Evaluator` orchestrator. |
 | [`operational/`](operational/) | Raw operational metrics from request traces, and SLO-based auto-scoring of the operational pillar. |
 | [`diagnostics/`](diagnostics/) | Explain-and-compare modules (attribution, root cause, regression, maturity, industry profile, review gate, …) plus the `DiagnosticsBundle`. |

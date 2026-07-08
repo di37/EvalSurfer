@@ -40,8 +40,8 @@ class PlannerCatalogTest(unittest.TestCase):
         planner = {(c.pillar, c.group, c.id, c.name) for c in EvaluationPlanner.CRITERIA}
         self.assertEqual(planner, framework_criteria())
 
-    def test_catalog_has_25_criteria(self) -> None:
-        self.assertEqual(len(EvaluationPlanner.CRITERIA), 25)
+    def test_catalog_has_29_criteria(self) -> None:
+        self.assertEqual(len(EvaluationPlanner.CRITERIA), 29)
 
 
 class PlannerApplicabilityTest(unittest.TestCase):
@@ -95,8 +95,8 @@ class PlannerCoverageTest(unittest.TestCase):
         self.assertEqual(cov["applicable_pillars"], 2)
         self.assertEqual(cov["total_pillars"], 3)
         self.assertEqual(cov["applicable_criteria"], 13)  # 4 core + 4 rag + 5 safety
-        self.assertEqual(cov["total_criteria"], 25)
-        self.assertAlmostEqual(cov["score"], round(13 / 25, 3))
+        self.assertEqual(cov["total_criteria"], 29)
+        self.assertAlmostEqual(cov["score"], round(13 / 29, 3))
 
     def test_coverage_against_report(self) -> None:
         plan = EvaluationPlanner.plan(

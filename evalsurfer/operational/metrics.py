@@ -158,6 +158,9 @@ class OperationalSummary:
     average_cost_usd: float | None
     total_cost_usd: float | None
     average_tokens_per_second: float | None
+    itl: LatencyStats | None
+    cost_per_million_tokens: float | None
+    tail_latency_ratio: float | None
 
 
 def to_datetime(value: Timestamp) -> datetime:
@@ -401,6 +404,27 @@ class OperationalMetrics:
         )
 
     @staticmethod
+    def inter_token_latency_ms(trace: RequestTrace) -> float | None:
+        """Average time between successive streamed output tokens (excludes TTFT).
+
+        Inter-token latency (ITL) is the generation window divided by the number
+        of inter-token intervals (``output_tokens - 1``). It is the latency view
+        of streaming speed; ``TPS ≈ 1000 / ITL_ms``.
+
+        Args:
+            trace: The request trace.
+
+        Returns:
+            The inter-token latency in milliseconds, or ``None`` when the
+            generation window is unavailable or fewer than two tokens were
+            produced (there is then no interval to measure).
+        """
+        generation_ms = OperationalMetrics.generation_duration_ms(trace)
+        if generation_ms is None or trace.output_tokens <= 1:
+            return None
+        return generation_ms / (trace.output_tokens - 1)
+
+    @staticmethod
     def cost_per_request_usd(
         input_tokens: int,
         output_tokens: int,
@@ -589,6 +613,12 @@ class OperationalMetrics:
             if (rate := OperationalMetrics.tokens_per_second(trace)) is not None
         ]
 
+        itls = [
+            value
+            for trace in traces
+            if (value := OperationalMetrics.inter_token_latency_ms(trace)) is not None
+        ]
+
         costs = None
         if pricing is not None:
             costs = [
@@ -598,15 +628,32 @@ class OperationalMetrics:
                 for trace in traces
             ]
 
+        latency = OperationalMetrics.latency_stats(latencies)
+        total_cost = sum(costs) if costs else None
+        total_tokens = sum(trace.input_tokens + trace.output_tokens for trace in traces)
+        cost_per_million = (
+            total_cost / total_tokens * constants.TOKENS_PER_MILLION
+            if total_cost is not None and total_tokens > 0
+            else None
+        )
+        tail_ratio = (
+            latency.p99_ms / latency.median_ms
+            if latency is not None and latency.median_ms > 0
+            else None
+        )
+
         failure_count = sum(1 for trace in traces if trace.failed)
         return OperationalSummary(
             request_count=len(traces),
             success_count=len(traces) - failure_count,
             failure_count=failure_count,
             failure_rate=OperationalMetrics.failure_rate(traces),
-            latency=OperationalMetrics.latency_stats(latencies),
+            latency=latency,
             ttft=OperationalMetrics.latency_stats(ttfts),
             average_cost_usd=mean(costs) if costs else None,
-            total_cost_usd=sum(costs) if costs else None,
+            total_cost_usd=total_cost,
             average_tokens_per_second=mean(token_rates) if token_rates else None,
+            itl=OperationalMetrics.latency_stats(itls),
+            cost_per_million_tokens=cost_per_million,
+            tail_latency_ratio=tail_ratio,
         )

@@ -306,5 +306,79 @@ class OperationalMetricsCliTest(unittest.TestCase):
         self.assertIn("error:", stderr.getvalue())
 
 
+class NewInferenceMetricComputationTest(unittest.TestCase):
+    """Direct assertions on the raw values behind the four new criteria."""
+
+    def _trace(self, **overrides) -> RequestTrace:
+        # 200 ms TTFT, 1200 ms end-to-end -> 1000 ms generation window;
+        # 101 output tokens -> 100 inter-token intervals.
+        base = dict(
+            request_started_at=0,
+            first_token_at=0.2,
+            response_completed_at=1.2,
+            input_tokens=1000,
+            output_tokens=101,
+        )
+        base.update(overrides)
+        return RequestTrace(**base)
+
+    def test_inter_token_latency_is_generation_over_intervals(self) -> None:
+        # 1000 ms generation / (101 - 1) intervals = 10 ms.
+        self.assertEqual(OperationalMetrics.inter_token_latency_ms(self._trace()), 10.0)
+
+    def test_inter_token_latency_none_with_one_or_zero_tokens(self) -> None:
+        self.assertIsNone(
+            OperationalMetrics.inter_token_latency_ms(self._trace(output_tokens=1))
+        )
+        self.assertIsNone(
+            OperationalMetrics.inter_token_latency_ms(self._trace(output_tokens=0))
+        )
+
+    def test_inter_token_latency_none_without_first_token(self) -> None:
+        self.assertIsNone(
+            OperationalMetrics.inter_token_latency_ms(self._trace(first_token_at=None))
+        )
+
+    def test_cost_per_million_tokens_is_blended(self) -> None:
+        # input 1000*2/1e6 + output 500*8/1e6 = 0.006 over 1500 tokens -> $4/M.
+        summary = OperationalMetrics.summarize(
+            [self._trace(output_tokens=500)],
+            pricing=Pricing(input_per_million=2.0, output_per_million=8.0),
+        )
+        self.assertAlmostEqual(summary.cost_per_million_tokens or 0.0, 4.0)
+
+    def test_cost_per_million_tokens_none_without_pricing(self) -> None:
+        self.assertIsNone(OperationalMetrics.summarize([self._trace()]).cost_per_million_tokens)
+
+    def test_tail_latency_ratio_is_one_for_a_single_request(self) -> None:
+        # One sample: p99 == p50, so the tail ratio is exactly 1.0.
+        self.assertEqual(OperationalMetrics.summarize([self._trace()]).tail_latency_ratio, 1.0)
+
+    def test_tail_latency_ratio_equals_p99_over_median(self) -> None:
+        traces = [
+            RequestTrace(request_started_at=0, response_completed_at=t / 1000.0)
+            for t in (100, 200, 300, 400, 5000)  # a heavy tail
+        ]
+        summary = OperationalMetrics.summarize(traces)
+        assert summary.latency is not None and summary.tail_latency_ratio is not None
+        self.assertEqual(
+            summary.tail_latency_ratio,
+            summary.latency.p99_ms / summary.latency.median_ms,
+        )
+        self.assertGreater(summary.tail_latency_ratio, 1.0)
+
+    def test_itl_stats_present_when_measurable_and_absent_otherwise(self) -> None:
+        self.assertIsNotNone(OperationalMetrics.summarize([self._trace()]).itl)
+        self.assertIsNone(
+            OperationalMetrics.summarize([self._trace(output_tokens=1)]).itl
+        )
+
+    def test_output_throughput_is_tokens_per_second_over_the_summary(self) -> None:
+        # 500 tokens over a 1000 ms generation window -> 500 tok/s (the value the
+        # output_throughput criterion is scored against).
+        summary = OperationalMetrics.summarize([self._trace(output_tokens=500)])
+        self.assertAlmostEqual(summary.average_tokens_per_second or 0.0, 500.0)
+
+
 if __name__ == "__main__":
     unittest.main()

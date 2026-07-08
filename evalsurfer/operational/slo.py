@@ -293,6 +293,10 @@ class OperationalScorer:
             "cost_per_request": summary.average_cost_usd,
             "error_failure_rate": summary.failure_rate,
             "latency_under_load": latency_under_load,
+            "inter_token_latency": summary.itl.p95_ms if summary.itl is not None else None,
+            "output_throughput": summary.average_tokens_per_second,
+            "tail_latency": summary.tail_latency_ratio,
+            "cost_per_million_tokens": summary.cost_per_million_tokens,
         }
 
     def _score_criterion(
@@ -314,8 +318,17 @@ class OperationalScorer:
         field = constants.OPERATIONAL_CRITERION_SLO.get(criterion.id)
         value = measured.get(criterion.id)
         target = self.slo.get(field) if field is not None else None
-        score = None if field is None else self.score_ratio(value, target)
-        evidence = self._evidence(criterion.name, field, value, target, score)
+        higher_is_better = criterion.id in constants.HIGHER_IS_BETTER_OPERATIONAL_CRITERIA
+        if field is None:
+            score = None
+        elif higher_is_better:
+            # Throughput: measured >= target is best, so invert the ratio.
+            score = self.score_ratio(target, value)
+        else:
+            score = self.score_ratio(value, target)
+        evidence = self._evidence(
+            criterion.name, field, value, target, score, higher_is_better
+        )
         return CriterionScore(
             id=criterion.id,
             name=criterion.name,
@@ -331,6 +344,7 @@ class OperationalScorer:
         measured: float | None,
         target: float | None,
         score: int | None,
+        higher_is_better: bool = False,
     ) -> str:
         """Describe the measured-versus-target comparison for a criterion.
 
@@ -341,6 +355,8 @@ class OperationalScorer:
             measured: The measured metric value, or ``None``.
             target: The SLO target value, or ``None``.
             score: The resolved 1-5 score, or ``None`` when not scored.
+            higher_is_better: Whether a higher measured value is better (a
+                throughput target is a minimum, not a ceiling).
 
         Returns:
             A human-readable evidence string stating measured versus target.
@@ -361,9 +377,14 @@ class OperationalScorer:
                 f"no valid SLO target for {field!r} (target {target_str}); not scored."
             )
 
-        ratio = round(measured / target, constants.SHARE_PRECISION)
+        if higher_is_better:
+            ratio = round(target / measured, constants.SHARE_PRECISION)
+            comparison = f"vs SLO minimum {target_str}"
+        else:
+            ratio = round(measured / target, constants.SHARE_PRECISION)
+            comparison = f"vs SLO target {target_str}"
         return (
-            f"{name}: measured {measured_str} vs SLO target {target_str} "
+            f"{name}: measured {measured_str} {comparison} "
             f"for {field!r} (ratio {ratio:g}); scored {score}/{constants.CRITERION_MAX_SCORE}."
         )
 

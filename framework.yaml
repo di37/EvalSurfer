@@ -161,3 +161,15 @@ eval_surfer:
         - id: latency_under_load
           name: Latency Under Load
           description: Whether latency stays acceptable at production concurrency
+        - id: inter_token_latency
+          name: Inter-Token Latency
+          description: Time between successive streamed output tokens (TPS = 1000 / ITL_ms)
+        - id: output_throughput
+          name: Output Throughput
+          description: Per-user output tokens generated per second during streaming
+        - id: tail_latency
+          name: Tail Latency
+          description: P99 latency relative to median (P50); the slow tail SLOs target
+        - id: cost_per_million_tokens
+          name: Cost per Million Tokens
+          description: Blended cost per one million tokens across input and output

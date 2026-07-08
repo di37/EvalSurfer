@@ -31,7 +31,7 @@ The skill is the product, and the agent that runs it is the judge — there are 
 | --- | --- |
 | **Skill-first, no eval API** | The agent running `SKILL.md` is the judge. Scoring happens in your existing session with your existing model — nothing calls out to a third-party eval service. |
 | **Three pillars** | Application Quality ("is the answer good?"), Safety ("could it cause harm?"), and Operational ("is it fast, cheap, and reliable enough?"). |
-| **25 criteria** | Core generation, RAG (context relevance, recall, groundedness, citations), agent / tool-use, multi-turn memory, five safety checks, and six operational metrics. |
+| **29 criteria** | Core generation, RAG (context relevance, recall, groundedness, citations), agent / tool-use, multi-turn memory, five safety checks, and ten operational metrics — the five numbers of inference (TTFT, inter-token latency, throughput/TPS, P99 tail, $/1M tokens) plus end-to-end/under-load latency, cost per request, token efficiency, and failure rate. |
 | **Adaptive scoping** | A deterministic planner infers which pillars and criteria apply from the inputs you actually have — so simple apps aren't over-evaluated — and reports a coverage score for what got assessed. |
 | **Diagnostics, not just a score** | Deterministic modules explain and compare results — SHAP-style score attribution, root-cause breakdown, regression diffs between versions, a maturity level, industry weighting, and a golden-set that validates the whole layer. |
 | **End-to-end, one command** | `evalsurfer evaluate \| validate \| gate \| diagnose` turns agent-produced scores into a validated, diagnosed report and a CI-ready release gate — still no LLM API. |
@@ -41,7 +41,7 @@ The skill is the product, and the agent that runs it is the judge — there are 
 | **Ecosystem adapters** | Import RAGAS metrics, promptfoo results, and OpenTelemetry / LangSmith traces; gate releases straight from a GitHub Action. |
 | **Opinionated scoring** | Each criterion is scored 1–5 → pillar score ×2 on a 0–10 scale → a `pass` / `pass_with_fixes` / `fail` decision, with an explicit safety floor and severity labels. |
 | **Machine-readable** | The full rubric ships as `framework.json` / `framework.yaml`, and reports validate against `report.schema.json`. |
-| **Operational metrics utilities** | Provider-agnostic Python helpers turn API or trace logs into latency, TTFT, cost, token-efficiency, failure-rate, and latency-under-load numbers. |
+| **Operational metrics utilities** | Provider-agnostic Python helpers turn API or trace logs into latency, TTFT, inter-token latency, throughput (TPS), P99 tail, cost, cost-per-million-tokens, token-efficiency, failure-rate, and latency-under-load numbers. |
 | **Portable across harnesses** | Ships as a standard [agentskills.io](https://agentskills.io) `SKILL.md` — one skill that runs in Claude Code, Cursor, OpenClaw, Hermes, OpenCode, Codex, and other compatible agents, with a one-command installer for each. |
 
 ## Install
@@ -119,7 +119,7 @@ echo '{"sample": {"query": "refund policy?", "answer": "...", "retrieved_docs": 
 ```text
 plan:     quality (core + RAG, minus citation accuracy — no citations) + safety
 skipped:  agent/tool-use (no tool calls), multi-turn (no history), operational (no traces)
-coverage: 12 / 25 criteria applicable
+coverage: 12 / 29 criteria applicable
 ```
 
 Safety is assessed by default and can only be opted out of deliberately (recorded with a reason). After judging, the planner's `coverage()` compares the plan against the produced report to show what was actually scored versus what applied — surfaced as the optional `coverage` block in [`report.schema.json`](report.schema.json).
@@ -396,7 +396,8 @@ summary = OperationalMetrics.summarize(
 | `OperationalMetrics.end_to_end_latency_ms(trace)` | Total request-to-completion latency |
 | `OperationalMetrics.ttft_ms(trace)` | Time to first token for streaming responses |
 | `OperationalMetrics.generation_duration_ms(trace)` | Time from first token to completion |
-| `OperationalMetrics.tokens_per_second(trace)` | Output generation speed |
+| `OperationalMetrics.tokens_per_second(trace)` | Output generation speed (throughput / TPS) |
+| `OperationalMetrics.inter_token_latency_ms(trace)` | Inter-token latency in ms (TPS ≈ 1000 / ITL) |
 | `OperationalMetrics.cost_per_request_usd(input_tokens, output_tokens, pricing)` | Per-request token cost |
 | `OperationalMetrics.token_efficiency(useful_output_tokens, input_tokens, output_tokens)` | Useful output ratio against total tokens spent |
 | `OperationalMetrics.failure_rate(traces)` | Fraction of failed requests |

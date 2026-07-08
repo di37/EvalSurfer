@@ -154,8 +154,12 @@ CRITERIA_CATALOG: Final = (
     (PILLAR_OPERATIONAL, None, "token_efficiency", "Token Efficiency", (SIGNAL_OPERATIONAL_TRACES,)),
     (PILLAR_OPERATIONAL, None, "error_failure_rate", "Error / Failure Rate", (SIGNAL_OPERATIONAL_TRACES,)),
     (PILLAR_OPERATIONAL, None, "latency_under_load", "Latency Under Load", (SIGNAL_OPERATIONAL_TRACES,)),
+    (PILLAR_OPERATIONAL, None, "inter_token_latency", "Inter-Token Latency", (SIGNAL_OPERATIONAL_TRACES,)),
+    (PILLAR_OPERATIONAL, None, "output_throughput", "Output Throughput", (SIGNAL_OPERATIONAL_TRACES,)),
+    (PILLAR_OPERATIONAL, None, "tail_latency", "Tail Latency", (SIGNAL_OPERATIONAL_TRACES,)),
+    (PILLAR_OPERATIONAL, None, "cost_per_million_tokens", "Cost per Million Tokens", (SIGNAL_OPERATIONAL_TRACES,)),
 )
-CRITERION_COUNT: Final = len(CRITERIA_CATALOG)  # 25
+CRITERION_COUNT: Final = len(CRITERIA_CATALOG)  # 29
 
 # --------------------------------------------------------------------------- #
 # Regression diff change labels
@@ -272,7 +276,20 @@ SLO_P95_LATENCY_MS: Final = "p95_latency_ms"
 SLO_TTFT_MS: Final = "ttft_ms"
 SLO_MAX_FAILURE_RATE: Final = "max_failure_rate"
 SLO_MAX_COST_USD: Final = "max_cost_usd"
-SLO_FIELDS: Final = (SLO_P95_LATENCY_MS, SLO_TTFT_MS, SLO_MAX_FAILURE_RATE, SLO_MAX_COST_USD)
+SLO_ITL_MS: Final = "itl_ms"
+SLO_MIN_TOKENS_PER_SECOND: Final = "min_tokens_per_second"
+SLO_MAX_P99_P50_RATIO: Final = "max_p99_p50_ratio"
+SLO_MAX_COST_PER_MILLION_USD: Final = "max_cost_per_million_usd"
+SLO_FIELDS: Final = (
+    SLO_P95_LATENCY_MS,
+    SLO_TTFT_MS,
+    SLO_MAX_FAILURE_RATE,
+    SLO_MAX_COST_USD,
+    SLO_ITL_MS,
+    SLO_MIN_TOKENS_PER_SECOND,
+    SLO_MAX_P99_P50_RATIO,
+    SLO_MAX_COST_PER_MILLION_USD,
+)
 
 # Operational criterion id -> the SLO field it is scored against.
 OPERATIONAL_CRITERION_SLO: Final = {
@@ -281,10 +298,18 @@ OPERATIONAL_CRITERION_SLO: Final = {
     "cost_per_request": SLO_MAX_COST_USD,
     "error_failure_rate": SLO_MAX_FAILURE_RATE,
     "latency_under_load": SLO_P95_LATENCY_MS,
+    "inter_token_latency": SLO_ITL_MS,
+    "output_throughput": SLO_MIN_TOKENS_PER_SECOND,
+    "tail_latency": SLO_MAX_P99_P50_RATIO,
+    "cost_per_million_tokens": SLO_MAX_COST_PER_MILLION_USD,
 }
 # measured/target ratio (lower is better) -> score. (max_ratio, score) ascending;
 # anything above the last band scores 1.
 SLO_SCORE_BANDS: Final = ((0.5, 5), (0.8, 4), (1.0, 3), (1.25, 2))
+
+# Operational criteria where a HIGHER measured value is better (throughput):
+# scored by the target/measured ratio so exceeding the target scores highest.
+HIGHER_IS_BETTER_OPERATIONAL_CRITERIA: Final = frozenset({"output_throughput"})
 
 # --------------------------------------------------------------------------- #
 # Red-team issue types (executable safety probes)
