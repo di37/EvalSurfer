@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evalsurfer"
+version = "0.1.0"
+description = "EvalSurfer — a skill-first, agent-native evaluation protocol for AI applications, with supporting operational-metrics utilities."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Isham Rashik" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+# Only needed to run the report-schema validation test; the core stays zero-dependency.
+dev = ["jsonschema>=4"]
+
+[project.scripts]
+evalsurfer = "evalsurfer.cli.main:main"
+evalsurfer-metrics = "evalsurfer.cli.metrics:main"
+evalsurfer-plan = "evalsurfer.cli.plan:main"
+
+[tool.setuptools.packages.find]
+include = ["evalsurfer*"]
+
+[tool.setuptools.data-files]
+"share/evalsurfer" = [
+  "framework.json",
+  "framework.yaml",
+  "report.schema.json",
+  "examples/report.json",
+  "examples/traces.json",
+  "skills/eval-surfer/SKILL.md",
+  ".cursor/skills/eval-surfer/SKILL.md",
+  ".claude/skills/eval-surfer/SKILL.md"
+]

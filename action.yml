@@ -1,0 +1,22 @@
+name: "EvalSurfer Gate"
+description: "Fail the build when an EvalSurfer report does not clear a minimum decision."
+branding:
+  icon: "check-circle"
+  color: "purple"
+inputs:
+  report:
+    description: "Path to the EvalSurfer report JSON to gate."
+    required: true
+  min:
+    description: "Lowest decision that still passes: pass, pass_with_fixes, or fail."
+    required: false
+    default: "pass_with_fixes"
+runs:
+  using: "composite"
+  steps:
+    - name: Install EvalSurfer
+      shell: bash
+      run: python -m pip install -e "${{ github.action_path }}"
+    - name: Gate the report
+      shell: bash
+      run: evalsurfer gate "${{ inputs.report }}" --min "${{ inputs.min }}"

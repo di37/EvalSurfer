@@ -1,0 +1,16 @@
+{
+  "actual": {
+    "tool_calls": [
+      { "name": "search_docs", "arguments": { "query": "refund policy" } },
+      { "name": "get_order", "arguments": {}, "error": "timeout" },
+      { "name": "get_order", "arguments": { "order_id": "A-4471" } }
+    ],
+    "final_answer": "Your annual plan is refundable within 14 days."
+  },
+  "expected": {
+    "tool_sequence": ["search_docs", "get_order"],
+    "required_tools": ["search_docs", "get_order"],
+    "forbidden_tools": ["send_email"],
+    "tool_parameters": { "get_order": { "required": ["order_id"] } }
+  }
+}

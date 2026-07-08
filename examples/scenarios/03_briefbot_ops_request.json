@@ -1,0 +1,29 @@
+{
+  "sample": { "safety_relevant": false },
+  "traces": {
+    "pricing": { "input_per_million": 1.0, "output_per_million": 5.0 },
+    "traces": [
+      { "request_started_at": "2026-07-09T10:00:00Z", "first_token_at": "2026-07-09T10:00:00.300Z", "response_completed_at": "2026-07-09T10:00:01.200Z", "input_tokens": 900, "output_tokens": 180, "concurrency": 3 },
+      { "request_started_at": "2026-07-09T10:00:01Z", "first_token_at": "2026-07-09T10:00:01.350Z", "response_completed_at": "2026-07-09T10:00:01.500Z", "input_tokens": 850, "output_tokens": 150, "concurrency": 4 },
+      { "request_started_at": "2026-07-09T10:05:00Z", "first_token_at": "2026-07-09T10:05:00.900Z", "response_completed_at": "2026-07-09T10:05:04.300Z", "input_tokens": 1200, "output_tokens": 300, "concurrency": 28 },
+      { "request_started_at": "2026-07-09T10:05:01Z", "first_token_at": "2026-07-09T10:05:02.100Z", "response_completed_at": "2026-07-09T10:05:06.800Z", "input_tokens": 1300, "output_tokens": 340, "concurrency": 30 },
+      { "request_started_at": "2026-07-09T10:05:03Z", "response_completed_at": "2026-07-09T10:05:12.000Z", "input_tokens": 1400, "output_tokens": 0, "error": "upstream_timeout", "concurrency": 29 },
+      { "request_started_at": "2026-07-09T10:05:04Z", "first_token_at": "2026-07-09T10:05:05.400Z", "response_completed_at": "2026-07-09T10:05:10.200Z", "input_tokens": 1350, "output_tokens": 360, "concurrency": 27 }
+    ]
+  },
+  "slo": {
+    "p95_latency_ms": 2000,
+    "ttft_ms": 500,
+    "max_failure_rate": 0.02,
+    "max_cost_usd": 0.005
+  },
+  "top_issues": [
+    {
+      "severity": "major",
+      "description": "Under load (concurrency ~28-30) p95 latency and failure rate breach the SLO.",
+      "recommendation": "Add capacity/backpressure and a retry budget before scaling traffic.",
+      "criterion_id": "latency_under_load"
+    }
+  ],
+  "summary": "Operational-only evaluation of BriefBot production traces against the product SLO."
+}

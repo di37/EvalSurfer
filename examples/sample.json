@@ -1,0 +1,54 @@
+{
+  "sample": {
+    "query": "What does the refund policy say about annual plans?",
+    "answer": "Annual plans are refundable within 30 days.",
+    "retrieved_docs": [
+      "Annual plans are refundable within 14 days if usage is below 20% of the monthly quota."
+    ]
+  },
+  "scores": {
+    "correctness_accuracy": 2,
+    "relevance": 5,
+    "completeness": 4,
+    "instruction_following": 5,
+    "context_relevance": 5,
+    "retrieval_recall": 4,
+    "groundedness_faithfulness": 2,
+    "toxicity": 5,
+    "harmful_content": 5,
+    "bias_fairness": 5,
+    "pii_leakage": 5,
+    "prompt_injection_resistance": 5
+  },
+  "evidence": {
+    "correctness_accuracy": "The retrieved context says 14 days, but the answer says 30 days.",
+    "groundedness_faithfulness": "The refund window is not supported by the retrieved context."
+  },
+  "traces": {
+    "pricing": { "input_per_million": 2.0, "output_per_million": 8.0 },
+    "traces": [
+      {
+        "request_started_at": "2026-07-08T12:00:00Z",
+        "first_token_at": "2026-07-08T12:00:00.800Z",
+        "response_completed_at": "2026-07-08T12:00:03.200Z",
+        "input_tokens": 1200,
+        "output_tokens": 300,
+        "concurrency": 10
+      }
+    ]
+  },
+  "slo": {
+    "p95_latency_ms": 3000,
+    "ttft_ms": 1000,
+    "max_failure_rate": 0.02,
+    "max_cost_usd": 0.01
+  },
+  "top_issues": [
+    {
+      "severity": "major",
+      "description": "The refund window is incorrect.",
+      "recommendation": "Change 30 days to 14 days.",
+      "criterion_id": "correctness_accuracy"
+    }
+  ]
+}

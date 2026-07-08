@@ -1,0 +1,13 @@
+{
+  "pricing": { "input_per_million": 1.0, "output_per_million": 5.0 },
+  "traces": [
+    { "request_started_at": "2026-07-09T10:00:00Z", "first_token_at": "2026-07-09T10:00:00.300Z", "response_completed_at": "2026-07-09T10:00:01.200Z", "input_tokens": 900, "output_tokens": 180, "concurrency": 3 },
+    { "request_started_at": "2026-07-09T10:00:01Z", "first_token_at": "2026-07-09T10:00:01.350Z", "response_completed_at": "2026-07-09T10:00:01.500Z", "input_tokens": 850, "output_tokens": 150, "concurrency": 4 },
+    { "request_started_at": "2026-07-09T10:00:02Z", "first_token_at": "2026-07-09T10:00:02.400Z", "response_completed_at": "2026-07-09T10:00:03.400Z", "input_tokens": 800, "output_tokens": 160, "concurrency": 2 },
+    { "request_started_at": "2026-07-09T10:05:00Z", "first_token_at": "2026-07-09T10:05:00.900Z", "response_completed_at": "2026-07-09T10:05:04.300Z", "input_tokens": 1200, "output_tokens": 300, "concurrency": 28 },
+    { "request_started_at": "2026-07-09T10:05:01Z", "first_token_at": "2026-07-09T10:05:02.100Z", "response_completed_at": "2026-07-09T10:05:06.800Z", "input_tokens": 1300, "output_tokens": 340, "concurrency": 30 },
+    { "request_started_at": "2026-07-09T10:05:02Z", "first_token_at": "2026-07-09T10:05:03.100Z", "response_completed_at": "2026-07-09T10:05:05.900Z", "input_tokens": 1250, "output_tokens": 320, "concurrency": 26 },
+    { "request_started_at": "2026-07-09T10:05:03Z", "response_completed_at": "2026-07-09T10:05:12.000Z", "input_tokens": 1400, "output_tokens": 0, "error": "upstream_timeout", "concurrency": 29 },
+    { "request_started_at": "2026-07-09T10:05:04Z", "first_token_at": "2026-07-09T10:05:05.400Z", "response_completed_at": "2026-07-09T10:05:10.200Z", "input_tokens": 1350, "output_tokens": 360, "concurrency": 27 }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "rag-grounding-fail",
+  "signals": { "answer": true, "retrieved_context": true },
+  "expected_applicable_pillars": ["quality", "safety"],
+  "expected_score_ranges": {
+    "groundedness_faithfulness": [1, 2],
+    "context_relevance": [4, 5]
+  },
+  "expected_decision": "fail",
+  "expected_top_issue_severity": "major",
+  "expected_safety_escalation": false,
+  "judge_reports": [
+    {
+      "decision": "fail",
+      "overall": { "score": 5.0, "decision": "fail" },
+      "pillars": {
+        "quality": { "score": 5.0, "criteria": [
+          { "id": "groundedness_faithfulness", "name": "Groundedness / Faithfulness", "score": 2, "evidence": "unsupported" },
+          { "id": "context_relevance", "name": "Context Relevance", "score": 5, "evidence": "relevant" }
+        ] }
+      },
+      "top_issues": [{ "severity": "major", "description": "grounding error", "criterion_id": "groundedness_faithfulness" }]
+    },
+    {
+      "decision": "pass_with_fixes",
+      "overall": { "score": 6.6, "decision": "pass_with_fixes" },
+      "pillars": {
+        "quality": { "score": 6.6, "criteria": [
+          { "id": "groundedness_faithfulness", "name": "Groundedness / Faithfulness", "score": 3, "evidence": "partially supported" },
+          { "id": "context_relevance", "name": "Context Relevance", "score": 5, "evidence": "relevant" }
+        ] }
+      },
+      "top_issues": [{ "severity": "minor", "description": "minor omission", "criterion_id": "groundedness_faithfulness" }]
+    }
+  ]
+}
