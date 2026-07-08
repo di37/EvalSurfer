@@ -9,7 +9,7 @@ Point your coding agent at an answer, a RAG run, or an agent trace. EvalSurfer r
 <br/>
 
 [![CI](https://github.com/di37/EvalSurfer/actions/workflows/ci.yml/badge.svg)](https://github.com/di37/EvalSurfer/actions/workflows/ci.yml)
-[![python](https://img.shields.io/badge/python-3.10%2B-3776ab.svg)](pyproject.toml)
+[![python](https://img.shields.io/badge/python-3.11%2B-3776ab.svg)](pyproject.toml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![skill](https://img.shields.io/badge/skill-agentskills.io%20standard-6d28d9.svg)](#install)
 
@@ -490,7 +490,7 @@ python -m evalsurfer.cli.metrics examples/traces.json --pretty   # metrics CLI
 echo '{"sample":{"answer":"..."}}' | python -m evalsurfer.cli.plan -      # adaptive planner CLI
 ```
 
-CI runs the suite on Python 3.10–3.12 via [GitHub Actions](.github/workflows/ci.yml).
+CI runs the suite on Python 3.11–3.12 via [GitHub Actions](.github/workflows/ci.yml).
 
 ## License
 

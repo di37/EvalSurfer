@@ -8,7 +8,7 @@ calibration, red-team triage, trajectory analysis, and ecosystem imports).
 
 ## Run it
 
-From the repository root (Python ≥ 3.10):
+From the repository root (Python ≥ 3.11):
 
 ```bash
 # Interactive: pick a use case from a menu; each step prints the command it runs.
