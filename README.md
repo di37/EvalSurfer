@@ -13,7 +13,7 @@ Point your coding agent at an answer, a RAG run, or an agent trace. EvalSurfer r
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![skill](https://img.shields.io/badge/skill-agentskills.io%20standard-6d28d9.svg)](#install)
 
-[What it does](#what-it-does) · [Install](#install) · [Using it](#using-it) · [Adaptive](#adaptive-evaluation) · [Scoring](#scoring-and-decisions) · [Diagnostics](#diagnostics)
+[What it does](#what-it-does) · [Install](#install) · [Using it](#using-it) · [Adaptive](#adaptive-evaluation) · [Scoring](#scoring-and-decisions) · [Diagnostics](#diagnostics) · [Citation](#citation)
 
 </div>
 
@@ -492,6 +492,21 @@ echo '{"sample":{"answer":"..."}}' | python -m evalsurfer.cli.plan -      # adap
 ```
 
 CI runs the suite on Python 3.11–3.12 via [GitHub Actions](.github/workflows/ci.yml).
+
+## Citation
+
+If you use EvalSurfer in your research or product, please cite it. On GitHub, the **"Cite this repository"** button (generated from [`CITATION.cff`](CITATION.cff)) produces APA and BibTeX automatically. Or cite directly:
+
+```bibtex
+@software{evalsurfer_2026,
+  author  = {Hasan, Doula Isham Rashik},
+  title   = {{EvalSurfer: A skill-first, agent-native evaluation protocol for AI applications}},
+  year    = {2026},
+  version = {0.1.0},
+  url     = {https://github.com/di37/EvalSurfer},
+  license = {MIT}
+}
+```
 
 ## License
 

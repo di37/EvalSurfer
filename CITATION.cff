@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use EvalSurfer in your work, please cite it as below."
+title: "EvalSurfer: A skill-first, agent-native evaluation protocol for AI applications"
+abstract: >-
+  EvalSurfer is a skill-first, agent-native evaluation protocol for AI
+  applications. A portable SKILL.md lets coding agents act as the judge, while a
+  deterministic, zero-dependency Python layer plans scope, validates reports,
+  auto-scores operational SLOs, explains failures, tracks regressions,
+  calibrates judges, and gates releases — with no LLM API calls in the core.
+type: software
+authors:
+  - given-names: Doula Isham Rashik
+    family-names: Hasan
+    alias: di37
+version: 0.1.0
+date-released: "2026-07-08"
+license: MIT
+repository-code: "https://github.com/di37/EvalSurfer"
+url: "https://github.com/di37/EvalSurfer"
+keywords:
+  - artificial-intelligence
+  - llm
+  - evaluation
+  - agent-skills
+  - rag
+  - llm-as-judge
+  - operational-metrics
