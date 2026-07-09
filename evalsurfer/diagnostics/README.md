@@ -18,6 +18,8 @@ small, deterministic service (no model calls, inputs never mutated); the
 | [`failure_map.py`](failure_map.py) | `FailureMap` | Diagnose which pipeline stage (retrieval, generation, tools, …) failures concentrate in. |
 | [`golden_set.py`](golden_set.py) | `GoldenSet`, `GoldenCase` | Frozen golden cases that validate the deterministic layer itself. |
 
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profiles`, `industry_profile`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+
 ## Usage
 
 ```python

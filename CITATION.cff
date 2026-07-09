@@ -3,10 +3,13 @@ message: "If you use EvalSurfer in your work, please cite it as below."
 title: "EvalSurfer: A skill-first, agent-native evaluation protocol for AI applications"
 abstract: >-
   EvalSurfer is a skill-first, agent-native evaluation protocol for AI
-  applications. A portable SKILL.md lets coding agents act as the judge, while a
-  deterministic, zero-dependency Python layer plans scope, validates reports,
-  auto-scores operational SLOs, explains failures, tracks regressions,
-  calibrates judges, and gates releases — with no LLM API calls in the core.
+  applications. A portable SKILL.md routes the coding agent already running the
+  session to act as the judge, while a deterministic, zero-dependency Python
+  layer — exposed as an MCP server of 36 tools the agent calls — plans scope,
+  validates reports, auto-scores operational SLOs, explains failures, tracks
+  regressions, calibrates judges, and gates releases. Unlike frameworks that own
+  the judge model call, EvalSurfer makes no LLM API calls: the harness agent
+  judges, the tools only measure.
 type: software
 authors:
   - given-names: Doula Isham Rashik
@@ -24,4 +27,7 @@ keywords:
   - agent-skills
   - rag
   - llm-as-judge
+  - agent-as-judge
+  - mcp
+  - model-context-protocol
   - operational-metrics

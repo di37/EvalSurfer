@@ -13,6 +13,8 @@ paired with the judge reports to score against it.
 evalsurfer calibrate examples/golden/calibration.json --pretty
 ```
 
+The agent can also call the `calibrate` / `calibrate_one` MCP tools directly (see [`../../docs/mcp.md`](../../docs/mcp.md)).
+
 Returns `agreement`, `false_pass_rate`, `false_fail_rate`, and `score_variance`
 across the runs. The scoring logic lives in
 [`../../evalsurfer/calibration/`](../../evalsurfer/calibration/).

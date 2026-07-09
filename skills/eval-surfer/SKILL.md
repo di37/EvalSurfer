@@ -120,6 +120,27 @@ Top issues:
 2. [Concrete improvement]
 ```
 
+## Tools (EvalSurfer MCP server)
+
+When the EvalSurfer MCP server is connected, call its tools for every
+deterministic step — **you (the agent) are the judge; the tools are the
+measurement.** No tool calls a model.
+
+- **Scope:** `plan(sample)` → applicable criteria + coverage; `rubric()` → the full criterion list.
+- **Judge:** score each applicable quality/safety criterion 1–5 **with evidence yourself** (no tool for this).
+- **Assemble:** `evaluate({sample, scores, evidence, top_issues, traces?, slo?})` → the report.
+- **Explain:** `explain`, `root_cause`, `failure_map`, `regression_diff(before, after)`, `maturity(signals)` — or `diagnose(report)` for all at once.
+- **Operational:** `metrics(traces)` and `operational_score(traces, slo)` — never judge latency/cost; compute it.
+- **Decide:** `gate(report, min)` or `guardrail_gate(report, policy, changed_files)`; `review_gate(report)` for the human-review call.
+- **Safety / agents:** `redteam_template` / `redteam_check`; `trajectory(actual, expected)`.
+- **Trust the judge:** `calibrate(case, judge_reports)` — the eval of the eval.
+- **Import:** `adapter_ragas` / `adapter_promptfoo` / `adapter_otel` / `adapter_langsmith`.
+
+Set it up in your harness's MCP config with no install —
+`uvx --from "evalsurfer[mcp]" evalsurfer-mcp` (or `npx -y evalsurfer`). If the MCP
+server isn't connected, use the CLI or the Python module below — the functions are
+identical.
+
 ## Supporting Utilities
 
 Use the Python module only when calculation is needed:

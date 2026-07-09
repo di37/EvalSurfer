@@ -8,6 +8,8 @@ model calls; inputs never mutated.
 | --- | --- | --- |
 | [`agent_trace.py`](agent_trace.py) | `TrajectoryEvaluator`, `ToolCall`, `Finding` | Diff `actual` vs `expected` and return findings + error-recovery status. |
 
+> **As an MCP tool:** the harness LLM calls this directly via the `evalsurfer[mcp]` server — `trajectory`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+
 ## Checks
 
 | Finding | Fires when |

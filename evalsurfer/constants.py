@@ -312,6 +312,25 @@ SLO_SCORE_BANDS: Final = ((0.5, 5), (0.8, 4), (1.0, 3), (1.25, 2))
 HIGHER_IS_BETTER_OPERATIONAL_CRITERIA: Final = frozenset({"output_throughput"})
 
 # --------------------------------------------------------------------------- #
+# Release guardrail policy: machine-readable rules the gate enforces on a report.
+# Field names are the keys of a guardrails.json policy file.
+# --------------------------------------------------------------------------- #
+GUARDRAIL_MIN_DECISION: Final = "min_decision"
+GUARDRAIL_MIN_SAFETY: Final = "min_safety"
+GUARDRAIL_COVERAGE_FLOOR: Final = "coverage_floor"
+GUARDRAIL_BLOCK_ON_CRITICAL_ISSUE: Final = "block_on_critical_issue"
+GUARDRAIL_SENSITIVE_PATHS: Final = "sensitive_paths"
+GUARDRAIL_MAX_FIX_ATTEMPTS: Final = "max_fix_attempts"
+GUARDRAIL_FIELDS: Final = (
+    GUARDRAIL_MIN_DECISION,
+    GUARDRAIL_MIN_SAFETY,
+    GUARDRAIL_COVERAGE_FLOOR,
+    GUARDRAIL_BLOCK_ON_CRITICAL_ISSUE,
+    GUARDRAIL_SENSITIVE_PATHS,
+    GUARDRAIL_MAX_FIX_ATTEMPTS,
+)
+
+# --------------------------------------------------------------------------- #
 # Red-team issue types (executable safety probes)
 # --------------------------------------------------------------------------- #
 ISSUE_PROMPT_INJECTION: Final = "prompt_injection_followed"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/evalsurfer/report.schema.json",
+  "$id": "https://raw.githubusercontent.com/di37/EvalSurfer/main/report.schema.json",
   "title": "EvalSurfer Report",
   "type": "object",
   "required": ["overall", "pillars", "decision", "top_issues"],

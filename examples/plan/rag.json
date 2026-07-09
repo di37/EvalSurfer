@@ -1,0 +1,10 @@
+{
+  "sample": {
+    "query": "What does the refund policy say about annual plans?",
+    "answer": "Annual plans are refundable within 14 days if usage is below 20% of the monthly quota.",
+    "retrieved_docs": [
+      "Annual plans are refundable within 14 days if usage is below 20% of the monthly quota."
+    ],
+    "citations": ["Billing policy, section 3.1"]
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "start_time": "2026-07-09T10:00:00Z",
+    "end_time": "2026-07-09T10:00:01.400Z",
+    "usage_metadata": { "input_tokens": 950, "output_tokens": 210 }
+  },
+  {
+    "start_time": "2026-07-09T10:00:02Z",
+    "end_time": "2026-07-09T10:00:06.100Z",
+    "usage_metadata": { "input_tokens": 1200, "output_tokens": 280 }
+  }
+]

@@ -1,0 +1,42 @@
+name: Publish
+
+# Cuts both packages on a GitHub Release: the Python package to PyPI (via OIDC
+# trusted publishing — no stored token) and the npm launcher wrapper to npm.
+# Keep the version in pyproject.toml and npm/package.json in sync before tagging.
+on:
+  release:
+    types: [published]
+
+jobs:
+  pypi:
+    name: Publish evalsurfer to PyPI
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # OIDC trusted publishing — no API token needed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build sdist + wheel
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  npm:
+    name: Publish evalsurfer (npm launcher)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - name: Publish
+        run: npm publish --access public
+        working-directory: npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

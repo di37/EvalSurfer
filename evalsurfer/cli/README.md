@@ -10,13 +10,15 @@ model calls. Non-zero exit codes make `validate` and `gate` CI-friendly.
 | [`plan.py`](plan.py) | `evalsurfer-plan` | Standalone adaptive planner (`Signals` → applicable criteria + coverage). |
 | [`metrics.py`](metrics.py) | `evalsurfer-metrics` | Standalone operational metrics from a traces payload. |
 
+> **Agent-native alternative:** `evalsurfer-mcp` runs the same deterministic functions as an MCP tool server (`evalsurfer[mcp]`), so the harness LLM can call them as tools instead of shelling out to these verbs. There is no `mcp` CLI verb. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+
 ## Verbs (`evalsurfer <verb>`)
 
 | Verb | Does | Exit code |
 | --- | --- | --- |
 | `evaluate` | assemble a full report from a request | 0 |
 | `validate` | structurally validate a report | 1 if invalid |
-| `gate` | check a report against `--min` decision | 1 if below the bar |
+| `gate` | check a report against `--min` decision, or a full `--policy guardrails.json` (safety/coverage floors, sensitive-path denylist, attempt cap) | 1 if blocked |
 | `diagnose` | run the diagnostics bundle (`--before` adds regression) | 0 |
 | `plan` | infer the adaptive plan for a sample | 0 |
 | `metrics` | operational metrics from traces | 0 |

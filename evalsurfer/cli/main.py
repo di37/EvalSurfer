@@ -23,6 +23,7 @@ from evalsurfer.core.evaluate import Evaluator
 from evalsurfer.core.planner import Signals
 from evalsurfer.core.report import Gate, ReportValidator
 from evalsurfer.diagnostics.bundle import DiagnosticsBundle
+from evalsurfer.policy.guardrails import GuardrailPolicy, Guardrails
 from evalsurfer.safety.redteam import RedTeam
 from evalsurfer.trajectory.agent_trace import TrajectoryEvaluator
 
@@ -71,9 +72,39 @@ def _cmd_validate(args: argparse.Namespace) -> int:
     return 0 if result["valid"] else 1
 
 
+def _read_changed_files(path: str | None) -> tuple[str, ...]:
+    """Read a newline-separated changed-file list from a path or stdin.
+
+    Args:
+        path: A filesystem path, ``"-"`` for stdin, or ``None`` for no files.
+
+    Returns:
+        The non-empty, stripped file names, in order.
+    """
+    if not path:
+        return ()
+    if path == "-":
+        text = sys.stdin.read()
+    else:
+        with open(path, encoding="utf-8") as file:
+            text = file.read()
+    return tuple(line.strip() for line in text.splitlines() if line.strip())
+
+
 def _cmd_gate(args: argparse.Namespace) -> int:
-    """Gate a report against a minimum decision; exit non-zero when it fails."""
-    result = Gate.evaluate(load_json(args.input), args.min)
+    """Gate a report against a minimum decision, or a full guardrail policy."""
+    report = load_json(args.input)
+    if args.policy:
+        policy = GuardrailPolicy.from_mapping(load_json(args.policy))
+        result = Guardrails.check(
+            report,
+            policy,
+            changed_files=_read_changed_files(args.changed_files),
+            attempt=args.attempt,
+        )
+        emit(result, None, args.pretty)
+        return 0 if result["allowed"] else 1
+    result = Gate.evaluate(report, args.min)
     emit(result, None, args.pretty)
     return 0 if result["passed"] else 1
 
@@ -204,9 +235,13 @@ def _build_parser() -> argparse.ArgumentParser:
     validate.add_argument("input", help="Path to a report JSON, or '-' for stdin.")
     validate.add_argument("--pretty", action="store_true")
 
-    gate = add("gate", _cmd_gate, help="Gate a report against a minimum decision (exit 1 if below).")
+    gate = add("gate", _cmd_gate, help="Gate a report against a minimum decision or a guardrail policy (exit 1 if blocked).")
     gate.add_argument("input", help="Path to a report JSON, or '-' for stdin.")
-    gate.add_argument("--min", choices=constants.DECISIONS, default=constants.DECISION_PASS_WITH_FIXES)
+    gate.add_argument("--min", choices=constants.DECISIONS, default=constants.DECISION_PASS_WITH_FIXES,
+                      help="Minimum passing decision (ignored when --policy is given).")
+    gate.add_argument("--policy", help="Path to a guardrails.json policy to enforce instead of --min.")
+    gate.add_argument("--changed-files", help="Path (or '-') to a newline-separated changed-file list, matched against the policy's sensitive_paths.")
+    gate.add_argument("--attempt", type=int, help="Current fix-attempt number, checked against the policy's max_fix_attempts.")
     gate.add_argument("--pretty", action="store_true")
 
     template = add("redteam-template", _cmd_redteam_template, help="Emit red-team probes for a target shape.")

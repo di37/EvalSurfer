@@ -9,6 +9,8 @@ standard-library only, no model calls.
 | [`metrics.py`](metrics.py) | `OperationalMetrics`, `RequestTrace`, `Pricing`, `LatencyStats`, `OperationalSummary` | Parse heterogeneous trace mappings (`RequestTrace.from_mapping`) and summarize them: end-to-end + TTFT + inter-token-latency percentiles, throughput (TPS), P99/P50 tail ratio, average/total cost and cost-per-million-tokens from `Pricing`, failure rate, and latency-under-load grouped by concurrency. |
 | [`slo.py`](slo.py) | `OperationalScorer`, `CriterionScore`, `OperationalScore` | Score each operational criterion 1–5 against its SLO target, following `constants.SLO_SCORE_BANDS`. Lower-is-better metrics score on the measured/target ratio; throughput is higher-is-better (scored on target/measured). The SLO targets are the only configurable input; `token_efficiency` has no SLO and stays unscored. |
 
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `metrics`, `operational_score`, `cost_per_request`, `token_efficiency`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+
 ## Metric → SLO field mapping
 
 | Criterion | SLO field | Direction |

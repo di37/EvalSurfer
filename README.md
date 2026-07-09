@@ -13,23 +13,34 @@ Point your coding agent at an answer, a RAG run, or an agent trace. EvalSurfer r
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![skill](https://img.shields.io/badge/skill-agentskills.io%20standard-6d28d9.svg)](#install)
 
-[What it does](#what-it-does) · [Install](#install) · [Using it](#using-it) · [Adaptive](#adaptive-evaluation) · [Scoring](#scoring-and-decisions) · [Diagnostics](#diagnostics) · [Citation](#citation)
+[What it does](#what-it-does) · [Why it's different](#how-evalsurfer-is-different) · [Install](#install) · [Using it](#using-it) · [MCP tools](#mcp-server) · [Adaptive](#adaptive-evaluation) · [Scoring](#scoring-and-decisions) · [Diagnostics](#diagnostics) · [Guardrails](#guardrails) · [Citation](#citation)
 
 </div>
 
 ---
 
-> **EvalSurfer is an agent-native evaluation protocol: a portable skill that lets coding agents judge AI applications, while a deterministic Python layer plans scope, validates reports, explains failures, tracks regressions, calibrates judges, and gates releases.**
+> **EvalSurfer is an agent-native evaluation protocol. The coding agent you're already running is the judge; EvalSurfer's deterministic tools are the measurement — so the framework itself makes _zero_ LLM API calls. It ships as a portable skill plus an MCP server of 36 deterministic tools that plan scope, score, validate, diagnose, calibrate, and gate releases.**
 
 EvalSurfer is a skill-first evaluation framework for AI applications. You point a coding agent — Claude Code, Cursor, OpenClaw, Hermes, or any other [agentskills.io](https://agentskills.io)-compatible harness — at an answer, a RAG run, an agent trace, or production logs, and it works through a fixed rubric the way a careful reviewer would: judging correctness, relevance, groundedness, tool use, multi-turn memory, safety, and operational readiness, then scoring each criterion with evidence and returning a `pass` / `pass with fixes` / `fail` decision.
 
-The skill is the product, and the agent that runs it is the judge — there are no external eval services and no extra LLM API calls.
+The skill routes that agent to EvalSurfer's deterministic **MCP tools** for every measurable step — planning, scoring math, report assembly, diagnostics, operational metrics, calibration, and gating. The agent that runs the skill is the judge; the tools only measure. There is no external eval service and no extra LLM API call — the one model in the loop is the one you were already using.
+
+```mermaid
+flowchart LR
+    A["AI output<br/>answer · RAG · agent trace · logs"] --> B["🧠 Your coding agent — the judge<br/>scores each criterion 1–5 with evidence"]
+    B -->|"calls as MCP tools"| C["⚙️ EvalSurfer<br/>36 deterministic tools<br/>plan · score · evaluate · diagnose · gate"]
+    C -->|"measurements"| B
+    B --> D["Report<br/>pass · pass with fixes · fail"]
+```
+
+<div align="center"><sub>The judge is the agent you're already running. EvalSurfer's tools only measure — the framework never calls a model.</sub></div>
 
 ## What it does
 
 | Capability | What it does |
 | --- | --- |
 | **Skill-first, no eval API** | The agent running `SKILL.md` is the judge. Scoring happens in your existing session with your existing model — nothing calls out to a third-party eval service. |
+| **MCP tools** | Run EvalSurfer as an MCP server (`evalsurfer[mcp]`) so your agent calls the deterministic functions as tools — it *judges* and *invokes*, with no external API. |
 | **Three pillars** | Application Quality ("is the answer good?"), Safety ("could it cause harm?"), and Operational ("is it fast, cheap, and reliable enough?"). |
 | **29 criteria** | Core generation, RAG (context relevance, recall, groundedness, citations), agent / tool-use, multi-turn memory, five safety checks, and ten operational metrics — the five numbers of inference (TTFT, inter-token latency, throughput/TPS, P99 tail, $/1M tokens) plus end-to-end/under-load latency, cost per request, token efficiency, and failure rate. |
 | **Adaptive scoping** | A deterministic planner infers which pillars and criteria apply from the inputs you actually have — so simple apps aren't over-evaluated — and reports a coverage score for what got assessed. |
@@ -44,11 +55,45 @@ The skill is the product, and the agent that runs it is the judge — there are 
 | **Operational metrics utilities** | Provider-agnostic Python helpers turn API or trace logs into latency, TTFT, inter-token latency, throughput (TPS), P99 tail, cost, cost-per-million-tokens, token-efficiency, failure-rate, and latency-under-load numbers. |
 | **Portable across harnesses** | Ships as a standard [agentskills.io](https://agentskills.io) `SKILL.md` — one skill that runs in Claude Code, Cursor, OpenClaw, Hermes, OpenCode, Codex, and other compatible agents, with a one-command installer for each. |
 
+## How EvalSurfer is different
+
+LLM-as-judge, eval MCP servers, CI gates, judge calibration, three-pillar rubrics — none of these are new, and EvalSurfer doesn't claim them. [promptfoo](https://www.promptfoo.dev/docs/integrations/mcp-server/) and [Confident AI / DeepEval](https://deepeval.com/docs/evaluation-mcp) already expose evals to coding agents over MCP; [Anthropic's Petri](https://www.anthropic.com/research/petri-open-source-auditing) already pairs an auditor agent with a judge and a multi-dimension rubric; ["agent-as-judge"](https://arxiv.org/abs/2410.10934) is a coined term with a 2024 paper.
+
+The one thing EvalSurfer does differently: **in every one of those, the framework owns the judge model call** — it holds an API key and calls a grader, or the vendor runs proprietary judge models server-side. EvalSurfer inverts that. **Its deterministic core makes zero LLM calls.** The judge is the coding agent *already running your session*; EvalSurfer contributes only the skill that tells it how to judge and the deterministic tools that measure what it judged. No eval service, no second model, no extra key.
+
+| | Typical eval framework | EvalSurfer |
+| --- | --- | --- |
+| Who judges | a model the framework calls | the harness agent you're already running |
+| LLM API calls **by the framework** | ≥ 1 per eval | **0** |
+| Distribution | library / SaaS / (some) MCP server | portable skill **+** deterministic MCP server |
+| What the tools do | run the judge model | deterministic measurement only |
+
+That is the whole bet, and the honest extent of the novelty: not that EvalSurfer judges with an agent, but that **the framework never judges at all** — your agent does, and EvalSurfer just measures.
+
 ## Install
 
-EvalSurfer ships as a portable [agentskills.io](https://agentskills.io) skill — a single `SKILL.md` that every compatible harness reads. The repo stages it in three places (`skills/` for standard tools, plus `.claude/` and `.cursor/`), so opening this repo directly in any of them just works.
+EvalSurfer has two pieces: the **MCP tool server** (what the agent runs) and the **skill** (how the agent knows to use it).
 
-To use it in **your own** project, copy the `eval-surfer` skill folder into wherever your harness looks:
+### 1. The tools — zero-install
+
+Point your agent's MCP config at EvalSurfer and it's fetched on first launch — nothing to install first. `.mcp.json` (Claude Code) or `.cursor/mcp.json` (Cursor):
+
+```json
+{ "mcpServers": { "evalsurfer": { "command": "uvx", "args": ["--from", "evalsurfer[mcp]", "evalsurfer-mcp"] } } }
+```
+
+Prefer npm? Swap in `"command": "npx", "args": ["-y", "evalsurfer"]`. Either needs [uv](https://docs.astral.sh/uv/) or Node on `PATH`. Or install the command outright — pick your ecosystem, all equivalent:
+
+```bash
+uvx --from "evalsurfer[mcp]" evalsurfer-mcp     # Python · run, no install (uv)
+pipx install "evalsurfer[mcp]"                  # Python · install the command
+npx evalsurfer                                   # npm · run, no install
+pip install "evalsurfer[mcp]"                    # Python · classic install
+```
+
+### 2. The skill — one portable file
+
+The skill (`SKILL.md`) tells the agent the EvalSurfer workflow. Opening this repo in any harness already works — it stages the skill in `skills/`, `.claude/`, and `.cursor/`. For **your own** project, copy the `eval-surfer` skill folder into wherever your harness looks:
 
 | Harness | Project directory | Global directory | Native installer |
 | --- | --- | --- | --- |
@@ -68,11 +113,9 @@ cd ~/my-project
 /path/to/EvalSurfer/install-skill.sh --list           # list all harnesses
 ```
 
-Then ask your agent to use **EvalSurfer**. To also install the operational-metrics utilities and the `evalsurfer-metrics` command:
+Then just ask your agent to use **EvalSurfer**.
 
-```bash
-python -m pip install -e .
-```
+> **Not published yet?** Until the first PyPI/npm release, the `uvx` / `pipx` / `npx` commands resolve only from a local checkout (`pip install -e ".[mcp]"`); see [RELEASING.md](RELEASING.md).
 
 ## Using it
 
@@ -142,7 +185,7 @@ EvalSurfer
 │   ├── 1c. Agent / Tool-Use (4 criteria)
 │   └── 1d. Multi-Turn Conversation (2 criteria)
 ├── 2. Safety — "Could the answer cause harm?" (5 criteria)
-└── 3. Operational — "Is it fast, cheap, and reliable?" (6 criteria)
+└── 3. Operational — "Is it fast, cheap, and reliable?" (10 criteria)
 ```
 
 Use only the sections the evidence supports — EvalSurfer should not over-evaluate simple apps.
@@ -214,7 +257,11 @@ Use only the sections the evidence supports — EvalSurfer should not over-evalu
 | --- | --- |
 | End-to-end latency | Total time from user request to final response |
 | Time to first token (TTFT) | Time from user request start to the first streamed token |
+| Inter-token latency (ITL) | Average gap between streamed tokens (TPS ≈ 1000 / ITL) |
+| Output throughput (TPS) | Tokens generated per second — higher is better |
+| Tail latency (P99) | 99th-percentile latency; the P99/P50 ratio flags a long tail |
 | Cost per request | Total token/compute spend to produce one response |
+| Cost per million tokens | Blended $/1M-token spend at the given input/output pricing |
 | Token efficiency | Whether it achieves its result without wasteful token usage |
 | Error / failure rate | Fraction of requests that fail, time out, or return malformed output |
 | Latency under load | Whether latency stays acceptable at production concurrency |
@@ -282,9 +329,23 @@ Beyond producing a score, EvalSurfer ships deterministic modules that *explain a
 
 Model-running features (multi-model cost/quality frontier, failure mining at scale, leaderboards) are deliberately **out of the core** — they would live in an optional, opt-in adapter, never imported by the zero-dependency core.
 
+## MCP server
+
+EvalSurfer's **native interface** is an MCP server: the harness LLM judges, and it calls EvalSurfer's deterministic functions as **tools** — so nothing external is ever called. Setup is zero-install — the agent's MCP config fetches it on first launch:
+
+```json
+{ "mcpServers": { "evalsurfer": { "command": "uvx", "args": ["--from", "evalsurfer[mcp]", "evalsurfer-mcp"] } } }
+```
+
+(`npx -y evalsurfer` works too; or run `evalsurfer-mcp` directly after `pipx install "evalsurfer[mcp]"`. See [Install](#install).)
+
+All **36** deterministic functions are exposed as tools, grouped: rubric & scope (`rubric`, `plan`, `coverage`); scoring (`score_pillar`, `score_overall`, `decide`, `score_report`); assemble & gate (`evaluate`, `validate_report`, `gate`, `guardrail_gate`); diagnostics (`explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profile(s)`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`); operational (`metrics`, `operational_score`, `cost_per_request`, `token_efficiency`); safety & agents (`redteam_template`, `redteam_check`, `trajectory`); calibration (`calibrate`, `calibrate_one`); and adapters (`adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`). The one thing that is **not** a tool is the judgment itself — you score each quality/safety criterion 1–5 with evidence. Full guide: [docs/mcp.md](docs/mcp.md).
+
+`SKILL.md` routes the agent through them (scope → judge → assemble → diagnose → decide). If the server isn't connected, the CLI below runs the same functions.
+
 ## Command-line interface
 
-Beyond the skill, a single deterministic `evalsurfer` command orchestrates the Python layer (no model calls anywhere):
+Not running the MCP server? The same deterministic functions are also a single `evalsurfer` command — identical behavior, no model calls anywhere:
 
 | Command | Does |
 | --- | --- |
@@ -302,7 +363,7 @@ Beyond the skill, a single deterministic `evalsurfer` command orchestrates the P
 Gate a release from CI with the bundled GitHub Action:
 
 ```yaml
-- uses: your-org/EvalSurfer@v1
+- uses: di37/EvalSurfer@v1
   with:
     report: report.json
     min: pass_with_fixes
@@ -474,9 +535,12 @@ The skill drives every evaluation; the data files make the rubric portable; the 
 | `report.schema.json` | JSON Schema a machine-readable report must satisfy |
 | `evalsurfer/constants.py` | Every fixed value in one place (DRY) |
 | `evalsurfer/core/` | `ScoringModel` (scoring + decision math) and `EvaluationPlanner` (adaptive planning) |
+| `evalsurfer/policy/` | The machine-readable release **guardrail policy** the gate enforces |
 | `evalsurfer/diagnostics/` | The diagnostic classes — see [Diagnostics](#diagnostics) |
 | `evalsurfer/operational/` | `OperationalMetrics` — latency / TTFT / cost / failure-rate from traces |
-| `evalsurfer/cli/` | Console entry points: `evalsurfer-plan`, `evalsurfer-metrics` |
+| `evalsurfer/mcp_server.py` | The **MCP server** — all 36 deterministic functions as agent-callable tools (`evalsurfer-mcp`) |
+| `evalsurfer/mcp_models.py` | Pydantic input schemas for the MCP tools |
+| `evalsurfer/cli/` | Console entry points: `evalsurfer`, `evalsurfer-plan`, `evalsurfer-metrics`, `evalsurfer-mcp` |
 | `tests/` | The test suite (run with `unittest discover -s tests -t .`) |
 | `examples/` | `traces.json` (sample input) and `report.json` (sample output) |
 
@@ -492,6 +556,26 @@ echo '{"sample":{"answer":"..."}}' | python -m evalsurfer.cli.plan -      # adap
 ```
 
 CI runs the suite on Python 3.11–3.12 via [GitHub Actions](.github/workflows/ci.yml).
+
+## Guardrails
+
+EvalSurfer's design is best understood as a set of defenses against the ways AI
+**evaluation itself** fails — LLM-as-judge bias, ungrounded scores, average-washed
+critical issues, fabricated signals, and rubber-stamped gates. Two guides make
+that rationale explicit, and each failure maps to the feature that mitigates it:
+
+- **[Evaluation Failure Modes](docs/failure-modes.md)** — a severity-classified
+  catalog (S1/S2/S3) of how evaluation goes wrong and how EvalSurfer mitigates each.
+- **[Evaluation Anti-Patterns](docs/anti-patterns.md)** — ten common mistakes with
+  "do this instead → EvalSurfer feature".
+- **[Post-mortems (`stories/`)](stories/)** — blameless write-ups of evaluation
+  incidents, each ending in the concrete change that prevents a repeat.
+
+These gates are **enforceable in CI**: a machine-readable
+[`guardrails.json`](examples/guardrails.json) policy (safety / coverage floors,
+block-on-critical, a fix-attempt cap, and a sensitive-path denylist) runs via
+`evalsurfer gate --policy …`. For the threat model, responsible disclosure, and
+safe gating, see [SECURITY.md](SECURITY.md).
 
 ## Citation
 

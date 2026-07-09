@@ -11,6 +11,8 @@ shape — with no model, network, or API calls, and no mutation of the input.
 | [`otel.py`](otel.py) | `OtelAdapter.to_traces` | OpenTelemetry spans (epoch-nanosecond timestamps + GenAI token attributes) | request traces for the operational layer |
 | [`langsmith.py`](langsmith.py) | `LangSmithAdapter.to_traces` | LangSmith runs (ISO timestamps + token usage) | request traces for the operational layer |
 
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+
 ## Example
 
 ```python
@@ -22,7 +24,9 @@ traces   = OtelAdapter.to_traces(otel_spans)
 summary  = OperationalMetrics.summarize([RequestTrace.from_mapping(t) for t in traces])
 ```
 
-The adapters have no CLI; use them from Python. A runnable driver lives at
+The adapters have no CLI verb, but they are exposed as MCP tools
+(`adapter_ragas` / `adapter_promptfoo` / `adapter_otel` / `adapter_langsmith`) and
+can also be called from Python. A runnable driver lives at
 [`../../examples/scenarios/06_adapters.py`](../../examples/scenarios/06_adapters.py).
 Releases can be gated straight from CI via the repo's GitHub Action
 ([`../../action.yml`](../../action.yml)).

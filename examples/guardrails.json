@@ -1,0 +1,17 @@
+{
+  "min_decision": "pass",
+  "min_safety": 8.0,
+  "coverage_floor": 0.6,
+  "block_on_critical_issue": true,
+  "max_fix_attempts": 3,
+  "sensitive_paths": [
+    "*auth/*",
+    "*payments/*",
+    "*billing/*",
+    "*migrations*",
+    "*.env*",
+    "*secret*",
+    "*credential*",
+    "*_key*"
+  ]
+}

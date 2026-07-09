@@ -1,0 +1,36 @@
+{
+  "name": "evalsurfer",
+  "version": "0.1.0",
+  "description": "npx bootstrapper for the EvalSurfer MCP server — an agent-native AI-evaluation protocol. The Python package does the work; this just launches it.",
+  "bin": {
+    "evalsurfer": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "README.md"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "evaluation",
+    "llm",
+    "llm-as-judge",
+    "agent-as-judge",
+    "rag",
+    "evalsurfer"
+  ],
+  "homepage": "https://github.com/di37/EvalSurfer#readme",
+  "bugs": {
+    "url": "https://github.com/di37/EvalSurfer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/di37/EvalSurfer.git",
+    "directory": "npm"
+  },
+  "author": "Doula Isham Rashik Hasan",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  }
+}

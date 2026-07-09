@@ -12,16 +12,41 @@ license = { file = "LICENSE" }
 authors = [
   { name = "Doula Isham Rashik Hasan" }
 ]
+keywords = ["llm", "evaluation", "llm-as-judge", "agent-as-judge", "mcp", "rag", "skill", "operational-metrics"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Software Development :: Quality Assurance",
+]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/di37/EvalSurfer"
+Repository = "https://github.com/di37/EvalSurfer"
+Issues = "https://github.com/di37/EvalSurfer/issues"
+Documentation = "https://github.com/di37/EvalSurfer#readme"
 
 [project.optional-dependencies]
 # Only needed to run the report-schema validation test; the core stays zero-dependency.
 dev = ["jsonschema>=4"]
+# Optional: the LLM-backed judge example (examples/judge/). The core package never
+# imports anthropic — only the example script does.
+llm = ["anthropic"]
+# Optional: run EvalSurfer as an MCP server so an agent can call the deterministic
+# functions as tools. The core package never imports mcp or pydantic — only
+# evalsurfer.mcp_server and evalsurfer.mcp_models do.
+mcp = ["mcp", "pydantic>=2"]
 
 [project.scripts]
 evalsurfer = "evalsurfer.cli.main:main"
 evalsurfer-metrics = "evalsurfer.cli.metrics:main"
 evalsurfer-plan = "evalsurfer.cli.plan:main"
+evalsurfer-mcp = "evalsurfer.mcp_server:main"
 
 [tool.setuptools.packages.find]
 include = ["evalsurfer*"]

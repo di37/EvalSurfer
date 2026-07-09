@@ -3,7 +3,8 @@
 Standard-library `unittest` tests covering the whole package: scoring, planner,
 report validation, operational metrics + SLO, every diagnostic, red-team,
 trajectory, calibration, adapters, the `Evaluator`, the CLI, the report schema,
-and multi-harness skill parity. No network and no model calls.
+multi-harness skill parity, release guardrails, and the MCP tool server. No
+network and no model calls.
 
 ## Run
 
@@ -25,6 +26,11 @@ One `test_<module>.py` per source module (e.g. [`test_scoring.py`](test_scoring.
 
 - [`test_report_schema.py`](test_report_schema.py) — validates `examples/report.json` against `report.schema.json` (uses the optional `jsonschema` dev extra).
 - [`test_skill_parity.py`](test_skill_parity.py) — asserts the three staged `SKILL.md` copies (`skills/`, `.claude/`, `.cursor/`) stay byte-identical.
+
+Two more are worth calling out:
+
+- [`test_mcp_server.py`](test_mcp_server.py) — drives all 36 tools of the EvalSurfer MCP server; `@skipUnless`-skips the whole suite when the optional `[mcp]` extra isn't installed.
+- [`test_guardrails.py`](test_guardrails.py) — covers the release-guardrail policy (`policy/guardrails.py`): minimum decision, safety floor, and sensitive-path / critical-issue blocking.
 
 To install the one optional dev dependency (`jsonschema`):
 

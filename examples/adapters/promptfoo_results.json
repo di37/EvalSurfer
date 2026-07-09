@@ -1,0 +1,9 @@
+{
+  "results": [
+    { "success": true,  "score": 1.0 },
+    { "success": true,  "score": 1.0 },
+    { "success": false, "score": 0.0 },
+    { "success": true,  "score": 1.0 },
+    { "success": false, "score": 0.0 }
+  ]
+}

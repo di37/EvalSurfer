@@ -1,5 +1,5 @@
 name: "EvalSurfer Gate"
-description: "Fail the build when an EvalSurfer report does not clear a minimum decision."
+description: "Fail the build when an EvalSurfer report does not clear the release bar or a guardrail policy."
 branding:
   icon: "check-circle"
   color: "purple"
@@ -8,9 +8,17 @@ inputs:
     description: "Path to the EvalSurfer report JSON to gate."
     required: true
   min:
-    description: "Lowest decision that still passes: pass, pass_with_fixes, or fail."
+    description: "Lowest decision that still passes: pass, pass_with_fixes, or fail. Ignored when 'policy' is set."
     required: false
     default: "pass_with_fixes"
+  policy:
+    description: "Optional path to a guardrails.json policy to enforce instead of 'min'."
+    required: false
+    default: ""
+  changed-files:
+    description: "Optional path to a newline-separated changed-file list, matched against the policy's sensitive_paths."
+    required: false
+    default: ""
 runs:
   using: "composite"
   steps:
@@ -19,4 +27,13 @@ runs:
       run: python -m pip install -e "${{ github.action_path }}"
     - name: Gate the report
       shell: bash
-      run: evalsurfer gate "${{ inputs.report }}" --min "${{ inputs.min }}"
+      run: |
+        if [ -n "${{ inputs.policy }}" ]; then
+          args=(gate "${{ inputs.report }}" --policy "${{ inputs.policy }}")
+          if [ -n "${{ inputs.changed-files }}" ]; then
+            args+=(--changed-files "${{ inputs.changed-files }}")
+          fi
+          evalsurfer "${args[@]}"
+        else
+          evalsurfer gate "${{ inputs.report }}" --min "${{ inputs.min }}"
+        fi

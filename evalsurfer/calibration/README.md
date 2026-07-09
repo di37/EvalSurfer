@@ -9,6 +9,8 @@ mutated.
 | --- | --- | --- |
 | [`calibrate.py`](calibrate.py) | `Calibrator`, `CalibrationCase` | Freeze what a trustworthy judge should conclude, then check one report (`check_report`) or aggregate many (`summarize`). |
 
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `calibrate`, `calibrate_one`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+
 ## What a case pins
 
 A `CalibrationCase` freezes, for one target: the planner's applicable pillars,

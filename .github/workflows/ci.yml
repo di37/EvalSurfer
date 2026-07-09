@@ -30,3 +30,26 @@ jobs:
         run: |
           python -m evalsurfer.cli.metrics examples/traces.json --pretty
           echo '{"sample":{"answer":"x"}}' | python -m evalsurfer.cli.plan -
+
+  # Exercises the optional MCP tool server (36 tools). The `test` job above installs
+  # only [dev], which proves the core stays importable with no mcp/pydantic (there
+  # test_mcp_server.py self-skips). This job installs [mcp] so those tests run.
+  mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install (with dev + mcp extras)
+        run: python -m pip install -e ".[dev,mcp]"
+
+      - name: Run tests (including the 36 MCP tools)
+        run: python -m unittest discover -s tests -t . -p "test_*.py" -v
+
+      - name: Smoke-test the MCP server (lists all tools)
+        run: |
+          python -c "import asyncio, evalsurfer.mcp_server as s; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == 36, n"

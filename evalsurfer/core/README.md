@@ -10,6 +10,8 @@ validated, gated report. No model or API calls; inputs are never mutated.
 | [`report.py`](report.py) | `ReportValidator`, `Gate` | Pure-Python structural validation of a report (`{"valid", "errors"}`) and a release gate against a minimum decision (`{"passed", "decision", "minimum", "reason"}`). |
 | [`evaluate.py`](evaluate.py) | `Evaluator` | The end-to-end orchestrator: infer the plan, place provided scores, auto-score operations from traces + SLO, recompute pillar/overall, decide, measure coverage, and attach the diagnostics block. |
 
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `plan`, `coverage`, `score_pillar`, `score_overall`, `decide`, `score_report`, `evaluate`, `validate_report`, `gate`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+
 ## Flow
 
 ```
