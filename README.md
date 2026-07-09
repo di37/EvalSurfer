@@ -9,6 +9,8 @@ Point your coding agent at an answer, a RAG run, or an agent trace. EvalSurfer r
 <br/>
 
 [![CI](https://github.com/di37/EvalSurfer/actions/workflows/ci.yml/badge.svg)](https://github.com/di37/EvalSurfer/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/evalsurfer?logo=pypi&logoColor=white)](https://pypi.org/project/evalsurfer/)
+[![npm](https://img.shields.io/npm/v/evalsurfer?logo=npm)](https://www.npmjs.com/package/evalsurfer)
 [![python](https://img.shields.io/badge/python-3.11%2B-3776ab.svg)](pyproject.toml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![skill](https://img.shields.io/badge/skill-agentskills.io%20standard-6d28d9.svg)](#install)
