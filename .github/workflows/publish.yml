@@ -25,6 +25,8 @@ jobs:
           python -m build
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true # a re-run of an already-published version is a no-op, not a failure
 
   npm:
     name: Publish evalsurfer (npm launcher)
@@ -36,7 +38,13 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
       - name: Publish
-        run: npm publish --access public
         working-directory: npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if npm view "evalsurfer@$version" version >/dev/null 2>&1; then
+            echo "evalsurfer@$version already on npm — skipping."
+          else
+            npm publish --access public
+          fi
