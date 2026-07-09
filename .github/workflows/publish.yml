@@ -31,6 +31,10 @@ jobs:
   npm:
     name: Publish evalsurfer (npm launcher)
     runs-on: ubuntu-latest
+    # Best-effort: the npm launcher is version-independent from the PyPI package
+    # (it always pulls the latest evalsurfer[mcp] at runtime), so a npm publish
+    # hiccup must not red the release. PyPI is the source of truth.
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
