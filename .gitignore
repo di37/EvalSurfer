@@ -18,4 +18,7 @@ dist/
 htmlcov/
 
 .DS_Store
-bin
+
+# The author's work-in-progress paper lives in the top-level bin/ only.
+# Anchored to root so it does NOT also ignore npm/bin/ (the launcher script).
+/bin/

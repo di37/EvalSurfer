@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "evalsurfer"
-version = "0.1.0"
+version = "0.1.1"
 description = "EvalSurfer — a skill-first, agent-native evaluation protocol for AI applications, with supporting operational-metrics utilities."
 readme = "README.md"
 requires-python = ">=3.11"
