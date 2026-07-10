@@ -30,8 +30,11 @@ jobs:
         run: |
           python -m evalsurfer.cli.metrics examples/traces.json --pretty
           echo '{"sample":{"answer":"x"}}' | python -m evalsurfer.cli.plan -
+          echo '{"retrieval":{"cases":[{"retrieved":["d1","d2"],"relevant":["d1"]}]}}' | python -m evalsurfer.cli.quality -
+          echo '{"op":"from_traces","traces":[{"query":"q1"},{"query":"q1"}],"name":"d","version":"v1"}' | python -m evalsurfer.cli.dataset -
+          echo '{"op":"krippendorff_alpha","reliability_data":[[1,1],[2,2]]}' | python -m evalsurfer.cli.main agreement -
 
-  # Exercises the optional MCP tool server (36 tools). The `test` job above installs
+  # Exercises the optional MCP tool server (47 tools). The `test` job above installs
   # only [dev], which proves the core stays importable with no mcp/pydantic (there
   # test_mcp_server.py self-skips). This job installs [mcp] so those tests run.
   mcp:
@@ -47,9 +50,9 @@ jobs:
       - name: Install (with dev + mcp extras)
         run: python -m pip install -e ".[dev,mcp]"
 
-      - name: Run tests (including the 36 MCP tools)
+      - name: Run tests (including the 47 MCP tools)
         run: python -m unittest discover -s tests -t . -p "test_*.py" -v
 
       - name: Smoke-test the MCP server (lists all tools)
         run: |
-          python -c "import asyncio, evalsurfer.mcp_server as s; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == 36, n"
+          python -c "import asyncio, evalsurfer.mcp_server as s; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == 47, n"

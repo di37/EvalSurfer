@@ -28,9 +28,12 @@ from evalsurfer.adapters import (
     PromptfooAdapter,
     RagasAdapter,
 )
+from evalsurfer.calibration.agreement import AgreementStats
 from evalsurfer.calibration.calibrate import CalibrationCase, Calibrator
+from evalsurfer.calibration.reference import ReferenceCalibrator
 from evalsurfer.cli import metrics as metrics_cli
 from evalsurfer.cli import plan as plan_cli
+from evalsurfer.cli import quality as quality_cli
 from evalsurfer.core.evaluate import Evaluator
 from evalsurfer.core.planner import EvaluationPlanner, Signals as CoreSignals
 from evalsurfer.core.report import Gate, ReportValidator
@@ -46,6 +49,7 @@ from evalsurfer.diagnostics import (
     ReviewGate,
     RootCauseAnalyzer,
 )
+from evalsurfer.dataset.dataset import Dataset
 from evalsurfer.diagnostics.bundle import DiagnosticsBundle
 from evalsurfer.diagnostics.golden_set import GoldenSet
 from evalsurfer.operational.metrics import OperationalMetrics, Pricing as CorePricing
@@ -314,6 +318,36 @@ def token_efficiency(useful_output_tokens: int, input_tokens: int, output_tokens
 
 
 # --------------------------------------------------------------------------- #
+# Deterministic quality metrics (reference-based; zero LLM calls)
+# --------------------------------------------------------------------------- #
+@mcp.tool()
+def retrieval_metrics(payload: m.RetrievalMetricsInput) -> dict:
+    """Recall@k / Precision@k / MRR over ranked retrieved ids vs gold-relevant ids.
+    Also scores tool-selection recall (a router miss is a recall error)."""
+    return quality_cli.build_report(
+        {"retrieval": payload.model_dump(exclude_none=True)}
+    )["retrieval"]
+
+
+@mcp.tool()
+def match_metrics(payload: m.MatchMetricsInput) -> dict:
+    """Extraction (exact-match / token-F1) or classification (accuracy, P/R/F1) scores
+    of predictions against gold references."""
+    return quality_cli.build_report({"match": payload.model_dump(exclude_none=True)})[
+        "match"
+    ]
+
+
+@mcp.tool()
+def text_metrics(payload: m.TextMetricsInput) -> dict:
+    """Task-typed reference-text metrics: BLEU (translation), ROUGE (summarization),
+    METEOR (generation) of candidates against gold references."""
+    return quality_cli.build_report({"text": payload.model_dump(exclude_none=True)})[
+        "text"
+    ]
+
+
+# --------------------------------------------------------------------------- #
 # Safety & trajectory
 # --------------------------------------------------------------------------- #
 @mcp.tool()
@@ -347,6 +381,61 @@ def calibrate(case: m.CalibrationCaseInput, judge_reports: list[m.Report]) -> di
 def calibrate_one(case: m.CalibrationCaseInput, judge_report: m.Report) -> dict:
     """Check one judge report against an oracle (per-match breakdown)."""
     return Calibrator.check_report(_case(case), judge_report.model_dump())
+
+
+@mcp.tool()
+def cohen_kappa(rater_a: list[str | int], rater_b: list[str | int]) -> float:
+    """Cohen's kappa (2 raters) — chance-corrected agreement of two label sequences."""
+    return AgreementStats.cohen_kappa(rater_a, rater_b)
+
+
+@mcp.tool()
+def fleiss_kappa(ratings: list[dict[str, int]]) -> float:
+    """Fleiss' kappa (n raters) — chance-corrected agreement from per-item label counts."""
+    return AgreementStats.fleiss_kappa(ratings)
+
+
+@mcp.tool()
+def krippendorff_alpha(reliability_data: list[list[str | int | None]]) -> float:
+    """Krippendorff's alpha (nominal) — chance-corrected agreement; handles missing ratings."""
+    return AgreementStats.krippendorff_alpha(reliability_data)
+
+
+@mcp.tool()
+def reference_calibrate(judge: dict[str, float], gold: dict[str, float]) -> dict:
+    """Validate judge scores against human/gold: per-criterion error, MAE, rank correlation."""
+    return ReferenceCalibrator.compare(judge, gold)
+
+
+# --------------------------------------------------------------------------- #
+# Golden dataset (versioned cases + contamination controls)
+# --------------------------------------------------------------------------- #
+@mcp.tool()
+def dataset_from_traces(traces: list[dict], name: str = "dataset", version: str = "v1") -> dict:
+    """Harvest a versioned golden dataset from request traces (dedup by content hash)."""
+    return Dataset.from_traces(traces, name=name, version=version).to_dict()
+
+
+@mcp.tool()
+def dataset_diff(before: dict, after: dict) -> dict:
+    """Diff two dataset versions: added / removed / unchanged / changed case ids."""
+    return Dataset.from_mapping(after).diff(Dataset.from_mapping(before))
+
+
+@mcp.tool()
+def dataset_contamination(
+    dataset: dict, blocklist: list[str] | None = None, canaries: list[str] | None = None
+) -> dict:
+    """Contamination report: duplicate-content groups, blocklist hits, and canary hits."""
+    return Dataset.from_mapping(dataset).contamination_report(
+        blocklist=tuple(blocklist or ()), canaries=tuple(canaries or ())
+    )
+
+
+@mcp.tool()
+def dataset_coverage(dataset: dict) -> dict:
+    """Coverage summary: case counts per tag, held-out/eval split, and unique hashes."""
+    return Dataset.from_mapping(dataset).coverage_summary()
 
 
 # --------------------------------------------------------------------------- #

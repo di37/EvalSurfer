@@ -385,7 +385,94 @@ DIAGNOSTICS_KEYS: Final = (
 )
 
 # --------------------------------------------------------------------------- #
+# Deterministic quality metrics (reference-based / programmatic; zero LLM calls)
+# --------------------------------------------------------------------------- #
+# Reported metric values reuse SHARE_PRECISION (3 decimals) for rounding.
+
+# Reference-text metric ids (task-typed). These are wired into the CLI/MCP
+# dispatch; retrieval and match outputs use their descriptive dict keys directly.
+METRIC_BLEU: Final = "bleu"
+METRIC_ROUGE_N: Final = "rouge_n"
+METRIC_ROUGE_L: Final = "rouge_l"
+METRIC_METEOR: Final = "meteor"
+
+# SQuAD-style answer normalization for exact-match / token-F1 (articles removed).
+NORMALIZE_ARTICLES: Final = frozenset({"a", "an", "the"})
+
+# Classification averaging modes.
+AVERAGE_MICRO: Final = "micro"
+AVERAGE_MACRO: Final = "macro"
+CLASSIFICATION_AVERAGES: Final = (AVERAGE_MICRO, AVERAGE_MACRO)
+
+# Reference-text metric parameters.
+BLEU_MAX_N: Final = 4  # BLEU-4 by default: geometric mean of 1..4-gram precision
+ROUGE_DEFAULT_N: Final = 1  # ROUGE-1 (unigram) by default
+# METEOR tuned constants (Banerjee & Lavie 2005 / Lavie 2007 defaults). Fmean =
+# P*R / (alpha*P + (1-alpha)*R); penalty = gamma * (chunks/matches) ** beta.
+METEOR_ALPHA: Final = 0.9
+METEOR_BETA: Final = 3.0
+METEOR_GAMMA: Final = 0.5
+
+# Task type -> the reference metric(s) conventionally reported for it. Used to
+# pick sensible defaults; the caller can always request any metric explicitly.
+TASK_TRANSLATION: Final = "translation"
+TASK_SUMMARIZATION: Final = "summarization"
+TASK_GENERATION: Final = "generation"
+TEXT_TASKS: Final = (TASK_TRANSLATION, TASK_SUMMARIZATION, TASK_GENERATION)
+TEXT_TASK_METRICS: Final = {
+    TASK_TRANSLATION: (METRIC_BLEU,),
+    TASK_SUMMARIZATION: (METRIC_ROUGE_N, METRIC_ROUGE_L),
+    TASK_GENERATION: (METRIC_METEOR,),
+}
+
+# --------------------------------------------------------------------------- #
+# Golden dataset artifact (versioned cases + contamination controls)
+# --------------------------------------------------------------------------- #
+# Coverage tags describing how hard / representative a case is.
+TAG_NORMAL: Final = "normal"
+TAG_DIFFICULT: Final = "difficult"
+TAG_EDGE: Final = "edge"
+TAG_RANDOM: Final = "random"
+COVERAGE_TAGS: Final = (TAG_NORMAL, TAG_DIFFICULT, TAG_EDGE, TAG_RANDOM)
+
+# Dataset splits: the eval-visible set vs a held-out / fresh set.
+SPLIT_EVAL: Final = "eval"
+SPLIT_HELDOUT: Final = "heldout"
+DATASET_SPLITS: Final = (SPLIT_EVAL, SPLIT_HELDOUT)
+
+# Stable, content-derived case ids: "case-<first N hex chars of sha256>".
+DATASET_CASE_ID_PREFIX: Final = "case-"
+DATASET_ID_HASH_LENGTH: Final = 12
+
+# Contamination report sections (duplicate content, blocklist / canary hits).
+CONTAMINATION_DUPLICATES: Final = "duplicates"
+CONTAMINATION_BLOCKLIST_HITS: Final = "blocklist_hits"
+CONTAMINATION_CANARY_HITS: Final = "canary_hits"
+CONTAMINATION_SECTIONS: Final = (
+    CONTAMINATION_DUPLICATES,
+    CONTAMINATION_BLOCKLIST_HITS,
+    CONTAMINATION_CANARY_HITS,
+)
+
+# --------------------------------------------------------------------------- #
+# Chance-corrected agreement & judge-vs-human calibration
+# --------------------------------------------------------------------------- #
+# Chance-corrected inter-rater agreement (replaces / augments raw boolean
+# agreement, which is ~50% by chance on a binary call).
+METRIC_COHEN_KAPPA: Final = "cohen_kappa"  # 2 raters, categorical
+METRIC_FLEISS_KAPPA: Final = "fleiss_kappa"  # n raters, categorical
+METRIC_KRIPPENDORFF_ALPHA: Final = "krippendorff_alpha"  # general, nominal
+CHANCE_CORRECTED_METRICS: Final = (
+    METRIC_COHEN_KAPPA,
+    METRIC_FLEISS_KAPPA,
+    METRIC_KRIPPENDORFF_ALPHA,
+)
+# Judge-vs-human (gold) error and correlation.
+METRIC_JUDGE_HUMAN_MAE: Final = "judge_human_mae"  # mean absolute error vs gold
+METRIC_RANK_CORRELATION: Final = "rank_correlation"  # Spearman's rho vs gold
+
+# --------------------------------------------------------------------------- #
 # Framework metadata
 # --------------------------------------------------------------------------- #
 FRAMEWORK_NAME: Final = "EvalSurfer"
-FRAMEWORK_VERSION: Final = "0.1.0"
+FRAMEWORK_VERSION: Final = "0.1.3"

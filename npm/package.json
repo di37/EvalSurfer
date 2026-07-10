@@ -1,6 +1,6 @@
 {
   "name": "evalsurfer",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "npx bootstrapper for the EvalSurfer MCP server — an agent-native AI-evaluation protocol. The Python package does the work; this just launches it.",
   "bin": {
     "evalsurfer": "bin/cli.js"

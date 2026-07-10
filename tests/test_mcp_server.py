@@ -4,6 +4,8 @@ import asyncio
 import importlib.util
 import unittest
 
+import evalsurfer.constants as constants
+
 _HAS_MCP = importlib.util.find_spec("mcp") is not None
 
 # Every deterministic functionality is exposed as a tool.
@@ -15,8 +17,11 @@ _TOOLS = {
     "industry_profiles", "industry_profile", "review_gate", "personas",
     "failure_map", "diagnose", "golden_set", "build_evidence",
     "metrics", "operational_score", "cost_per_request", "token_efficiency",
+    "retrieval_metrics", "match_metrics", "text_metrics",
     "redteam_template", "redteam_check", "trajectory",
     "calibrate", "calibrate_one",
+    "cohen_kappa", "fleiss_kappa", "krippendorff_alpha", "reference_calibrate",
+    "dataset_from_traces", "dataset_diff", "dataset_contamination", "dataset_coverage",
     "adapter_ragas", "adapter_promptfoo", "adapter_otel", "adapter_langsmith",
 }
 
@@ -65,6 +70,41 @@ class McpServerTest(unittest.TestCase):
             s.cost_per_request(1000, 500, m.Pricing(input_per_million=2.0, output_per_million=8.0)),
             0.006,
         )
+
+        # Quality reference metrics (v0.1.3).
+        self.assertEqual(
+            s.retrieval_metrics(
+                m.RetrievalMetricsInput(cases=[m.RetrievalCaseInput(retrieved=["d1", "d2"], relevant=["d1"])])
+            )["mrr"],
+            1.0,
+        )
+        self.assertEqual(
+            s.match_metrics(
+                m.MatchMetricsInput(predictions=["cat", "dog"], references=["cat", "dog"], task="extraction")
+            )["exact_match_accuracy"],
+            1.0,
+        )
+        self.assertEqual(
+            s.text_metrics(
+                m.TextMetricsInput(items=[m.TextItemInput(candidate="the cat", references=["the cat"])], metrics=["bleu"])
+            )["corpus_bleu"],
+            1.0,
+        )
+
+        # Chance-corrected agreement + judge-vs-human (v0.1.3).
+        self.assertEqual(s.cohen_kappa(["a", "a", "b", "b"], ["a", "a", "b", "b"]), 1.0)
+        self.assertEqual(s.krippendorff_alpha([[1, 2], [2, 1]]), -0.5)
+        self.assertEqual(
+            s.reference_calibrate({"correctness": 5, "relevance": 4}, {"correctness": 5, "relevance": 3})[
+                constants.METRIC_JUDGE_HUMAN_MAE
+            ],
+            0.5,
+        )
+
+        # Golden dataset (v0.1.3).
+        built = s.dataset_from_traces([{"query": "q1"}, {"query": "q1"}, {"query": "q2"}], name="d", version="v1")
+        self.assertEqual(len(built["cases"]), 2)  # dedup by content hash
+        self.assertEqual(s.dataset_coverage(built)["total"], 2)
 
     def test_pydantic_validation_rejects_bad_input(self) -> None:
         from pydantic import ValidationError

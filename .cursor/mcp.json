@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "evalsurfer": {
+      "command": "/Users/ishamrashik/Desktop/work/2026/skills-market/EvalSurfer/.venv/bin/evalsurfer-mcp"
+    }
+  }
+}

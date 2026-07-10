@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "evalsurfer"
-version = "0.1.2"
+version = "0.1.3"
 description = "EvalSurfer — a skill-first, agent-native evaluation protocol for AI applications, with supporting operational-metrics utilities."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -46,6 +46,8 @@ mcp = ["mcp", "pydantic>=2"]
 evalsurfer = "evalsurfer.cli.main:main"
 evalsurfer-metrics = "evalsurfer.cli.metrics:main"
 evalsurfer-plan = "evalsurfer.cli.plan:main"
+evalsurfer-quality = "evalsurfer.cli.quality:main"
+evalsurfer-dataset = "evalsurfer.cli.dataset:main"
 evalsurfer-mcp = "evalsurfer.mcp_server:main"
 
 [tool.setuptools.packages.find]
@@ -56,6 +58,7 @@ include = ["evalsurfer*"]
   "framework.json",
   "framework.yaml",
   "report.schema.json",
+  "dataset.schema.json",
   "examples/report.json",
   "examples/traces.json",
   "skills/eval-surfer/SKILL.md",

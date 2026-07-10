@@ -131,9 +131,11 @@ measurement.** No tool calls a model.
 - **Assemble:** `evaluate({sample, scores, evidence, top_issues, traces?, slo?})` → the report.
 - **Explain:** `explain`, `root_cause`, `failure_map`, `regression_diff(before, after)`, `maturity(signals)` — or `diagnose(report)` for all at once.
 - **Operational:** `metrics(traces)` and `operational_score(traces, slo)` — never judge latency/cost; compute it.
+- **Reference metrics:** when a gold answer/label/doc-set exists, score it programmatically — `retrieval_metrics` (Recall@k / Precision@k / MRR, tool-selection recall), `match_metrics` (exact-match / token-F1 / classification P·R·F1), `text_metrics` (BLEU / ROUGE / METEOR). Deterministic, no judge needed.
 - **Decide:** `gate(report, min)` or `guardrail_gate(report, policy, changed_files)`; `review_gate(report)` for the human-review call.
 - **Safety / agents:** `redteam_template` / `redteam_check`; `trajectory(actual, expected)`.
-- **Trust the judge:** `calibrate(case, judge_reports)` — the eval of the eval.
+- **Trust the judge:** `calibrate(case, judge_reports)` — the eval of the eval; plus chance-corrected agreement (`cohen_kappa` / `fleiss_kappa` / `krippendorff_alpha`) and judge-vs-human error (`reference_calibrate`: MAE + rank correlation).
+- **Golden dataset:** `dataset_from_traces` (harvest a versioned set from traces), `dataset_contamination` (duplicate / blocklist / canary guards), `dataset_diff` (v1↔v2), `dataset_coverage`.
 - **Import:** `adapter_ragas` / `adapter_promptfoo` / `adapter_otel` / `adapter_langsmith`.
 
 Set it up in your harness's MCP config with no install —

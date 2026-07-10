@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/di37/EvalSurfer/main/dataset.schema.json",
+  "title": "EvalSurfer Golden Dataset",
+  "type": "object",
+  "required": ["name", "version", "cases"],
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "cases": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/case" }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "required": ["input"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "input": { "type": "string", "minLength": 1 },
+        "gold_answer": { "type": ["string", "null"] },
+        "gold_label": { "type": ["string", "null"] },
+        "gold_score": {
+          "type": ["number", "null"],
+          "minimum": 1,
+          "maximum": 5
+        },
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["normal", "difficult", "edge", "random"]
+          }
+        },
+        "held_out": { "type": "boolean" },
+        "content_hash": { "type": "string" }
+      }
+    }
+  }
+}

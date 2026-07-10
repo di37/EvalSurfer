@@ -27,7 +27,7 @@ core itself never imports.
 | [`calibration/`](calibration/) | The "eval of the eval" — scoring the judge against an oracle. |
 | [`adapters/`](adapters/) | Import RAGAS / promptfoo / OpenTelemetry / LangSmith artifacts into native shapes. |
 | [`cli/`](cli/) | Command-line entry points (`evalsurfer` and the `plan` / `metrics` tools). |
-| [`mcp_server.py`](mcp_server.py) | The **MCP server** — every function above exposed as one of **36 deterministic tools** the harness LLM calls (`evalsurfer-mcp`; optional `[mcp]` extra). |
+| [`mcp_server.py`](mcp_server.py) | The **MCP server** — every function above exposed as one of **47 deterministic tools** the harness LLM calls (`evalsurfer-mcp`; optional `[mcp]` extra). |
 | [`mcp_models.py`](mcp_models.py) | Pydantic input schemas that give each MCP tool a validated signature (optional `[mcp]` extra). |
 
 ## Conventions

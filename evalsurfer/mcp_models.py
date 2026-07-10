@@ -170,3 +170,60 @@ class Report(BaseModel):
     decision: str | None = None
     top_issues: list[dict[str, Any]] | None = None
     coverage: dict[str, Any] | None = None
+
+
+# --------------------------------------------------------------------------- #
+# Deterministic quality metrics (reference-based / programmatic)
+# --------------------------------------------------------------------------- #
+class RetrievalCaseInput(BaseModel):
+    """One query's ranked retrieval outcome against its gold-relevant ids."""
+
+    retrieved: list[str | int] = Field(
+        default_factory=list, description="ranked retrieved ids, best first"
+    )
+    relevant: list[str | int] = Field(
+        default_factory=list, description="gold-relevant ids"
+    )
+    k: int | None = Field(default=None, description="rank cutoff; null uses the whole list")
+
+
+class RetrievalMetricsInput(BaseModel):
+    """A batch of retrieval cases with an optional global rank cutoff."""
+
+    cases: list[RetrievalCaseInput]
+    k: int | None = None
+
+
+class MatchMetricsInput(BaseModel):
+    """Predicted vs gold values for extraction or classification scoring."""
+
+    predictions: list[Any]
+    references: list[Any]
+    task: str = Field(default="extraction", description="'extraction' or 'classification'")
+    average: str = Field(
+        default=constants.AVERAGE_MACRO, description="'macro' or 'micro' (classification)"
+    )
+    positive_label: str | int | None = Field(
+        default=None, description="report this label's binary P/R/F1 (classification)"
+    )
+
+
+class TextItemInput(BaseModel):
+    """One candidate string and its reference(s) for text metrics."""
+
+    candidate: str
+    references: list[str] | None = Field(default=None, description="reference(s); BLEU allows several")
+    reference: str | None = Field(default=None, description="a single reference (alias)")
+
+
+class TextMetricsInput(BaseModel):
+    """Candidate/reference items with the reference-text metrics to compute."""
+
+    items: list[TextItemInput]
+    task: str | None = Field(
+        default=None, description="translation | summarization | generation (picks defaults)"
+    )
+    metrics: list[str] | None = Field(
+        default=None, description="explicit metric ids: bleu / rouge_n / rouge_l / meteor"
+    )
+    n: int = Field(default=constants.ROUGE_DEFAULT_N, description="ROUGE-N order")

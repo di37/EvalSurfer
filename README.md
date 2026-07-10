@@ -21,7 +21,7 @@ Point your coding agent at an answer, a RAG run, or an agent trace. EvalSurfer r
 
 ---
 
-> **EvalSurfer is an agent-native evaluation protocol. The coding agent you're already running is the judge; EvalSurfer's deterministic tools are the measurement — so the framework itself makes _zero_ LLM API calls. It ships as a portable skill plus an MCP server of 36 deterministic tools that plan scope, score, validate, diagnose, calibrate, and gate releases.**
+> **EvalSurfer is an agent-native evaluation protocol. The coding agent you're already running is the judge; EvalSurfer's deterministic tools are the measurement — so the framework itself makes _zero_ LLM API calls. It ships as a portable skill plus an MCP server of 47 deterministic tools that plan scope, score, validate, diagnose, calibrate, and gate releases.**
 
 EvalSurfer is a skill-first evaluation framework for AI applications. You point a coding agent — Claude Code, Cursor, OpenClaw, Hermes, or any other [agentskills.io](https://agentskills.io)-compatible harness — at an answer, a RAG run, an agent trace, or production logs, and it works through a fixed rubric the way a careful reviewer would: judging correctness, relevance, groundedness, tool use, multi-turn memory, safety, and operational readiness, then scoring each criterion with evidence and returning a `pass` / `pass with fixes` / `fail` decision.
 
@@ -30,7 +30,7 @@ The skill routes that agent to EvalSurfer's deterministic **MCP tools** for ever
 ```mermaid
 flowchart LR
     A["AI output<br/>answer · RAG · agent trace · logs"] --> B["🧠 Your coding agent — the judge<br/>scores each criterion 1–5 with evidence"]
-    B -->|"calls as MCP tools"| C["⚙️ EvalSurfer<br/>36 deterministic tools<br/>plan · score · evaluate · diagnose · gate"]
+    B -->|"calls as MCP tools"| C["⚙️ EvalSurfer<br/>47 deterministic tools<br/>plan · score · evaluate · diagnose · gate"]
     C -->|"measurements"| B
     B --> D["Report<br/>pass · pass with fixes · fail"]
 ```
@@ -49,7 +49,9 @@ flowchart LR
 | **Diagnostics, not just a score** | Deterministic modules explain and compare results — SHAP-style score attribution, root-cause breakdown, regression diffs between versions, a maturity level, industry weighting, and a golden-set that validates the whole layer. |
 | **End-to-end, one command** | `evalsurfer evaluate \| validate \| gate \| diagnose` turns agent-produced scores into a validated, diagnosed report and a CI-ready release gate — still no LLM API. |
 | **Operational auto-scoring** | Give it request traces plus an SLO and it deterministically scores the operational pillar (latency, TTFT, cost, failure rate) 1–5 — hybrid by design: human/agent judgment for quality and safety, deterministic scoring for ops. |
-| **Eval of the eval** | A calibration golden-set scores the *judge itself* — agreement, false-pass / false-fail rate, and score variance across repeated runs. |
+| **Reference metrics** | When you have a gold answer, label, or relevant-doc set, score it programmatically — Recall@k / Precision@k / MRR (retrieval), exact-match / token-F1 / classification P·R·F1 (extraction), and BLEU / ROUGE / METEOR (generation). Deterministic, no judge. |
+| **Golden dataset** | A versioned dataset artifact — cases with an optional gold answer / label / score and coverage tags, harvested from your own traces with contamination controls (content-hash de-dup, blocklist / canary guards, held-out split) and v1↔v2 diffing. |
+| **Eval of the eval** | A calibration golden-set scores the *judge itself* — agreement, false-pass / false-fail rate, and score variance across repeated runs; plus chance-corrected agreement (Cohen's / Fleiss's κ, Krippendorff's α) and judge-vs-human error (MAE, rank correlation). |
 | **Executable safety + trajectory** | Runnable red-team probe templates (with deterministic PII detection; the rest flagged for the skill), and agent-trajectory diffs (missing / unnecessary / out-of-order tools, bad params, error recovery). |
 | **Ecosystem adapters** | Import RAGAS metrics, promptfoo results, and OpenTelemetry / LangSmith traces; gate releases straight from a GitHub Action. |
 | **Opinionated scoring** | Each criterion is scored 1–5 → pillar score ×2 on a 0–10 scale → a `pass` / `pass_with_fixes` / `fail` decision, with an explicit safety floor and severity labels. |
@@ -341,7 +343,7 @@ EvalSurfer's **native interface** is an MCP server: the harness LLM judges, and 
 
 (`npx -y evalsurfer` works too; or run `evalsurfer-mcp` directly after `pipx install "evalsurfer[mcp]"`. See [Install](#install).)
 
-All **36** deterministic functions are exposed as tools, grouped: rubric & scope (`rubric`, `plan`, `coverage`); scoring (`score_pillar`, `score_overall`, `decide`, `score_report`); assemble & gate (`evaluate`, `validate_report`, `gate`, `guardrail_gate`); diagnostics (`explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profile(s)`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`); operational (`metrics`, `operational_score`, `cost_per_request`, `token_efficiency`); safety & agents (`redteam_template`, `redteam_check`, `trajectory`); calibration (`calibrate`, `calibrate_one`); and adapters (`adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`). The one thing that is **not** a tool is the judgment itself — you score each quality/safety criterion 1–5 with evidence. Full guide: [docs/mcp.md](docs/mcp.md).
+All **47** deterministic functions are exposed as tools, grouped: rubric & scope (`rubric`, `plan`, `coverage`); scoring (`score_pillar`, `score_overall`, `decide`, `score_report`); assemble & gate (`evaluate`, `validate_report`, `gate`, `guardrail_gate`); diagnostics (`explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profile(s)`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`); operational (`metrics`, `operational_score`, `cost_per_request`, `token_efficiency`); reference metrics (`retrieval_metrics`, `match_metrics`, `text_metrics`); safety & agents (`redteam_template`, `redteam_check`, `trajectory`); calibration (`calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate`); golden dataset (`dataset_from_traces`, `dataset_diff`, `dataset_contamination`, `dataset_coverage`); and adapters (`adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`). The one thing that is **not** a tool is the judgment itself — you score each quality/safety criterion 1–5 with evidence. Full guide: [docs/mcp.md](docs/mcp.md).
 
 `SKILL.md` routes the agent through them (scope → judge → assemble → diagnose → decide). If the server isn't connected, the CLI below runs the same functions.
 
@@ -357,7 +359,10 @@ Not running the MCP server? The same deterministic functions are also a single `
 | `evalsurfer diagnose report.json [--before old.json]` | Attach the diagnostics block (explainability, root-cause, failure-map, review-gate, and regression vs a prior report) |
 | `evalsurfer plan sample.json` | The adaptive plan + coverage |
 | `evalsurfer metrics traces.json` | Operational metrics summary |
+| `evalsurfer quality metrics.json` | Deterministic reference metrics — retrieval (Recall@k / MRR), match (exact-match / F1), text (BLEU / ROUGE / METEOR) |
 | `evalsurfer calibrate examples/golden/calibration.json` | Eval-of-the-eval: agreement / false-pass / false-fail / variance across judge runs |
+| `evalsurfer agreement stats.json` | Chance-corrected agreement (Cohen's / Fleiss's κ, Krippendorff's α) and judge-vs-human error (MAE, rank correlation) |
+| `evalsurfer dataset ops.json` | Golden dataset — build from traces, split, diff versions, contamination report |
 | `evalsurfer redteam-template --rag --agent --pii` | Emit adversarial safety probes matched to a target's shape |
 | `evalsurfer redteam-check outputs.json` | Triage probe outputs (deterministic PII detection; the rest flagged for the skill) |
 | `evalsurfer trajectory examples/agent_trace.json` | Diff an agent's tool trajectory against expectations |
@@ -416,6 +421,7 @@ Evaluation quality depends on the judge as much as the rubric.
 - Escalate to human review when judge decisions disagree by more than one decision band.
 - Require human review for unresolved `critical` issues.
 - Keep judge prompts, model versions, retrieved context, and traces with the report metadata.
+- Quantify judge agreement with **chance-corrected** statistics — Cohen's / Fleiss's κ or Krippendorff's α (raw agreement is ~50% by chance on a binary call) — and validate the judge against human gold with mean absolute error and rank correlation (`evalsurfer agreement`, or the `cohen_kappa` / `reference_calibrate` MCP tools).
 
 ## Safety red-team cases
 
@@ -535,14 +541,18 @@ The skill drives every evaluation; the data files make the rubric portable; the 
 | `install-skill.sh` | Copies the skill into any harness's project or global directory |
 | `framework.json`, `framework.yaml` | The rubric as data: pillars, criteria, scoring, decisions, red-team cases |
 | `report.schema.json` | JSON Schema a machine-readable report must satisfy |
+| `dataset.schema.json` | JSON Schema for the versioned **golden dataset** artifact |
 | `evalsurfer/constants.py` | Every fixed value in one place (DRY) |
 | `evalsurfer/core/` | `ScoringModel` (scoring + decision math) and `EvaluationPlanner` (adaptive planning) |
 | `evalsurfer/policy/` | The machine-readable release **guardrail policy** the gate enforces |
 | `evalsurfer/diagnostics/` | The diagnostic classes — see [Diagnostics](#diagnostics) |
 | `evalsurfer/operational/` | `OperationalMetrics` — latency / TTFT / cost / failure-rate from traces |
-| `evalsurfer/mcp_server.py` | The **MCP server** — all 36 deterministic functions as agent-callable tools (`evalsurfer-mcp`) |
+| `evalsurfer/quality/` | Reference-based **quality metrics** — retrieval (Recall@k / MRR), match (exact-match / F1), text (BLEU / ROUGE / METEOR) |
+| `evalsurfer/dataset/` | The versioned **golden dataset** artifact — cases, coverage tags, contamination controls, trace harvesting, v1↔v2 diff |
+| `evalsurfer/calibration/` | Eval-of-the-eval — `Calibrator`, chance-corrected agreement (`AgreementStats`), and judge-vs-human error (`ReferenceCalibrator`) |
+| `evalsurfer/mcp_server.py` | The **MCP server** — all 47 deterministic functions as agent-callable tools (`evalsurfer-mcp`) |
 | `evalsurfer/mcp_models.py` | Pydantic input schemas for the MCP tools |
-| `evalsurfer/cli/` | Console entry points: `evalsurfer`, `evalsurfer-plan`, `evalsurfer-metrics`, `evalsurfer-mcp` |
+| `evalsurfer/cli/` | Console entry points: `evalsurfer`, `evalsurfer-plan`, `evalsurfer-metrics`, `evalsurfer-quality`, `evalsurfer-dataset`, `evalsurfer-mcp` |
 | `tests/` | The test suite (run with `unittest discover -s tests -t .`) |
 | `examples/` | `traces.json` (sample input) and `report.json` (sample output) |
 
@@ -558,6 +568,8 @@ echo '{"sample":{"answer":"..."}}' | python -m evalsurfer.cli.plan -      # adap
 ```
 
 CI runs the suite on Python 3.11–3.12 via [GitHub Actions](.github/workflows/ci.yml).
+
+See [ROADMAP.md](ROADMAP.md) for where EvalSurfer is heading and [CHANGELOG.md](CHANGELOG.md) for the release history.
 
 ## Guardrails
 

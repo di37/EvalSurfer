@@ -17,8 +17,11 @@ from typing import Any, Callable
 
 import evalsurfer.constants as constants
 from evalsurfer.calibration.calibrate import CalibrationCase, Calibrator
+from evalsurfer.cli import agreement as agreement_cli
+from evalsurfer.cli import dataset as dataset_cli
 from evalsurfer.cli import metrics as metrics_cli
 from evalsurfer.cli import plan as plan_cli
+from evalsurfer.cli import quality as quality_cli
 from evalsurfer.core.evaluate import Evaluator
 from evalsurfer.core.planner import Signals
 from evalsurfer.core.report import Gate, ReportValidator
@@ -128,6 +131,24 @@ def _cmd_metrics(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_quality(args: argparse.Namespace) -> int:
+    """Compute deterministic quality metrics (retrieval / match / text)."""
+    emit(quality_cli.build_report(load_json(args.input)), args.out, args.pretty)
+    return 0
+
+
+def _cmd_dataset(args: argparse.Namespace) -> int:
+    """Build / split / diff / contamination-check a golden dataset."""
+    emit(dataset_cli.build_report(load_json(args.input)), args.out, args.pretty)
+    return 0
+
+
+def _cmd_agreement(args: argparse.Namespace) -> int:
+    """Chance-corrected agreement and judge-vs-human calibration stats."""
+    emit(agreement_cli.build_report(load_json(args.input)), args.out, args.pretty)
+    return 0
+
+
 def _cmd_calibrate(args: argparse.Namespace) -> int:
     """Score a judge against a calibration case ("eval of the eval")."""
     case_data = load_json(args.input)
@@ -227,6 +248,9 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     with_input_out(add("plan", _cmd_plan, help="Infer the adaptive plan for a sample."))
     with_input_out(add("metrics", _cmd_metrics, help="Operational metrics from a traces payload."))
+    with_input_out(add("quality", _cmd_quality, help="Deterministic quality metrics (retrieval/match/text)."))
+    with_input_out(add("dataset", _cmd_dataset, help="Golden dataset: build/split/diff/contamination-check."))
+    with_input_out(add("agreement", _cmd_agreement, help="Chance-corrected agreement + judge-vs-human stats."))
     with_input_out(add("calibrate", _cmd_calibrate, help="Score a judge against a calibration case."))
     with_input_out(add("trajectory", _cmd_trajectory, help="Diff an agent trajectory vs expectations."))
     with_input_out(add("redteam-check", _cmd_redteam_check, help="Triage collected red-team outputs."))
