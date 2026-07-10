@@ -17,7 +17,7 @@ all additive and backward-compatible, all zero-LLM-core. The MCP server grows fr
   content-hashed `DatasetCase`s with coverage tags (`normal` / `difficult` / `edge` /
   `random`), a deterministic (salted-hash, no RNG) held-out split, trace harvesting
   (`from_traces`), version-to-version `diff`, and contamination controls (content-hash
-  duplicates, blocklist, and canary hits). Ships `dataset.schema.json`.
+  duplicates, blocklist, and canary hits). Ships `spec/dataset.schema.json`.
   - Surfaces: `evalsurfer dataset` CLI verb, the `evalsurfer-dataset` script, and MCP
     tools `dataset_from_traces` / `dataset_diff` / `dataset_contamination` /
     `dataset_coverage`.

@@ -55,7 +55,7 @@ flowchart LR
 | **Executable safety + trajectory** | Runnable red-team probe templates (with deterministic PII detection; the rest flagged for the skill), and agent-trajectory diffs (missing / unnecessary / out-of-order tools, bad params, error recovery). |
 | **Ecosystem adapters** | Import RAGAS metrics, promptfoo results, and OpenTelemetry / LangSmith traces; gate releases straight from a GitHub Action. |
 | **Opinionated scoring** | Each criterion is scored 1–5 → pillar score ×2 on a 0–10 scale → a `pass` / `pass_with_fixes` / `fail` decision, with an explicit safety floor and severity labels. |
-| **Machine-readable** | The full rubric ships as `framework.json` / `framework.yaml`, and reports validate against `report.schema.json`. |
+| **Machine-readable** | The full rubric ships as `spec/framework.json` / `spec/framework.yaml`, and reports validate against `spec/report.schema.json`. |
 | **Operational metrics utilities** | Provider-agnostic Python helpers turn API or trace logs into latency, TTFT, inter-token latency, throughput (TPS), P99 tail, cost, cost-per-million-tokens, token-efficiency, failure-rate, and latency-under-load numbers. |
 | **Portable across harnesses** | Ships as a standard [agentskills.io](https://agentskills.io) `SKILL.md` — one skill that runs in Claude Code, Cursor, OpenClaw, Hermes, OpenCode, Codex, and other compatible agents, with a one-command installer for each. |
 
@@ -119,7 +119,7 @@ cd ~/my-project
 
 Then just ask your agent to use **EvalSurfer**.
 
-> **Not published yet?** Until the first PyPI/npm release, the `uvx` / `pipx` / `npx` commands resolve only from a local checkout (`pip install -e ".[mcp]"`); see [RELEASING.md](RELEASING.md).
+> **Not published yet?** Until the first PyPI/npm release, the `uvx` / `pipx` / `npx` commands resolve only from a local checkout (`pip install -e ".[mcp]"`); see [RELEASING.md](docs/RELEASING.md).
 
 ## Using it
 
@@ -132,7 +132,7 @@ Just ask, in plain language, inside your agent session:
 > Retrieved context: "Annual plans are refundable within 14 days…"
 > Answer: "Annual plans are refundable within 30 days."
 
-The agent then works the skill's flow: it **scopes** the run with the planner (which pillars/criteria apply given what you provided), **scores** each applicable criterion 1–5 with evidence, marks anything unassessable as `Not assessed`, and returns a report — pillar and overall scores, a `pass` / `pass with fixes` / `fail` decision, top issues, and a coverage score (or JSON matching `report.schema.json`).
+The agent then works the skill's flow: it **scopes** the run with the planner (which pillars/criteria apply given what you provided), **scores** each applicable criterion 1–5 with evidence, marks anything unassessable as `Not assessed`, and returns a report — pillar and overall scores, a `pass` / `pass with fixes` / `fail` decision, top issues, and a coverage score (or JSON matching `spec/report.schema.json`).
 
 Point it at whatever you have — a single answer, a RAG run with chunks, an agent trace with tool calls, a multi-turn transcript, or a batch of production logs; it only evaluates what the evidence supports. A few ways to phrase it:
 
@@ -169,7 +169,7 @@ skipped:  agent/tool-use (no tool calls), multi-turn (no history), operational (
 coverage: 12 / 29 criteria applicable
 ```
 
-Safety is assessed by default and can only be opted out of deliberately (recorded with a reason). After judging, the planner's `coverage()` compares the plan against the produced report to show what was actually scored versus what applied — surfaced as the optional `coverage` block in [`report.schema.json`](report.schema.json).
+Safety is assessed by default and can only be opted out of deliberately (recorded with a reason). After judging, the planner's `coverage()` compares the plan against the produced report to show what was actually scored versus what applied — surfaced as the optional `coverage` block in [`spec/report.schema.json`](spec/report.schema.json).
 
 ## The three pillars
 
@@ -378,7 +378,7 @@ Gate a release from CI with the bundled GitHub Action:
 
 ## The report schema
 
-Automated reports follow [`report.schema.json`](report.schema.json); a complete example is in [`examples/report.json`](examples/report.json). Minimum shape:
+Automated reports follow [`spec/report.schema.json`](spec/report.schema.json); a complete example is in [`examples/report.json`](examples/report.json). Minimum shape:
 
 ```json
 {
@@ -539,9 +539,9 @@ The skill drives every evaluation; the data files make the rubric portable; the 
 | `skills/eval-surfer/SKILL.md` | The portable skill that drives every evaluation — the judge (agentskills.io standard; read directly by OpenClaw, Hermes, OpenCode, Codex, …) |
 | `.claude/skills/…`, `.cursor/skills/…` | The same skill, staged for Claude Code and Cursor — kept byte-identical by `test_skill_parity.py` |
 | `install-skill.sh` | Copies the skill into any harness's project or global directory |
-| `framework.json`, `framework.yaml` | The rubric as data: pillars, criteria, scoring, decisions, red-team cases |
-| `report.schema.json` | JSON Schema a machine-readable report must satisfy |
-| `dataset.schema.json` | JSON Schema for the versioned **golden dataset** artifact |
+| `spec/framework.json`, `spec/framework.yaml` | The rubric as data: pillars, criteria, scoring, decisions, red-team cases |
+| `spec/report.schema.json` | JSON Schema a machine-readable report must satisfy |
+| `spec/dataset.schema.json` | JSON Schema for the versioned **golden dataset** artifact |
 | `evalsurfer/constants.py` | Every fixed value in one place (DRY) |
 | `evalsurfer/core/` | `ScoringModel` (scoring + decision math) and `EvaluationPlanner` (adaptive planning) |
 | `evalsurfer/policy/` | The machine-readable release **guardrail policy** the gate enforces |
@@ -569,7 +569,7 @@ echo '{"sample":{"answer":"..."}}' | python -m evalsurfer.cli.plan -      # adap
 
 CI runs the suite on Python 3.11–3.12 via [GitHub Actions](.github/workflows/ci.yml).
 
-See [ROADMAP.md](ROADMAP.md) for where EvalSurfer is heading and [CHANGELOG.md](CHANGELOG.md) for the release history.
+See [ROADMAP.md](docs/ROADMAP.md) for where EvalSurfer is heading and [CHANGELOG.md](docs/CHANGELOG.md) for the release history.
 
 ## Guardrails
 
@@ -589,7 +589,7 @@ These gates are **enforceable in CI**: a machine-readable
 [`guardrails.json`](examples/guardrails.json) policy (safety / coverage floors,
 block-on-critical, a fix-attempt cap, and a sensitive-path denylist) runs via
 `evalsurfer gate --policy …`. For the threat model, responsible disclosure, and
-safe gating, see [SECURITY.md](SECURITY.md).
+safe gating, see [SECURITY.md](docs/SECURITY.md).
 
 ## Citation
 

@@ -27,7 +27,7 @@ echo '{"sample": {"query": "...", "answer": "...", "retrieved_docs": ["..."]}}' 
    - **Safety**: toxicity, harmful content, bias/fairness, PII leakage, and jailbreak resistance — assessed by default; opt out only for low-risk targets, and record why.
    - **Operational**: the five numbers of inference — TTFT, inter-token latency, throughput (TPS), P99 tail latency, and $/1M tokens — plus end-to-end and under-load latency, cost per request, token efficiency, and failure rate.
 1. Assess only the applicable criteria. Record each skipped criterion with the planner's reason under `Not assessed`; never guess.
-1. Use `framework.yaml` or `framework.json` for the machine-readable rubric.
+1. Use `spec/framework.yaml` or `spec/framework.json` for the machine-readable rubric.
 1. If operational traces are provided, calculate metrics with the CLI:
 
 ```bash
@@ -66,7 +66,7 @@ Severity labels:
 | `major` | Important gap requiring a mitigation plan |
 | `minor` | Low-risk issue, polish gap, or monitoring follow-up |
 
-Use `report.schema.json` for automated JSON reports and `examples/report.json` as the reference shape.
+Use `spec/report.schema.json` for automated JSON reports and `examples/report.json` as the reference shape.
 
 ## Judge Reliability
 

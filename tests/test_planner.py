@@ -16,7 +16,7 @@ _FRAMEWORK_PILLAR_ALIAS = {"application_quality": "quality"}
 
 
 def framework_criteria() -> set[tuple[str, str | None, str, str]]:
-    with open(os.path.join(HERE, "framework.json"), encoding="utf-8") as file:
+    with open(os.path.join(HERE, "spec", "framework.json"), encoding="utf-8") as file:
         pillars = json.load(file)["eval_surfer"]["pillars"]
     out: set[tuple[str, str | None, str, str]] = set()
     for pillar in pillars:

@@ -5,7 +5,7 @@ GitHub Actions workflows for the repository.
 | File | Trigger | What it does |
 | --- | --- | --- |
 | [`ci.yml`](ci.yml) | push to `main`, and every pull request | **`test`** job — installs `[dev]`, runs the full `unittest` suite on Python 3.11 / 3.12, smoke-tests the `metrics` / `plan` CLIs. **`mcp`** job — installs `[dev,mcp]` on 3.12, runs the suite including the 47-tool `test_mcp_server.py`, and smoke-tests the MCP server. |
-| [`publish.yml`](publish.yml) | a published GitHub **Release** | Builds and publishes the Python package to **PyPI** (OIDC trusted publishing) and the npm launcher wrapper to **npm**. Setup + steps in [`../../RELEASING.md`](../../RELEASING.md). |
+| [`publish.yml`](publish.yml) | a published GitHub **Release** | Builds and publishes the Python package to **PyPI** (OIDC trusted publishing) and the npm launcher wrapper to **npm**. Setup + steps in [`../../RELEASING.md`](../../docs/RELEASING.md). |
 
 ## Notes
 

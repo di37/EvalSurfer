@@ -5,7 +5,7 @@ EvalSurfer ships two packages so users can install it the way they already work:
 - **PyPI** — `evalsurfer` (the real package: core + the `[mcp]` server extra).
 - **npm** — `evalsurfer` (a thin `npx` launcher that runs the Python server).
 
-The [`Publish` workflow](.github/workflows/publish.yml) pushes both when you
+The [`Publish` workflow](../.github/workflows/publish.yml) pushes both when you
 publish a GitHub Release. Set up the two credentials once, then release.
 
 ## One-time setup
@@ -26,9 +26,9 @@ publish a GitHub Release. Set up the two credentials once, then release.
 
 ## Cut a release
 
-1. Bump the version in **all three** — [`pyproject.toml`](pyproject.toml) and
-   [`npm/package.json`](npm/package.json) (keep these two identical), plus
-   `FRAMEWORK_VERSION` in [`evalsurfer/constants.py`](evalsurfer/constants.py),
+1. Bump the version in **all three** — [`pyproject.toml`](../pyproject.toml) and
+   [`npm/package.json`](../npm/package.json) (keep these two identical), plus
+   `FRAMEWORK_VERSION` in [`evalsurfer/constants.py`](../evalsurfer/constants.py),
    which backs `evalsurfer.__version__`.
 2. Commit, tag (`git tag v0.1.0`), and push the tag.
 3. Create a GitHub **Release** for the tag. Publishing it triggers the workflow,

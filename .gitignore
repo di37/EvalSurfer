@@ -19,6 +19,5 @@ htmlcov/
 
 .DS_Store
 
-# The author's work-in-progress paper lives in the top-level bin/ only.
-# Anchored to root so it does NOT also ignore npm/bin/ (the launcher script).
-/bin/
+# The author's work-in-progress paper (untracked WIP), relocated from bin/ to docs/paper/.
+/docs/paper/

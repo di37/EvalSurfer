@@ -56,12 +56,12 @@ evalsurfer gate report.json --policy guardrails.json \
 
 A release that trips any rule — including one that touches a sensitive path —
 exits non-zero and requires a human. See
-[examples/guardrails.json](examples/guardrails.json). An agent enforces the same
-policy through the `guardrail_gate` MCP tool ([docs/mcp.md](docs/mcp.md)).
+[examples/guardrails.json](../examples/guardrails.json). An agent enforces the same
+policy through the `guardrail_gate` MCP tool ([docs/mcp.md](mcp.md)).
 
 The reasoning behind these controls is documented in
-[docs/failure-modes.md](docs/failure-modes.md) and
-[docs/anti-patterns.md](docs/anti-patterns.md).
+[docs/failure-modes.md](failure-modes.md) and
+[docs/anti-patterns.md](anti-patterns.md).
 
 ## Supported versions
 

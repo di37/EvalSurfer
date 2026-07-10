@@ -52,7 +52,7 @@ Each maps to the EvalSurfer feature that prevents it.
 
 **10. Auto-shipping on a green eval, no human gate**
 - *Problem*: A passing report is treated as merge authorization for sensitive changes.
-- *Instead*: Wire `ReviewGate` (MCP `review_gate`) + the release `gate` into CI, but require **human approval** for unresolved `critical` issues and for auth / payments / PII / infra paths. This is enforceable: a `guardrails.json` policy with `evalsurfer gate --policy … --changed-files …` (MCP `guardrail_gate` / `gate`) blocks the merge (non-zero exit) when a sensitive path is touched or any rule trips. See [SECURITY.md](../SECURITY.md#using-the-ci-gate-safely).
+- *Instead*: Wire `ReviewGate` (MCP `review_gate`) + the release `gate` into CI, but require **human approval** for unresolved `critical` issues and for auth / payments / PII / infra paths. This is enforceable: a `guardrails.json` policy with `evalsurfer gate --policy … --changed-files …` (MCP `guardrail_gate` / `gate`) blocks the merge (non-zero exit) when a sensitive path is touched or any rule trips. See [SECURITY.md](SECURITY.md#using-the-ci-gate-safely).
 
 ---
 

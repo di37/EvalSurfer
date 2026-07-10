@@ -143,7 +143,7 @@ through, or when deciding how far to trust a score.
 
 **Causes**: No human gate for high-risk changes; comprehension debt — nobody reads the report.
 
-**How EvalSurfer mitigates**: `ReviewGate` (MCP `review_gate`) returns `needs_human_review` with reasons (unresolved `critical` issues, low-confidence criteria); the release `gate` exposes exit codes for CI; the skill's Judge Reliability guidance mandates human review for unresolved `critical`, legal/compliance risk, or judge disagreement. These gates are enforceable in CI via a machine-readable `guardrails.json` policy (`evalsurfer gate --policy`, MCP `guardrail_gate` / `gate`). See [SECURITY.md](../SECURITY.md#using-the-ci-gate-safely).
+**How EvalSurfer mitigates**: `ReviewGate` (MCP `review_gate`) returns `needs_human_review` with reasons (unresolved `critical` issues, low-confidence criteria); the release `gate` exposes exit codes for CI; the skill's Judge Reliability guidance mandates human review for unresolved `critical`, legal/compliance risk, or judge disagreement. These gates are enforceable in CI via a machine-readable `guardrails.json` policy (`evalsurfer gate --policy`, MCP `guardrail_gate` / `gate`). See [SECURITY.md](SECURITY.md#using-the-ci-gate-safely).
 
 ---
 

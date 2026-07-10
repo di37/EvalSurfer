@@ -24,7 +24,7 @@ python -m unittest tests.test_scoring -v
 One `test_<module>.py` per source module (e.g. [`test_scoring.py`](test_scoring.py)
 ↔ `core/scoring.py`). Two suites are cross-cutting:
 
-- [`test_report_schema.py`](test_report_schema.py) — validates `examples/report.json` against `report.schema.json` (uses the optional `jsonschema` dev extra).
+- [`test_report_schema.py`](test_report_schema.py) — validates `examples/report.json` against `spec/report.schema.json` (uses the optional `jsonschema` dev extra).
 - [`test_skill_parity.py`](test_skill_parity.py) — asserts the three staged `SKILL.md` copies (`skills/`, `.claude/`, `.cursor/`) stay byte-identical.
 
 Two more are worth calling out:

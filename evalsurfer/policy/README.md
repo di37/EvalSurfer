@@ -38,4 +38,4 @@ The GitHub Action ([`action.yml`](../../action.yml)) exposes `policy` and
 `changed-files` inputs for the same check in CI. Example policy:
 [`examples/guardrails.json`](../../examples/guardrails.json). Rationale:
 [`docs/failure-modes.md`](../../docs/failure-modes.md) and
-[`SECURITY.md`](../../SECURITY.md#using-the-ci-gate-safely).
+[`SECURITY.md`](../../docs/SECURITY.md#using-the-ci-gate-safely).

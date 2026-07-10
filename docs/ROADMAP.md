@@ -63,7 +63,7 @@ core-side. What shipped, per item:
   v1 ↔ v2 diff the same set.
 - **Surface (shipped).** `dataset_from_traces` / `dataset_diff` / `dataset_contamination` /
   `dataset_coverage` MCP tools · `evalsurfer dataset` verb (+ `evalsurfer-dataset`) ·
-  `dataset.schema.json` · `evalsurfer/dataset/` (`DatasetCase`, `Dataset`).
+  `spec/dataset.schema.json` · `evalsurfer/dataset/` (`DatasetCase`, `Dataset`).
 
 ### 2. Deterministic quality metrics — `quality_metrics` (code, zero LLM calls)
 - **Retrieval:** Recall@k / Precision@k / MRR (from question → gold-doc-IDs). Reuse the

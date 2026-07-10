@@ -55,10 +55,10 @@ include = ["evalsurfer*"]
 
 [tool.setuptools.data-files]
 "share/evalsurfer" = [
-  "framework.json",
-  "framework.yaml",
-  "report.schema.json",
-  "dataset.schema.json",
+  "spec/framework.json",
+  "spec/framework.yaml",
+  "spec/report.schema.json",
+  "spec/dataset.schema.json",
   "examples/report.json",
   "examples/traces.json",
   "skills/eval-surfer/SKILL.md",

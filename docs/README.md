@@ -11,7 +11,7 @@ the framework, framed as the failure modes it defends against.
 
 Related, at the repository root:
 
-- [`../SECURITY.md`](../SECURITY.md) — threat model, disclosure policy, and safe use of the CI gate.
+- [`../SECURITY.md`](SECURITY.md) — threat model, disclosure policy, and safe use of the CI gate.
 
 Format inspired by
 [cobusgreyling/loop-engineering](https://github.com/cobusgreyling/loop-engineering),
