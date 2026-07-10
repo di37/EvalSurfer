@@ -55,4 +55,4 @@ jobs:
 
       - name: Smoke-test the MCP server (lists all tools)
         run: |
-          python -c "import asyncio, evalsurfer.mcp_server as s; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == 47, n"
+          python -c "import asyncio, evalsurfer.mcp.server as s; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == 47, n"

@@ -3,7 +3,7 @@
 These give every tool a clean, validated, self-documenting JSON schema for the
 agent. They mirror EvalSurfer's inputs; the core package keeps its own
 frozen-dataclass value objects and never imports pydantic, so the core stays
-zero-dependency. Only this module (and ``evalsurfer.mcp_server``) needs pydantic.
+zero-dependency. Only this module (and ``evalsurfer.mcp.server``) needs pydantic.
 """
 
 from __future__ import annotations

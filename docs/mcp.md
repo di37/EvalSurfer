@@ -17,7 +17,7 @@ npx evalsurfer                                   # npm · run, no install
 pip install "evalsurfer[mcp]"; evalsurfer-mcp    # pip · classic install
 ```
 
-(From a local checkout: `pip install -e ".[mcp]"` then `evalsurfer-mcp`, or `python -m evalsurfer.mcp_server`.)
+(From a local checkout: `pip install -e ".[mcp]"` then `evalsurfer-mcp`, or `python -m evalsurfer.mcp.server`.)
 
 ## Connect it to your agent
 
@@ -40,7 +40,7 @@ EvalSurfer tools appear in the agent's toolset.
 
 ## The tools
 
-**Every** deterministic function is a tool (36 total), each with a pydantic input
+**Every** deterministic function is a tool (47 total), each with a pydantic input
 schema. Grouped:
 
 | Group | Tools |

@@ -39,7 +39,7 @@ dev = ["jsonschema>=4"]
 llm = ["anthropic"]
 # Optional: run EvalSurfer as an MCP server so an agent can call the deterministic
 # functions as tools. The core package never imports mcp or pydantic — only
-# evalsurfer.mcp_server and evalsurfer.mcp_models do.
+# the evalsurfer.mcp subpackage does.
 mcp = ["mcp", "pydantic>=2"]
 
 [project.scripts]
@@ -48,7 +48,7 @@ evalsurfer-metrics = "evalsurfer.cli.metrics:main"
 evalsurfer-plan = "evalsurfer.cli.plan:main"
 evalsurfer-quality = "evalsurfer.cli.quality:main"
 evalsurfer-dataset = "evalsurfer.cli.dataset:main"
-evalsurfer-mcp = "evalsurfer.mcp_server:main"
+evalsurfer-mcp = "evalsurfer.mcp.server:main"
 
 [tool.setuptools.packages.find]
 include = ["evalsurfer*"]
