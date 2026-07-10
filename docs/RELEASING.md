@@ -28,7 +28,7 @@ publish a GitHub Release. Set up the two credentials once, then release.
 
 1. Bump the version in **all three** — [`pyproject.toml`](../pyproject.toml) and
    [`npm/package.json`](../npm/package.json) (keep these two identical), plus
-   `FRAMEWORK_VERSION` in [`evalsurfer/constants.py`](../evalsurfer/constants.py),
+   `FRAMEWORK_VERSION` in [`evalsurfer/constants/framework.py`](../evalsurfer/constants/framework.py),
    which backs `evalsurfer.__version__`.
 2. Commit, tag (`git tag v0.1.0`), and push the tag.
 3. Create a GitHub **Release** for the tag. Publishing it triggers the workflow,
