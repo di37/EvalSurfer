@@ -1,6 +1,6 @@
-# `evalsurfer/` — the deterministic AIMAC layers
+# `evalsurfer/` — the deterministic CIMAA layers
 
-This package is EvalSurfer's deterministic implementation of the [AIMAC framework](../README.md#the-aimac-framework) — organized as the five layers Assurance · Interface · Metrics · Analysis · Core, around the skill.
+This package is EvalSurfer's deterministic implementation of the [CIMAA framework](../README.md#the-cimaa-framework) — organized as the five layers Core · Interface · Metrics · Analysis · Assurance, around the skill.
 The **harness LLM is the judge**; this code does everything *measurable* around
 it — planning scope, assembling and validating reports, gating releases,
 diagnostics, operational scoring, calibration, red-team triage, trajectory
@@ -13,10 +13,10 @@ calls**; inputs are never mutated (new objects are always returned). The
 rest as MCP tools and imports `mcp` + `pydantic` from the optional `[mcp]` extra,
 which the core itself never imports.
 
-## Layout — the five AIMAC layers
+## Layout — the five CIMAA layers
 
 The package is organized as the five layers of the
-[AIMAC framework](../README.md#the-aimac-framework), plus the shared `constants/`.
+[CIMAA framework](../README.md#the-cimaa-framework), plus the shared `constants/`.
 
 | Layer | Subpackages | What lives here |
 | --- | --- | --- |

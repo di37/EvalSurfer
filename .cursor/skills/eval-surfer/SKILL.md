@@ -5,7 +5,7 @@ description: Drive AI application evaluations using the EvalSurfer skill-first w
 
 # EvalSurfer
 
-EvalSurfer is a skill-first evaluation workflow that implements the **AIMAC** framework — Core, Interface, Metrics, Analysis, Assurance. The skill drives the assessment; the framework definitions, Python functions, and CLI are supporting utilities.
+EvalSurfer is a skill-first evaluation workflow that implements the **CIMAA** framework — Core, Interface, Metrics, Analysis, Assurance. The skill drives the assessment; the framework definitions, Python functions, and CLI are supporting utilities.
 
 ## Use This Skill When
 

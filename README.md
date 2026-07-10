@@ -2,9 +2,9 @@
 
 ![EvalSurfer wordmark](assets/evalsurfer-wordmark.png)
 
-### Agent-native AI evaluation, powered by the AIMAC framework
+### Agent-native AI evaluation, powered by the CIMAA framework
 
-Point your coding agent at an answer, a RAG run, or an agent trace, and EvalSurfer rides the **AIMAC** pipeline — Core → Interface → Metrics → Analysis → Assurance — turning raw execution into measurable evidence, actionable diagnosis, and a release-readiness verdict.
+Point your coding agent at an answer, a RAG run, or an agent trace, and EvalSurfer rides the **CIMAA** pipeline — Core → Interface → Metrics → Analysis → Assurance — turning raw execution into measurable evidence, actionable diagnosis, and a release-readiness verdict.
 
 <br/>
 
@@ -15,7 +15,7 @@ Point your coding agent at an answer, a RAG run, or an agent trace, and EvalSurf
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![skill](https://img.shields.io/badge/skill-agentskills.io%20standard-6d28d9.svg)](#get-started)
 
-[AIMAC](#the-aimac-framework) · [Why it's different](#why-evalsurfer-is-different) · [Get started](#get-started) · [Core](#core) · [Interface](#interface) · [Metrics](#metrics) · [Analysis](#analysis) · [Assurance](#assurance) · [How it works](#how-it-works) · [Citation](#citation)
+[CIMAA](#the-cimaa-framework) · [Why it's different](#why-evalsurfer-is-different) · [Get started](#get-started) · [Core](#core) · [Interface](#interface) · [Metrics](#metrics) · [Analysis](#analysis) · [Assurance](#assurance) · [How it works](#how-it-works) · [Citation](#citation)
 
 </div>
 
@@ -35,9 +35,9 @@ flowchart LR
 
 <div align="center"><sub>The judge is the agent you're already running. EvalSurfer's tools only measure — the framework never calls a model.</sub></div>
 
-## The AIMAC framework
+## The CIMAA framework
 
-**AIMAC** is a five-layer architecture for evaluating AI applications. **AIMAC is the
+**CIMAA** is a five-layer architecture for evaluating AI applications. **CIMAA is the
 architecture; EvalSurfer is the agent-native library that operationalizes it** — moving AI
 evaluation from raw execution to measurable evidence, actionable diagnosis, and release
 assurance. Everything below is organized as exactly these five layers, and so is the
@@ -45,13 +45,13 @@ assurance. Everything below is organized as exactly these five layers, and so is
 
 | Layer | What the layer is for | How EvalSurfer implements it |
 | --- | --- | --- |
-| **A — [Assurance](#assurance)** | Validate safety, reliability, compliance, and release readiness. | Release gate, guardrail policy, safety red-team + PII detection, regression diff, human-review gate — [`assurance/`](evalsurfer/assurance/) |
+| **C — [Core](#core)** | Define what to evaluate: plans, rubrics, scoring logic, and workflow. | The adaptive planner + rubric, the 1–5 → pillar → decision scoring model, report assembly, and the gate — [`core/`](evalsurfer/core/) (with the shared rubric constants in [`constants/`](evalsurfer/constants/)) |
 | **I — [Interface](#interface)** | Connect users, agents, APIs, and external tools to the system. | The portable agent skill, the 47-tool MCP server, the CLI, the CI-gate Action, and RAGAS / promptfoo / OTel / LangSmith adapters — [`interface/`](evalsurfer/interface/) |
 | **M — [Metrics](#metrics)** | Measure quality, latency, cost, reliability, and retrieval / tool-use performance. | Deterministic scoring, operational metrics (latency, TTFT, cost, throughput, failure rate), reference metrics (Recall@k / BLEU / ROUGE / METEOR), and the golden dataset — [`metrics/`](evalsurfer/metrics/) |
 | **A — [Analysis](#analysis)** | Diagnose failures, find patterns, and explain behavior across runs. | Explainability, root-cause attribution, failure map, regression comparison, and judge calibration — [`analysis/`](evalsurfer/analysis/) |
-| **C — [Core](#core)** | Define what to evaluate: plans, rubrics, scoring logic, and workflow. | The adaptive planner + rubric, the 1–5 → pillar → decision scoring model, report assembly, and the gate — [`core/`](evalsurfer/core/) (with the shared rubric constants in [`constants/`](evalsurfer/constants/)) |
+| **A — [Assurance](#assurance)** | Validate safety, reliability, compliance, and release readiness. | Release gate, guardrail policy, safety red-team + PII detection, regression diff, human-review gate — [`assurance/`](evalsurfer/assurance/) |
 
-**The pipeline runs inside-out.** The acronym leads with Assurance, but a run flows
+**The acronym is the pipeline.** CIMAA reads in execution order — a run flows
 **Core → Interface → Metrics → Analysis → Assurance**:
 
 1. **Core** defines what should be evaluated — the rubric, the adaptive plan, the scoring logic.
@@ -62,7 +62,7 @@ assurance. Everything below is organized as exactly these five layers, and so is
 
 <div align="center"><sub><b>The surfing line:</b> Core — the board · Interface — entering the wave · Metrics — reading speed &amp; conditions · Analysis — understanding the ride · Assurance — deciding it's safe to continue.</sub></div>
 
-> **EvalSurfer — ride the AIMAC evaluation pipeline, from core behavior to release assurance.**
+> **EvalSurfer — ride the CIMAA evaluation pipeline, from core behavior to release assurance.**
 
 ## Why EvalSurfer is different
 
@@ -81,7 +81,7 @@ That is the whole bet, and the honest extent of the novelty: not that EvalSurfer
 
 ## Get started
 
-EvalSurfer has two pieces: the **MCP tool server** (what the agent runs) and the **skill** (how the agent knows to use it). Together they are the AIMAC **Interface** layer in practice.
+EvalSurfer has two pieces: the **MCP tool server** (what the agent runs) and the **skill** (how the agent knows to use it). Together they are the CIMAA **Interface** layer in practice.
 
 ### 1. The tools — zero-install
 
@@ -295,7 +295,7 @@ Use `score: null` for unassessed pillars or criteria, and `not_assessed` to expl
 
 EvalSurfer's **native interface** is an MCP server: the harness LLM judges, and it calls EvalSurfer's deterministic functions as **tools** — so nothing external is ever called. Setup is zero-install (the agent's MCP config fetches it on first launch; see [Get started](#get-started)).
 
-All **47** deterministic functions are exposed as tools, grouped by AIMAC layer:
+All **47** deterministic functions are exposed as tools, grouped by CIMAA layer:
 
 - **Core** — `rubric`, `plan`, `coverage`; `score_pillar`, `score_overall`, `decide`, `score_report`; `evaluate`, `validate_report`.
 - **Metrics** — `metrics`, `operational_score`, `cost_per_request`, `token_efficiency`; `retrieval_metrics`, `match_metrics`, `text_metrics`.
@@ -474,7 +474,7 @@ These gates are **enforceable in CI**: a machine-readable [`guardrails.json`](ex
 
 ## How it works
 
-The skill drives every evaluation; the data files make the rubric portable; the Python is a thin, provider-agnostic measurement layer organized as the five AIMAC layers.
+The skill drives every evaluation; the data files make the rubric portable; the Python is a thin, provider-agnostic measurement layer organized as the five CIMAA layers.
 
 | Path | Contents |
 | --- | --- |
@@ -507,7 +507,7 @@ If you use EvalSurfer in your research or product, please cite it. On GitHub, th
 ```bibtex
 @software{evalsurfer_2026,
   author  = {Hasan, Doula Isham Rashik},
-  title   = {{EvalSurfer: An agent-native AI evaluation library built around the AIMAC framework}},
+  title   = {{EvalSurfer: An agent-native AI evaluation library built around the CIMAA framework}},
   year    = {2026},
   version = {0.1.3},
   url     = {https://github.com/di37/EvalSurfer},
