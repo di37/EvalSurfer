@@ -13,7 +13,7 @@ import os
 import re
 import unittest
 
-HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SKILL_NAME = "eval-surfer"
 _SKIP_DIRS = {"__pycache__", ".git", ".venv", "venv", "node_modules"}
 

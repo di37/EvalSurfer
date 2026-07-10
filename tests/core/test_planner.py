@@ -8,7 +8,7 @@ import unittest
 from evalsurfer.core.planner import EvaluationPlanner, Signals
 from evalsurfer.cli.plan import build_report, main, resolve_signals, signals_from_flags
 
-HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # framework.json names the quality pillar "application_quality"; the report
 # schema (and the planner) use "quality".

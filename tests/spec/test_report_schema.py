@@ -18,7 +18,7 @@ try:
 except ImportError:  # pragma: no cover - exercised only without the dev extra
     jsonschema = None
 
-HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SCHEMA_PATH = os.path.join(HERE, "spec", "report.schema.json")
 EXAMPLE_PATH = os.path.join(HERE, "examples", "report.json")
 
