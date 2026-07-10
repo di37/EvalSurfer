@@ -1,34 +1,30 @@
-# `evalsurfer/` — the deterministic measurement layer
+# `evalsurfer/` — the deterministic AIMAC layers
 
-This package is the deterministic measurement layer around the EvalSurfer skill.
+This package is EvalSurfer's deterministic implementation of the [AIMAC framework](../README.md#the-aimac-framework) — organized as the five layers Assurance · Interface · Metrics · Analysis · Core, around the skill.
 The **harness LLM is the judge**; this code does everything *measurable* around
 it — planning scope, assembling and validating reports, gating releases,
 diagnostics, operational scoring, calibration, red-team triage, trajectory
 analysis, and ecosystem imports. All of it is exposed as an **MCP server**
 ([`mcp/`](interface/mcp/)) so the agent calls each function as a tool.
 
-Every module in the **core** is **deterministic, standard-library only, and makes
-no model or API calls**; inputs are never mutated (new objects are always
-returned). The two `mcp_*` modules are the sole exception — they wrap the core as
-MCP tools and import `mcp` + `pydantic` from the optional `[mcp]` extra, which the
-core itself never imports.
+Every module is **deterministic, standard-library only, and makes no model or API
+calls**; inputs are never mutated (new objects are always returned). The
+[`interface/mcp/`](interface/mcp/) package is the sole exception — it wraps the
+rest as MCP tools and imports `mcp` + `pydantic` from the optional `[mcp]` extra,
+which the core itself never imports.
 
-## Layout
+## Layout — the five AIMAC layers
 
-| Module / subpackage | What lives here |
-| --- | --- |
-| [`constants/`](constants/) | Every shared constant (all `UPPERCASE`, `Final`): pillars, the 29-criterion catalog, score scales, decisions, severities, signals, SLO fields/bands, diagnostics keys, and framework metadata. The single source of truth the rest of the package imports. |
-| [`core/`](core/) | Scoring, the adaptive planner, report validation + release gate, and the end-to-end `Evaluator` orchestrator. |
-| [`policy/`](assurance/policy/) | Machine-readable release **guardrail policy** — decision / safety / coverage floors, block-on-critical, a fix-attempt cap, and a sensitive-path denylist the gate enforces in CI. |
-| [`operational/`](metrics/operational/) | Raw operational metrics from request traces, and SLO-based auto-scoring of the operational pillar. |
-| [`diagnostics/`](analysis/diagnostics/) | Explain-and-compare modules (attribution, root cause, regression, maturity, industry profile, review gate, …) plus the `DiagnosticsBundle`. |
-| [`safety/`](assurance/safety/) | Executable red-team probe battery and deterministic triage. |
-| [`trajectory/`](assurance/trajectory/) | Agent tool-call trajectory evaluation. |
-| [`calibration/`](analysis/calibration/) | The "eval of the eval" — scoring the judge against an oracle. |
-| [`adapters/`](interface/adapters/) | Import RAGAS / promptfoo / OpenTelemetry / LangSmith artifacts into native shapes. |
-| [`cli/`](interface/cli/) | Command-line entry points (`evalsurfer` and the `plan` / `metrics` tools). |
-| [`mcp/`](interface/mcp/) | The **MCP server** — every function above exposed as one of **47 deterministic tools** the harness LLM calls (`evalsurfer-mcp`; optional `[mcp]` extra). |
-| [`mcp/models.py`](interface/mcp/models.py) | Pydantic input schemas that give each MCP tool a validated signature (optional `[mcp]` extra). |
+The package is organized as the five layers of the
+[AIMAC framework](../README.md#the-aimac-framework), plus the shared `constants/`.
+
+| Layer | Subpackages | What lives here |
+| --- | --- | --- |
+| **Core** | [`core/`](core/) · [`constants/`](constants/) | Scoring, the adaptive planner, report validation + release gate, and the end-to-end `Evaluator`; plus every shared constant (the 29-criterion catalog, scales, decisions, signals) that the rest of the package imports. |
+| **Interface** | [`cli/`](interface/cli/) · [`mcp/`](interface/mcp/) · [`adapters/`](interface/adapters/) | The command-line entry points, the 47-tool **MCP server** (`evalsurfer-mcp`; optional `[mcp]` extra) with its pydantic [`models.py`](interface/mcp/models.py), and RAGAS / promptfoo / OpenTelemetry / LangSmith importers. |
+| **Metrics** | [`operational/`](metrics/operational/) · [`quality/`](metrics/quality/) · [`dataset/`](metrics/dataset/) | Operational metrics + SLO auto-scoring, reference quality metrics (retrieval / match / text), and the versioned golden dataset. |
+| **Analysis** | [`diagnostics/`](analysis/diagnostics/) · [`calibration/`](analysis/calibration/) | Explain-and-compare diagnostics (attribution, root cause, regression, maturity, failure map, …) plus the `DiagnosticsBundle`, and the "eval of the eval" calibration. |
+| **Assurance** | [`safety/`](assurance/safety/) · [`trajectory/`](assurance/trajectory/) · [`policy/`](assurance/policy/) | Executable red-team + deterministic triage, agent tool-call trajectory evaluation, and the machine-readable release guardrail policy the gate enforces. |
 
 ## Conventions
 

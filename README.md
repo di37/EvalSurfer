@@ -570,17 +570,12 @@ The skill drives every evaluation; the data files make the rubric portable; the 
 | `spec/framework.json`, `spec/framework.yaml` | The rubric as data: pillars, criteria, scoring, decisions, red-team cases |
 | `spec/report.schema.json` | JSON Schema a machine-readable report must satisfy |
 | `spec/dataset.schema.json` | JSON Schema for the versioned **golden dataset** artifact |
-| `evalsurfer/constants/` | Every fixed value in one place (DRY) |
-| `evalsurfer/core/` | `ScoringModel` (scoring + decision math) and `EvaluationPlanner` (adaptive planning) |
-| `evalsurfer/assurance/policy/` | The machine-readable release **guardrail policy** the gate enforces |
-| `evalsurfer/analysis/diagnostics/` | The diagnostic classes — see [Diagnostics](#diagnostics) |
-| `evalsurfer/metrics/operational/` | `OperationalMetrics` — latency / TTFT / cost / failure-rate from traces |
-| `evalsurfer/metrics/quality/` | Reference-based **quality metrics** — retrieval (Recall@k / MRR), match (exact-match / F1), text (BLEU / ROUGE / METEOR) |
-| `evalsurfer/metrics/dataset/` | The versioned **golden dataset** artifact — cases, coverage tags, contamination controls, trace harvesting, v1↔v2 diff |
-| `evalsurfer/analysis/calibration/` | Eval-of-the-eval — `Calibrator`, chance-corrected agreement (`AgreementStats`), and judge-vs-human error (`ReferenceCalibrator`) |
-| `evalsurfer/interface/mcp/` | The **MCP server** — all 47 deterministic functions as agent-callable tools (`evalsurfer-mcp`) |
-| `evalsurfer/interface/mcp/models.py` | Pydantic input schemas for the MCP tools |
-| `evalsurfer/interface/cli/` | Console entry points: `evalsurfer`, `evalsurfer-plan`, `evalsurfer-metrics`, `evalsurfer-quality`, `evalsurfer-dataset`, `evalsurfer-mcp` |
+| `evalsurfer/constants/` | Shared rubric constants — the 29-criterion catalog, scales, decisions (the DRY source of truth) |
+| **A** · `evalsurfer/assurance/` | **Assurance** — safety red-team (`safety/`), agent-trajectory checks (`trajectory/`), and the release guardrail policy (`policy/`) |
+| **I** · `evalsurfer/interface/` | **Interface** — the CLI (`cli/`), the 47-tool MCP server (`mcp/`, `evalsurfer-mcp`), and RAGAS / promptfoo / OTel / LangSmith adapters (`adapters/`) |
+| **M** · `evalsurfer/metrics/` | **Metrics** — operational metrics + SLO (`operational/`), reference quality metrics (`quality/`), and the golden dataset (`dataset/`) |
+| **A** · `evalsurfer/analysis/` | **Analysis** — diagnostics (`diagnostics/`, see [Diagnostics](#diagnostics)) and judge calibration (`calibration/`) |
+| **C** · `evalsurfer/core/` | **Core** — `ScoringModel`, the adaptive `EvaluationPlanner`, report validation + gate, and the `Evaluator` |
 | `tests/` | The test suite (run with `unittest discover -s tests -t .`) |
 | `examples/` | `traces.json` (sample input) and `report.json` (sample output) |
 
