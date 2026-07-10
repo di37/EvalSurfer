@@ -2,9 +2,9 @@
 
 ![EvalSurfer wordmark](assets/evalsurfer-wordmark.png)
 
-### Ride every eval — quality, safety, and operations — from one portable skill
+### Agent-native AI evaluation, powered by the AIMAC framework
 
-Point your coding agent at an answer, a RAG run, or an agent trace. EvalSurfer rides across quality, safety, and operational readiness against a fixed rubric — and hands back an evidence-backed verdict.
+Point your coding agent at an answer, a RAG run, or an agent trace, and EvalSurfer rides the **AIMAC** pipeline — Core → Interface → Metrics → Analysis → Assurance — turning raw execution into measurable evidence, actionable diagnosis, and a release-readiness verdict.
 
 <br/>
 
@@ -15,7 +15,7 @@ Point your coding agent at an answer, a RAG run, or an agent trace. EvalSurfer r
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![skill](https://img.shields.io/badge/skill-agentskills.io%20standard-6d28d9.svg)](#install)
 
-[What it does](#what-it-does) · [Why it's different](#how-evalsurfer-is-different) · [Install](#install) · [Using it](#using-it) · [MCP tools](#mcp-server) · [Adaptive](#adaptive-evaluation) · [Scoring](#scoring-and-decisions) · [Diagnostics](#diagnostics) · [Guardrails](#guardrails) · [Citation](#citation)
+[What it does](#what-it-does) · [AIMAC](#the-aimac-framework) · [Why it's different](#how-evalsurfer-is-different) · [Install](#install) · [Using it](#using-it) · [MCP tools](#mcp-server) · [Adaptive](#adaptive-evaluation) · [Scoring](#scoring-and-decisions) · [Diagnostics](#diagnostics) · [Guardrails](#guardrails) · [Citation](#citation)
 
 </div>
 
@@ -36,6 +36,34 @@ flowchart LR
 ```
 
 <div align="center"><sub>The judge is the agent you're already running. EvalSurfer's tools only measure — the framework never calls a model.</sub></div>
+
+## The AIMAC framework
+
+**AIMAC** is a five-layer architecture for evaluating AI applications. **AIMAC is the
+architecture; EvalSurfer is the agent-native library that operationalizes it** — moving AI
+evaluation from raw execution to measurable evidence, actionable diagnosis, and release
+assurance. The `evalsurfer/` package is organized as exactly these five layers.
+
+| Layer | What the layer is for | How EvalSurfer implements it |
+| --- | --- | --- |
+| **A — Assurance** | Validate safety, reliability, compliance, and release readiness. | Release gate, guardrail policy, safety red-team + PII detection, regression diff, human-review gate — [`assurance/`](evalsurfer/assurance/) |
+| **I — Interface** | Connect users, agents, APIs, and external tools to the system. | The portable agent skill, the 47-tool MCP server, the CLI, the CI-gate Action, and RAGAS / promptfoo / OTel / LangSmith adapters — [`interface/`](evalsurfer/interface/) |
+| **M — Metrics** | Measure quality, latency, cost, reliability, and retrieval / tool-use performance. | Deterministic scoring, operational metrics (latency, TTFT, cost, throughput, failure rate), reference metrics (Recall@k / BLEU / ROUGE / METEOR), and the golden dataset — [`metrics/`](evalsurfer/metrics/) |
+| **A — Analysis** | Diagnose failures, find patterns, and explain behavior across runs. | Explainability, root-cause attribution, failure map, regression comparison, and judge calibration — [`analysis/`](evalsurfer/analysis/) |
+| **C — Core** | Define what to evaluate: plans, rubrics, scoring logic, and workflow. | The adaptive planner + rubric, the 1–5 → pillar → decision scoring model, report assembly, and the gate — [`core/`](evalsurfer/core/) (with the shared rubric constants in [`constants/`](evalsurfer/constants/)) |
+
+**The pipeline runs inside-out.** The acronym leads with Assurance, but a run flows
+**Core → Interface → Metrics → Analysis → Assurance**:
+
+1. **Core** defines what should be evaluated — the rubric, the adaptive plan, the scoring logic.
+2. **Interface** connects EvalSurfer to your coding agent and the application under test.
+3. **Metrics** produce deterministic evidence.
+4. **Analysis** explains the failures and patterns behind that evidence.
+5. **Assurance** decides whether the system is ready to ship.
+
+<div align="center"><sub><b>The surfing line:</b> Core — the board · Interface — entering the wave · Metrics — reading speed &amp; conditions · Analysis — understanding the ride · Assurance — deciding it's safe to continue.</sub></div>
+
+> **EvalSurfer — ride the AIMAC evaluation pipeline, from core behavior to release assurance.**
 
 ## What it does
 
