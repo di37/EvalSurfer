@@ -11,7 +11,7 @@ shape — with no model, network, or API calls, and no mutation of the input.
 | [`otel.py`](otel.py) | `OtelAdapter.to_traces` | OpenTelemetry spans (epoch-nanosecond timestamps + GenAI token attributes) | request traces for the operational layer |
 | [`langsmith.py`](langsmith.py) | `LangSmithAdapter.to_traces` | LangSmith runs (ISO timestamps + token usage) | request traces for the operational layer |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`. See [`../mcp/`](../mcp/) and [`../../docs/mcp.md`](../../docs/mcp.md).
 
 ## Example
 

@@ -542,7 +542,7 @@ The skill drives every evaluation; the data files make the rubric portable; the 
 | `spec/framework.json`, `spec/framework.yaml` | The rubric as data: pillars, criteria, scoring, decisions, red-team cases |
 | `spec/report.schema.json` | JSON Schema a machine-readable report must satisfy |
 | `spec/dataset.schema.json` | JSON Schema for the versioned **golden dataset** artifact |
-| `evalsurfer/constants.py` | Every fixed value in one place (DRY) |
+| `evalsurfer/constants/` | Every fixed value in one place (DRY) |
 | `evalsurfer/core/` | `ScoringModel` (scoring + decision math) and `EvaluationPlanner` (adaptive planning) |
 | `evalsurfer/policy/` | The machine-readable release **guardrail policy** the gate enforces |
 | `evalsurfer/diagnostics/` | The diagnostic classes — see [Diagnostics](#diagnostics) |
@@ -550,8 +550,8 @@ The skill drives every evaluation; the data files make the rubric portable; the 
 | `evalsurfer/quality/` | Reference-based **quality metrics** — retrieval (Recall@k / MRR), match (exact-match / F1), text (BLEU / ROUGE / METEOR) |
 | `evalsurfer/dataset/` | The versioned **golden dataset** artifact — cases, coverage tags, contamination controls, trace harvesting, v1↔v2 diff |
 | `evalsurfer/calibration/` | Eval-of-the-eval — `Calibrator`, chance-corrected agreement (`AgreementStats`), and judge-vs-human error (`ReferenceCalibrator`) |
-| `evalsurfer/mcp_server.py` | The **MCP server** — all 47 deterministic functions as agent-callable tools (`evalsurfer-mcp`) |
-| `evalsurfer/mcp_models.py` | Pydantic input schemas for the MCP tools |
+| `evalsurfer/mcp/` | The **MCP server** — all 47 deterministic functions as agent-callable tools (`evalsurfer-mcp`) |
+| `evalsurfer/mcp/models.py` | Pydantic input schemas for the MCP tools |
 | `evalsurfer/cli/` | Console entry points: `evalsurfer`, `evalsurfer-plan`, `evalsurfer-metrics`, `evalsurfer-quality`, `evalsurfer-dataset`, `evalsurfer-mcp` |
 | `tests/` | The test suite (run with `unittest discover -s tests -t .`) |
 | `examples/` | `traces.json` (sample input) and `report.json` (sample output) |

@@ -37,6 +37,16 @@ all additive and backward-compatible, all zero-LLM-core. The MCP server grows fr
     / `krippendorff_alpha` / `reference_calibrate`.
 - MCP server: **36 → 47 tools**. Test suite: 640 → 815 tests.
 
+### Changed
+
+- **Repository restructure** (developer-facing; no runtime or public-API change):
+  consolidated root docs into `docs/`, moved the rubric + JSON schemas into `spec/`, split
+  the monolith `constants.py` into a per-domain `constants/` package and `mcp_server.py` +
+  `mcp_models.py` into an `evalsurfer/mcp/` package (tools grouped by domain), and mirrored
+  `tests/` to the package layout. `import evalsurfer.constants`, the subpackage APIs, and the
+  console-script names are unchanged; the `evalsurfer-mcp` entry point now targets
+  `evalsurfer.mcp.server:main`.
+
 ### Notes
 
 - Fully additive; the deterministic core still makes **zero LLM calls** and has **zero

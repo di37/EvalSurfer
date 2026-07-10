@@ -9,7 +9,7 @@ model calls; inputs never mutated; stdlib-only (`json` + `fnmatch`).
 | --- | --- | --- |
 | [`guardrails.py`](guardrails.py) | `GuardrailPolicy`, `Guardrails` | Load + validate a policy, then check a report (and the release's changed files) against it. |
 
-> **As an MCP tool:** the harness LLM calls `Guardrails.check` directly via the `evalsurfer[mcp]` server — `guardrail_gate`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+> **As an MCP tool:** the harness LLM calls `Guardrails.check` directly via the `evalsurfer[mcp]` server — `guardrail_gate`. See [`../mcp/`](../mcp/) and [`../../docs/mcp.md`](../../docs/mcp.md).
 
 ## Policy fields (`guardrails.json`)
 

@@ -22,7 +22,7 @@ supported tool just works:
 - `.cursor/skills/eval-surfer/` — for Cursor
 
 The three `SKILL.md` files are **byte-identical**, enforced by
-[`../tests/test_skill_parity.py`](../tests/test_skill_parity.py). Edit the skill
+[`../tests/skill/test_skill_parity.py`](../tests/skill/test_skill_parity.py). Edit the skill
 in one place, then re-sync the copies (and run the parity test) before
 committing.
 

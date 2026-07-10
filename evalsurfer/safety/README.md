@@ -8,7 +8,7 @@ mutated.
 | --- | --- | --- |
 | [`redteam.py`](redteam.py) | `RedTeam`, `RedTeamCase` | Select probes that fit a target's shape (`template`) and triage the responses (`check`). |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `redteam_template`, `redteam_check`. See [`../mcp_server.py`](../mcp_server.py) and [`../../docs/mcp.md`](../../docs/mcp.md).
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `redteam_template`, `redteam_check`. See [`../mcp/`](../mcp/) and [`../../docs/mcp.md`](../../docs/mcp.md).
 
 ## Two helpers
 
