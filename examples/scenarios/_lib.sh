@@ -17,7 +17,7 @@ if command -v evalsurfer >/dev/null 2>&1; then
   EJE=(evalsurfer)
   EJE_FALLBACK=0
 else
-  EJE=(python -m evalsurfer.cli.main)
+  EJE=(python -m evalsurfer.interface.cli.main)
   EJE_FALLBACK=1
 fi
 
@@ -52,7 +52,7 @@ peek() { note "inspecting $(basename "$1"):"; python -c "$2"; }
 
 banner_env() {
   if [ "$EJE_FALLBACK" = "1" ]; then
-    note "Using 'python -m evalsurfer.cli.main' (run 'pip install -e .' to get the 'evalsurfer' command)."
+    note "Using 'python -m evalsurfer.interface.cli.main' (run 'pip install -e .' to get the 'evalsurfer' command)."
   fi
   note "Generated reports are written to: $OUT"
 }

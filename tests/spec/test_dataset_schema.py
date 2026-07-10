@@ -17,8 +17,8 @@ try:
 except ImportError:  # pragma: no cover - exercised only without the dev extra
     jsonschema = None
 
-from evalsurfer.dataset.case import DatasetCase
-from evalsurfer.dataset.dataset import Dataset
+from evalsurfer.metrics.dataset.case import DatasetCase
+from evalsurfer.metrics.dataset.dataset import Dataset
 
 HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SCHEMA_PATH = os.path.join(HERE, "spec", "dataset.schema.json")

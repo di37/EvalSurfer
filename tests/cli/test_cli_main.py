@@ -7,7 +7,7 @@ import os
 import tempfile
 import unittest
 
-from evalsurfer.cli.main import main
+from evalsurfer.interface.cli.main import main
 
 
 def run(argv: list[str]) -> int:

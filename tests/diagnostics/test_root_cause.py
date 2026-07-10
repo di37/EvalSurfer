@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 import unittest
 
-from evalsurfer.diagnostics.root_cause import Contribution, RootCauseAnalyzer
+from evalsurfer.analysis.diagnostics.root_cause import Contribution, RootCauseAnalyzer
 
 
 def _report(pillars: dict) -> dict:

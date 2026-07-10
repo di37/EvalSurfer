@@ -4,7 +4,7 @@ import copy
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.diagnostics.regression import CriterionDiff, RegressionDiffer
+from evalsurfer.analysis.diagnostics.regression import CriterionDiff, RegressionDiffer
 
 
 def _criterion(cid: str, name: str, score: int | None):

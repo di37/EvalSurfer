@@ -4,7 +4,7 @@ import copy
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.diagnostics.review_gate import ReviewGate
+from evalsurfer.analysis.diagnostics.review_gate import ReviewGate
 
 
 def _report(criteria_by_pillar=None, top_issues=None):

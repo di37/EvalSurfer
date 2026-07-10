@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from evalsurfer.core.planner import EvaluationPlanner, Signals
-from evalsurfer.cli.plan import build_report, main, resolve_signals, signals_from_flags
+from evalsurfer.interface.cli.plan import build_report, main, resolve_signals, signals_from_flags
 
 HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

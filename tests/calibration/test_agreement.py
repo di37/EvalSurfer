@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from evalsurfer.calibration.agreement import AgreementStats
+from evalsurfer.analysis.calibration.agreement import AgreementStats
 
 
 class CohenKappaTest(unittest.TestCase):

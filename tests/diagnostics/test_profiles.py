@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.diagnostics.profiles import IndustryProfiler
+from evalsurfer.analysis.diagnostics.profiles import IndustryProfiler
 
 
 class ProfilesPresetTest(unittest.TestCase):

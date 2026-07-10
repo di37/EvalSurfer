@@ -5,7 +5,7 @@ calls EvalSurfer's deterministic functions as **MCP tools**. No external model, 
 service — the only LLM in the loop is the agent you are already talking to.
 
 Every number below is real. Reproduce it with the CLI, which calls the identical
-functions: `python -m evalsurfer.cli.main evaluate ../sample.json`.
+functions: `python -m evalsurfer.interface.cli.main evaluate ../sample.json`.
 
 ## 0. Install & connect (once)
 

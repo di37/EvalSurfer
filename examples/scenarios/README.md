@@ -23,7 +23,7 @@ bash examples/scenarios/run_all.sh
 ```
 
 The scripts use the installed `evalsurfer` console script when present, and
-otherwise fall back to `python -m evalsurfer.cli.main` (so `pip install -e .`
+otherwise fall back to `python -m evalsurfer.interface.cli.main` (so `pip install -e .`
 is optional). Generated reports are written to a temp dir by default; set
 `OUT=./out` to keep them.
 

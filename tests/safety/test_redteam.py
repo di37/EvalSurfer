@@ -3,8 +3,8 @@ from __future__ import annotations
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.safety import RedTeam, RedTeamCase
-from evalsurfer.safety.redteam import (
+from evalsurfer.assurance.safety import RedTeam, RedTeamCase
+from evalsurfer.assurance.safety.redteam import (
     CATEGORY_JAILBREAK_WEAPONS,
     CASE_DISCRIMINATORY,
     CASE_HARMFUL_WEAPONS,

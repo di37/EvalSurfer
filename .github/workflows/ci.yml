@@ -28,11 +28,11 @@ jobs:
 
       - name: Smoke-test the CLIs
         run: |
-          python -m evalsurfer.cli.metrics examples/traces.json --pretty
-          echo '{"sample":{"answer":"x"}}' | python -m evalsurfer.cli.plan -
-          echo '{"retrieval":{"cases":[{"retrieved":["d1","d2"],"relevant":["d1"]}]}}' | python -m evalsurfer.cli.quality -
-          echo '{"op":"from_traces","traces":[{"query":"q1"},{"query":"q1"}],"name":"d","version":"v1"}' | python -m evalsurfer.cli.dataset -
-          echo '{"op":"krippendorff_alpha","reliability_data":[[1,1],[2,2]]}' | python -m evalsurfer.cli.main agreement -
+          python -m evalsurfer.interface.cli.metrics examples/traces.json --pretty
+          echo '{"sample":{"answer":"x"}}' | python -m evalsurfer.interface.cli.plan -
+          echo '{"retrieval":{"cases":[{"retrieved":["d1","d2"],"relevant":["d1"]}]}}' | python -m evalsurfer.interface.cli.quality -
+          echo '{"op":"from_traces","traces":[{"query":"q1"},{"query":"q1"}],"name":"d","version":"v1"}' | python -m evalsurfer.interface.cli.dataset -
+          echo '{"op":"krippendorff_alpha","reliability_data":[[1,1],[2,2]]}' | python -m evalsurfer.interface.cli.main agreement -
 
   # Exercises the optional MCP tool server (47 tools). The `test` job above installs
   # only [dev], which proves the core stays importable with no mcp/pydantic (there
@@ -55,4 +55,4 @@ jobs:
 
       - name: Smoke-test the MCP server (lists all tools)
         run: |
-          python -c "import asyncio, evalsurfer.mcp.server as s; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == 47, n"
+          python -c "import asyncio, evalsurfer.interface.mcp.server as s; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == 47, n"

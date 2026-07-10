@@ -4,7 +4,7 @@ import copy
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.calibration.reference import ReferenceCalibrator
+from evalsurfer.analysis.calibration.reference import ReferenceCalibrator
 
 MAE = constants.METRIC_JUDGE_HUMAN_MAE
 RHO = constants.METRIC_RANK_CORRELATION

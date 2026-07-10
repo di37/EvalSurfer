@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from evalsurfer.diagnostics.maturity import MaturityClassifier, MaturityLevel
+from evalsurfer.analysis.diagnostics.maturity import MaturityClassifier, MaturityLevel
 from evalsurfer.core.planner import Signals
 
 LEVELS = MaturityClassifier.LEVELS

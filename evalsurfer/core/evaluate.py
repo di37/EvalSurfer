@@ -19,9 +19,9 @@ from typing import Any, Mapping
 import evalsurfer.constants as constants
 from evalsurfer.core.planner import EvaluationPlanner, Signals
 from evalsurfer.core.scoring import ScoringModel
-from evalsurfer.diagnostics.bundle import DiagnosticsBundle
-from evalsurfer.operational.metrics import OperationalMetrics, Pricing, RequestTrace
-from evalsurfer.operational.slo import OperationalScorer
+from evalsurfer.analysis.diagnostics.bundle import DiagnosticsBundle
+from evalsurfer.metrics.operational.metrics import OperationalMetrics, Pricing, RequestTrace
+from evalsurfer.metrics.operational.slo import OperationalScorer
 
 __all__ = ["Evaluator"]
 

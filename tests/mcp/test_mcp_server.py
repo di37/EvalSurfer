@@ -31,8 +31,8 @@ class McpServerTest(unittest.TestCase):
     """Guard the MCP wiring where the SDK is available; skipped otherwise."""
 
     def setUp(self) -> None:
-        import evalsurfer.mcp.server as server  # lazy: needs the mcp SDK
-        from evalsurfer.mcp import models as models
+        import evalsurfer.interface.mcp.server as server  # lazy: needs the mcp SDK
+        from evalsurfer.interface.mcp import models as models
 
         self.s = server
         self.m = models

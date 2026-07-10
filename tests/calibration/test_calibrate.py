@@ -5,7 +5,7 @@ import unittest
 from statistics import pvariance
 
 import evalsurfer.constants as constants
-from evalsurfer.calibration import CalibrationCase, Calibrator
+from evalsurfer.analysis.calibration import CalibrationCase, Calibrator
 from evalsurfer.core.planner import Signals
 
 
@@ -502,8 +502,8 @@ class PublicApiTest(unittest.TestCase):
         self.assertTrue(callable(Calibrator.summarize))
 
     def test_importable_from_package(self) -> None:
-        from evalsurfer.calibration import CalibrationCase as CaseAlias
-        from evalsurfer.calibration import Calibrator as CalibratorAlias
+        from evalsurfer.analysis.calibration import CalibrationCase as CaseAlias
+        from evalsurfer.analysis.calibration import Calibrator as CalibratorAlias
 
         self.assertIs(CaseAlias, CalibrationCase)
         self.assertIs(CalibratorAlias, Calibrator)

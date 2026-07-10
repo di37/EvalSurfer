@@ -7,7 +7,7 @@ import os
 import tempfile
 import unittest
 
-from evalsurfer.cli.quality import build_report, main
+from evalsurfer.interface.cli.quality import build_report, main
 
 
 class QualityBuildReportTest(unittest.TestCase):

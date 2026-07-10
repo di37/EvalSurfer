@@ -10,13 +10,13 @@ from __future__ import annotations
 import json
 from dataclasses import asdict
 
-from evalsurfer.adapters import (
+from evalsurfer.interface.adapters import (
     LangSmithAdapter,
     OtelAdapter,
     PromptfooAdapter,
     RagasAdapter,
 )
-from evalsurfer.operational.metrics import OperationalMetrics, Pricing, RequestTrace
+from evalsurfer.metrics.operational.metrics import OperationalMetrics, Pricing, RequestTrace
 
 
 def show(title: str, value: object) -> None:

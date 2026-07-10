@@ -8,8 +8,8 @@ import os
 import tempfile
 import unittest
 
-from evalsurfer.cli.metrics import build_report, main
-from evalsurfer.operational.metrics import (
+from evalsurfer.interface.cli.metrics import build_report, main
+from evalsurfer.metrics.operational.metrics import (
     OperationalMetrics,
     Pricing,
     RequestTrace,

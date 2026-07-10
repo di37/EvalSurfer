@@ -17,7 +17,7 @@ The agent can also call the `calibrate` / `calibrate_one` MCP tools directly (se
 
 Returns `agreement`, `false_pass_rate`, `false_fail_rate`, and `score_variance`
 across the runs. The scoring logic lives in
-[`../../evalsurfer/calibration/`](../../evalsurfer/calibration/).
+[`../../evalsurfer/analysis/calibration/`](../../evalsurfer/analysis/calibration/).
 
 To calibrate your own judge: copy this file, set the `expected_*` fields to what a
 trustworthy judge *should* conclude, and drop in several real judge reports for

@@ -4,7 +4,7 @@ import copy
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.diagnostics.personas import PersonaAggregator
+from evalsurfer.analysis.diagnostics.personas import PersonaAggregator
 
 
 def _report(score: float | int | None) -> dict:

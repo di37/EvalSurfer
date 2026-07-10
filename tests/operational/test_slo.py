@@ -4,7 +4,7 @@ from math import inf, nan
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.operational.slo import (
+from evalsurfer.metrics.operational.slo import (
     CriterionScore,
     OperationalScore,
     OperationalScorer,

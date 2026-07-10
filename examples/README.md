@@ -28,7 +28,7 @@ Two roles, and the LLM lives in only one:
   come **pre-scored** on purpose: those numbers are *what the judge produced*.
 
 **Run the CLI walkthrough from the repository root.** With `pip install -e .`, use
-`evalsurfer`; otherwise `python -m evalsurfer.cli.main`. Add `--pretty` for indented
+`evalsurfer`; otherwise `python -m evalsurfer.interface.cli.main`. Add `--pretty` for indented
 JSON. Steps marked 🧠 are where the LLM does the work; ⚙️ steps are pure deterministic math.
 
 ---

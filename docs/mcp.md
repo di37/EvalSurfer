@@ -17,7 +17,7 @@ npx evalsurfer                                   # npm · run, no install
 pip install "evalsurfer[mcp]"; evalsurfer-mcp    # pip · classic install
 ```
 
-(From a local checkout: `pip install -e ".[mcp]"` then `evalsurfer-mcp`, or `python -m evalsurfer.mcp.server`.)
+(From a local checkout: `pip install -e ".[mcp]"` then `evalsurfer-mcp`, or `python -m evalsurfer.interface.mcp.server`.)
 
 ## Connect it to your agent
 

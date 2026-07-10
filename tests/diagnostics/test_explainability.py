@@ -4,7 +4,7 @@ import copy
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.diagnostics.explainability import Deduction, Explainer
+from evalsurfer.analysis.diagnostics.explainability import Deduction, Explainer
 from evalsurfer.core.scoring import ScoringModel
 
 

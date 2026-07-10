@@ -10,7 +10,7 @@ validated, gated report. No model or API calls; inputs are never mutated.
 | [`report.py`](report.py) | `ReportValidator`, `Gate` | Pure-Python structural validation of a report (`{"valid", "errors"}`) and a release gate against a minimum decision (`{"passed", "decision", "minimum", "reason"}`). |
 | [`evaluate.py`](evaluate.py) | `Evaluator` | The end-to-end orchestrator: infer the plan, place provided scores, auto-score operations from traces + SLO, recompute pillar/overall, decide, measure coverage, and attach the diagnostics block. |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `plan`, `coverage`, `score_pillar`, `score_overall`, `decide`, `score_report`, `evaluate`, `validate_report`, `gate`. See [`../mcp/`](../mcp/) and [`../../docs/mcp.md`](../../docs/mcp.md).
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `plan`, `coverage`, `score_pillar`, `score_overall`, `decide`, `score_report`, `evaluate`, `validate_report`, `gate`. See [`../mcp/`](../interface/mcp/) and [`../../docs/mcp.md`](../../docs/mcp.md).
 
 ## Flow
 
@@ -24,6 +24,6 @@ traces ──► OperationalScorer ─────► operational pillar
 The judge's quality and safety scores come from the agent/skill via the request;
 `core` never invents them.
 
-Related: [`../operational/`](../operational/) (ops scoring),
-[`../diagnostics/`](../diagnostics/) (the diagnostics block),
-[`../cli/`](../cli/) (command-line front end).
+Related: [`../operational/`](../metrics/operational/) (ops scoring),
+[`../diagnostics/`](../analysis/diagnostics/) (the diagnostics block),
+[`../cli/`](../interface/cli/) (command-line front end).

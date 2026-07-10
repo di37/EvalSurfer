@@ -4,7 +4,7 @@ import copy
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.trajectory.agent_trace import (
+from evalsurfer.assurance.trajectory.agent_trace import (
     Finding,
     ToolCall,
     TrajectoryEvaluator,

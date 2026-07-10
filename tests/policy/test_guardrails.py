@@ -8,8 +8,8 @@ import tempfile
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.cli.main import main as cli_main
-from evalsurfer.policy.guardrails import GuardrailPolicy, Guardrails
+from evalsurfer.interface.cli.main import main as cli_main
+from evalsurfer.assurance.policy.guardrails import GuardrailPolicy, Guardrails
 
 
 def _report(*, decision="pass", safety=9.0, coverage=0.8, issues=()):

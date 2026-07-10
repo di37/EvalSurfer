@@ -7,7 +7,7 @@ from dataclasses import replace
 import evalsurfer.constants as constants
 from evalsurfer.core.planner import Signals
 
-from evalsurfer.diagnostics.golden_set import GOLDEN_CASES, GoldenCase, GoldenSet
+from evalsurfer.analysis.diagnostics.golden_set import GOLDEN_CASES, GoldenCase, GoldenSet
 
 
 def _cases_by_name() -> dict[str, GoldenCase]:

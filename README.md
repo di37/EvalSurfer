@@ -145,7 +145,7 @@ Point it at whatever you have — a single answer, a RAG run with chunks, an age
 Beyond the skill, the repo ships supporting CLIs and a test suite. Run the operational-metrics CLI against the sample traces:
 
 ```bash
-python -m evalsurfer.cli.metrics examples/traces.json --pretty
+python -m evalsurfer.interface.cli.metrics examples/traces.json --pretty
 ```
 
 Run the tests:
@@ -160,7 +160,7 @@ Most frameworks make you pick criteria; EvalSurfer infers them. A deterministic 
 
 ```bash
 echo '{"sample": {"query": "refund policy?", "answer": "...", "retrieved_docs": ["..."]}}' \
-  | python -m evalsurfer.cli.plan - --pretty
+  | python -m evalsurfer.interface.cli.plan - --pretty
 ```
 
 ```text
@@ -438,10 +438,10 @@ Starter tests for prompt-injection and safety resistance, scored under Safety. I
 
 ## Operational metrics
 
-The operational-metrics module (`evalsurfer/operational/metrics.py`) calculates production-readiness metrics from API logs, tracing events, or streaming client instrumentation. These utilities support the skill; they are not the primary interface.
+The operational-metrics module (`evalsurfer/metrics/operational/metrics.py`) calculates production-readiness metrics from API logs, tracing events, or streaming client instrumentation. These utilities support the skill; they are not the primary interface.
 
 ```python
-from evalsurfer.operational.metrics import OperationalMetrics, Pricing, RequestTrace
+from evalsurfer.metrics.operational.metrics import OperationalMetrics, Pricing, RequestTrace
 
 traces = [
     RequestTrace(
@@ -544,15 +544,15 @@ The skill drives every evaluation; the data files make the rubric portable; the 
 | `spec/dataset.schema.json` | JSON Schema for the versioned **golden dataset** artifact |
 | `evalsurfer/constants/` | Every fixed value in one place (DRY) |
 | `evalsurfer/core/` | `ScoringModel` (scoring + decision math) and `EvaluationPlanner` (adaptive planning) |
-| `evalsurfer/policy/` | The machine-readable release **guardrail policy** the gate enforces |
-| `evalsurfer/diagnostics/` | The diagnostic classes — see [Diagnostics](#diagnostics) |
-| `evalsurfer/operational/` | `OperationalMetrics` — latency / TTFT / cost / failure-rate from traces |
-| `evalsurfer/quality/` | Reference-based **quality metrics** — retrieval (Recall@k / MRR), match (exact-match / F1), text (BLEU / ROUGE / METEOR) |
-| `evalsurfer/dataset/` | The versioned **golden dataset** artifact — cases, coverage tags, contamination controls, trace harvesting, v1↔v2 diff |
-| `evalsurfer/calibration/` | Eval-of-the-eval — `Calibrator`, chance-corrected agreement (`AgreementStats`), and judge-vs-human error (`ReferenceCalibrator`) |
-| `evalsurfer/mcp/` | The **MCP server** — all 47 deterministic functions as agent-callable tools (`evalsurfer-mcp`) |
-| `evalsurfer/mcp/models.py` | Pydantic input schemas for the MCP tools |
-| `evalsurfer/cli/` | Console entry points: `evalsurfer`, `evalsurfer-plan`, `evalsurfer-metrics`, `evalsurfer-quality`, `evalsurfer-dataset`, `evalsurfer-mcp` |
+| `evalsurfer/assurance/policy/` | The machine-readable release **guardrail policy** the gate enforces |
+| `evalsurfer/analysis/diagnostics/` | The diagnostic classes — see [Diagnostics](#diagnostics) |
+| `evalsurfer/metrics/operational/` | `OperationalMetrics` — latency / TTFT / cost / failure-rate from traces |
+| `evalsurfer/metrics/quality/` | Reference-based **quality metrics** — retrieval (Recall@k / MRR), match (exact-match / F1), text (BLEU / ROUGE / METEOR) |
+| `evalsurfer/metrics/dataset/` | The versioned **golden dataset** artifact — cases, coverage tags, contamination controls, trace harvesting, v1↔v2 diff |
+| `evalsurfer/analysis/calibration/` | Eval-of-the-eval — `Calibrator`, chance-corrected agreement (`AgreementStats`), and judge-vs-human error (`ReferenceCalibrator`) |
+| `evalsurfer/interface/mcp/` | The **MCP server** — all 47 deterministic functions as agent-callable tools (`evalsurfer-mcp`) |
+| `evalsurfer/interface/mcp/models.py` | Pydantic input schemas for the MCP tools |
+| `evalsurfer/interface/cli/` | Console entry points: `evalsurfer`, `evalsurfer-plan`, `evalsurfer-metrics`, `evalsurfer-quality`, `evalsurfer-dataset`, `evalsurfer-mcp` |
 | `tests/` | The test suite (run with `unittest discover -s tests -t .`) |
 | `examples/` | `traces.json` (sample input) and `report.json` (sample output) |
 
@@ -563,8 +563,8 @@ The core has no runtime dependencies; the `dev` extra adds `jsonschema` for the 
 ```bash
 python -m pip install -e ".[dev]"                 # install with test dependencies
 python -m unittest discover -s tests -t . -p "test_*.py"        # run the test suite
-python -m evalsurfer.cli.metrics examples/traces.json --pretty   # metrics CLI
-echo '{"sample":{"answer":"..."}}' | python -m evalsurfer.cli.plan -      # adaptive planner CLI
+python -m evalsurfer.interface.cli.metrics examples/traces.json --pretty   # metrics CLI
+echo '{"sample":{"answer":"..."}}' | python -m evalsurfer.interface.cli.plan -      # adaptive planner CLI
 ```
 
 CI runs the suite on Python 3.11–3.12 via [GitHub Actions](.github/workflows/ci.yml).

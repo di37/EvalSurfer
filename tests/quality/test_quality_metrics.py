@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import unittest
 
-from evalsurfer.quality.matching import ClassificationReport, MatchMetrics
-from evalsurfer.quality.retrieval import (
+from evalsurfer.metrics.quality.matching import ClassificationReport, MatchMetrics
+from evalsurfer.metrics.quality.retrieval import (
     RetrievalCase,
     RetrievalMetrics,
     RetrievalSummary,
 )
-from evalsurfer.quality.text import RougeScore, TextMetrics
-from evalsurfer.quality.tokenize import (
+from evalsurfer.metrics.quality.text import RougeScore, TextMetrics
+from evalsurfer.metrics.quality.tokenize import (
     light_stem,
     ngrams,
     normalize_answer,

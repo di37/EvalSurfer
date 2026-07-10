@@ -4,9 +4,9 @@ Layout:
 
 * :mod:`evalsurfer.constants` -- every fixed value, in one place.
 * :mod:`evalsurfer.core` -- the scoring model and adaptive planner.
-* :mod:`evalsurfer.operational` -- operational metrics from request traces.
-* :mod:`evalsurfer.diagnostics` -- deterministic diagnostics over a report.
-* :mod:`evalsurfer.cli` -- command-line entry points.
+* :mod:`evalsurfer.metrics.operational` -- operational metrics from request traces.
+* :mod:`evalsurfer.analysis.diagnostics` -- deterministic diagnostics over a report.
+* :mod:`evalsurfer.interface.cli` -- command-line entry points.
 """
 
 from __future__ import annotations

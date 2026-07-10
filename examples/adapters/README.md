@@ -18,4 +18,4 @@ They expose no CLI verb, but all four are also MCP tools — `adapter_ragas`, `a
 
 [`run.py`](run.py) also feeds the imported traces back through the operational
 metrics. See step 10 of the [tutorial](../README.md) and
-[`evalsurfer/adapters/`](../../evalsurfer/adapters/).
+[`evalsurfer/interface/adapters/`](../../evalsurfer/interface/adapters/).

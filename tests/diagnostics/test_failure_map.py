@@ -4,7 +4,7 @@ import copy
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.diagnostics.failure_map import FailureMap, StageDiagnosis
+from evalsurfer.analysis.diagnostics.failure_map import FailureMap, StageDiagnosis
 
 
 def _crit(cid: str, score: object) -> dict:

@@ -63,7 +63,7 @@ core-side. What shipped, per item:
   v1 ↔ v2 diff the same set.
 - **Surface (shipped).** `dataset_from_traces` / `dataset_diff` / `dataset_contamination` /
   `dataset_coverage` MCP tools · `evalsurfer dataset` verb (+ `evalsurfer-dataset`) ·
-  `spec/dataset.schema.json` · `evalsurfer/dataset/` (`DatasetCase`, `Dataset`).
+  `spec/dataset.schema.json` · `evalsurfer/metrics/dataset/` (`DatasetCase`, `Dataset`).
 
 ### 2. Deterministic quality metrics — `quality_metrics` (code, zero LLM calls)
 - **Retrieval:** Recall@k / Precision@k / MRR (from question → gold-doc-IDs). Reuse the
@@ -74,7 +74,7 @@ core-side. What shipped, per item:
   **METEOR** (order-aware, synonym/stem matches) — report a recognizable number, with the
   known caveat that these are stylistically brittle and correlate only weakly with humans.
 - **Surface (shipped).** `retrieval_metrics` / `match_metrics` / `text_metrics` MCP tools ·
-  `evalsurfer quality` verb (+ `evalsurfer-quality`) · `evalsurfer/quality/`. Shipped as a
+  `evalsurfer quality` verb (+ `evalsurfer-quality`) · `evalsurfer/metrics/quality/`. Shipped as a
   dedicated `quality` verb rather than `metrics --quality` (cleaner input shape; the two
   payloads are unrelated).
 
@@ -90,7 +90,7 @@ core-side. What shipped, per item:
   preferred signal, and folding them into `Calibrator` is a follow-up.)
 - **Surface (shipped).** `cohen_kappa` / `fleiss_kappa` / `krippendorff_alpha` /
   `reference_calibrate` MCP tools · `evalsurfer agreement` verb · `AgreementStats` +
-  `ReferenceCalibrator` in `evalsurfer/calibration/`. Shipped as **new** tools alongside
+  `ReferenceCalibrator` in `evalsurfer/analysis/calibration/`. Shipped as **new** tools alongside
   `calibrate` (not a replacement). Reference-scoring of an output against a gold *answer*
   lives in item 2's text/match metrics; `reference_calibrate` compares judge *scores* against
   human *scores* (per-criterion error, MAE, Spearman rank correlation).

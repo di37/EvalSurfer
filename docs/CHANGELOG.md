@@ -13,7 +13,7 @@ all additive and backward-compatible, all zero-LLM-core. The MCP server grows fr
 
 ### Added
 
-- **Golden dataset artifact** (`evalsurfer/dataset/`): a versioned `Dataset` of
+- **Golden dataset artifact** (`evalsurfer/metrics/dataset/`): a versioned `Dataset` of
   content-hashed `DatasetCase`s with coverage tags (`normal` / `difficult` / `edge` /
   `random`), a deterministic (salted-hash, no RNG) held-out split, trace harvesting
   (`from_traces`), version-to-version `diff`, and contamination controls (content-hash
@@ -21,7 +21,7 @@ all additive and backward-compatible, all zero-LLM-core. The MCP server grows fr
   - Surfaces: `evalsurfer dataset` CLI verb, the `evalsurfer-dataset` script, and MCP
     tools `dataset_from_traces` / `dataset_diff` / `dataset_contamination` /
     `dataset_coverage`.
-- **Deterministic quality metrics** (`evalsurfer/quality/`) — reference-based and
+- **Deterministic quality metrics** (`evalsurfer/metrics/quality/`) — reference-based and
   zero-LLM: retrieval (Recall@k / Precision@k / MRR, plus tool-selection recall),
   match & classification (exact match, token-F1, accuracy, per-label precision / recall /
   F1 with macro / micro / binary averaging), and reference-text (BLEU, ROUGE-N, ROUGE-L,
@@ -29,7 +29,7 @@ all additive and backward-compatible, all zero-LLM-core. The MCP server grows fr
   - Surfaces: `evalsurfer quality` CLI verb, the `evalsurfer-quality` script, and MCP
     tools `retrieval_metrics` / `match_metrics` / `text_metrics`.
 - **Chance-corrected agreement & judge-vs-human calibration**
-  (`evalsurfer/calibration/agreement.py`, `evalsurfer/calibration/reference.py`): Cohen's
+  (`evalsurfer/analysis/calibration/agreement.py`, `evalsurfer/analysis/calibration/reference.py`): Cohen's
   κ, Fleiss's κ, Krippendorff's α (nominal), mean absolute error, and Spearman rank
   correlation — the rigorous replacement for raw agreement, which is ~50% by chance on a
   binary call.
@@ -39,13 +39,17 @@ all additive and backward-compatible, all zero-LLM-core. The MCP server grows fr
 
 ### Changed
 
-- **Repository restructure** (developer-facing; no runtime or public-API change):
-  consolidated root docs into `docs/`, moved the rubric + JSON schemas into `spec/`, split
-  the monolith `constants.py` into a per-domain `constants/` package and `mcp_server.py` +
-  `mcp_models.py` into an `evalsurfer/mcp/` package (tools grouped by domain), and mirrored
-  `tests/` to the package layout. `import evalsurfer.constants`, the subpackage APIs, and the
-  console-script names are unchanged; the `evalsurfer-mcp` entry point now targets
-  `evalsurfer.mcp.server:main`.
+- **Repository restructure** (developer-facing): consolidated root docs into `docs/`, moved
+  the rubric + JSON schemas into `spec/`, split the monolith `constants.py` into a per-domain
+  `constants/` package and `mcp_server.py` + `mcp_models.py` into an `mcp/` package (tools
+  grouped by domain), mirrored `tests/` to the package layout, and **grouped the subpackages
+  under five top-level groups** — `metrics/` (operational, quality, dataset), `analysis/`
+  (diagnostics, calibration), `assurance/` (safety, trajectory, policy), and `interface/`
+  (cli, mcp, adapters), with `constants/` and `core/` kept standalone. The top-level API
+  (`evalsurfer.constants`, `evalsurfer.core`, and `evalsurfer.{ScoringModel, EvaluationPlanner,
+  Signals}`) and all six console-script names are unchanged; the grouped subpackages' import
+  paths moved (e.g. `evalsurfer.diagnostics` → `evalsurfer.analysis.diagnostics`), and
+  `evalsurfer-mcp` now targets `evalsurfer.interface.mcp.server:main`.
 
 ### Notes
 

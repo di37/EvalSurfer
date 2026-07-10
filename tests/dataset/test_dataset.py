@@ -6,8 +6,8 @@ import unittest
 from dataclasses import FrozenInstanceError
 
 import evalsurfer.constants as constants
-from evalsurfer.dataset import CHANGE_CHANGED, Dataset, DatasetCase
-from evalsurfer.dataset import contamination
+from evalsurfer.metrics.dataset import CHANGE_CHANGED, Dataset, DatasetCase
+from evalsurfer.metrics.dataset import contamination
 
 
 def _content_digest(

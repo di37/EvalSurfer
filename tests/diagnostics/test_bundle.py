@@ -5,14 +5,14 @@ import unittest
 
 import evalsurfer.constants as constants
 from evalsurfer.core.planner import Signals
-from evalsurfer.diagnostics import DiagnosticsBundle
-from evalsurfer.diagnostics.bundle import DiagnosticsBundle as BundleFromModule
-from evalsurfer.diagnostics.explainability import Explainer
-from evalsurfer.diagnostics.failure_map import FailureMap
-from evalsurfer.diagnostics.maturity import MaturityClassifier
-from evalsurfer.diagnostics.regression import RegressionDiffer
-from evalsurfer.diagnostics.review_gate import ReviewGate
-from evalsurfer.diagnostics.root_cause import RootCauseAnalyzer
+from evalsurfer.analysis.diagnostics import DiagnosticsBundle
+from evalsurfer.analysis.diagnostics.bundle import DiagnosticsBundle as BundleFromModule
+from evalsurfer.analysis.diagnostics.explainability import Explainer
+from evalsurfer.analysis.diagnostics.failure_map import FailureMap
+from evalsurfer.analysis.diagnostics.maturity import MaturityClassifier
+from evalsurfer.analysis.diagnostics.regression import RegressionDiffer
+from evalsurfer.analysis.diagnostics.review_gate import ReviewGate
+from evalsurfer.analysis.diagnostics.root_cause import RootCauseAnalyzer
 
 
 def _crit(cid: str, name: str, score: int | None, **extra: object) -> dict:

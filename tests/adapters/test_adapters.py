@@ -3,13 +3,13 @@ from __future__ import annotations
 import unittest
 
 import evalsurfer.constants as constants
-from evalsurfer.adapters import (
+from evalsurfer.interface.adapters import (
     LangSmithAdapter,
     OtelAdapter,
     PromptfooAdapter,
     RagasAdapter,
 )
-from evalsurfer.operational.metrics import OperationalMetrics, RequestTrace
+from evalsurfer.metrics.operational.metrics import OperationalMetrics, RequestTrace
 
 
 class RagasAdapterTest(unittest.TestCase):

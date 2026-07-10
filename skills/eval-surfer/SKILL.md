@@ -19,7 +19,7 @@ EvalSurfer is a skill-first evaluation workflow. The skill drives the assessment
 1. Scope adaptively. Infer which pillars and criteria apply from the inputs that are actually present instead of evaluating everything. The planner decides this deterministically:
 
 ```bash
-echo '{"sample": {"query": "...", "answer": "...", "retrieved_docs": ["..."]}}' | python -m evalsurfer.cli.plan - --pretty
+echo '{"sample": {"query": "...", "answer": "...", "retrieved_docs": ["..."]}}' | python -m evalsurfer.interface.cli.plan - --pretty
 ```
 
    It returns the applicable criteria (with a reason for each skip) and a coverage score. The pillars it draws from:
@@ -31,7 +31,7 @@ echo '{"sample": {"query": "...", "answer": "...", "retrieved_docs": ["..."]}}' 
 1. If operational traces are provided, calculate metrics with the CLI:
 
 ```bash
-python -m evalsurfer.cli.metrics examples/traces.json --pretty
+python -m evalsurfer.interface.cli.metrics examples/traces.json --pretty
 ```
 
 1. Report findings with evidence, and include the coverage score (assessed ÷ applicable criteria).
@@ -148,10 +148,10 @@ identical.
 Use the Python module only when calculation is needed:
 
 ```python
-from evalsurfer.operational.metrics import OperationalMetrics, Pricing, RequestTrace
+from evalsurfer.metrics.operational.metrics import OperationalMetrics, Pricing, RequestTrace
 ```
 
-Deterministic diagnostics classes are also available (no model calls) — import from the package (e.g. `from evalsurfer.diagnostics import Explainer, RegressionDiffer`) and use them to explain or compare results after scoring:
+Deterministic diagnostics classes are also available (no model calls) — import from the package (e.g. `from evalsurfer.analysis.diagnostics import Explainer, RegressionDiffer`) and use them to explain or compare results after scoring:
 
 - `ScoringModel` — pillar/overall scores and the pass/fix/fail decision from criterion scores.
 - `EvaluationPlanner` — which pillars/criteria apply, plus coverage.
@@ -159,6 +159,6 @@ Deterministic diagnostics classes are also available (no model calls) — import
 - `RegressionDiffer` — diff two reports; `MaturityClassifier` — level 1-6; `IndustryProfiler` — industry-weighted overall.
 - `Evidence` — structured evidence; `ReviewGate` — human-review recommendation; also `PersonaAggregator`, `FailureMap`, `GoldenSet`.
 
-To assemble your criterion scores into a validated report and a release gate deterministically, use the unified CLI: `python -m evalsurfer.cli.main evaluate scores.json --out report.json`, then `... validate report.json` and `... gate report.json --min pass_with_fixes`.
+To assemble your criterion scores into a validated report and a release gate deterministically, use the unified CLI: `python -m evalsurfer.interface.cli.main evaluate scores.json --out report.json`, then `... validate report.json` and `... gate report.json --min pass_with_fixes`.
 
 These classes are not the product; they are EvalSurfer's measurement helpers.

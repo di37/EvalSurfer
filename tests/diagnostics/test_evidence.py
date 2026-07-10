@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from evalsurfer.diagnostics.evidence import Evidence
+from evalsurfer.analysis.diagnostics.evidence import Evidence
 
 
 class NormalizeEvidenceStringTest(unittest.TestCase):
