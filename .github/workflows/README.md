@@ -11,8 +11,8 @@ GitHub Actions workflows for the repository.
 
 - The test matrix mirrors `requires-python = ">=3.11"` in [`../../pyproject.toml`](../../pyproject.toml); add a Python version here and there together.
 - `fail-fast: false` so one version failing still reports the others.
-- The **core** package has **no runtime dependencies**; the `test` job installs only the `[dev]` extra (`jsonschema`), which also proves the core stays importable with no `mcp` / `pydantic`.
-- The **`mcp`** job installs the `[mcp]` extra so [`test_mcp_server.py`](../../tests/test_mcp_server.py) runs (it `@skipUnless`-skips in the `test` job) and asserts all **47** tools register — closing what would otherwise be an MCP coverage gap while keeping the zero-dependency signal from the `test` job.
+- The **`evalsurfer` package** has **no runtime dependencies**; the `test` job installs only the `[dev]` extra (`jsonschema`), which also proves the package stays importable with no `mcp` / `pydantic`.
+- The **`mcp`** job installs the `[mcp]` extra so [`test_mcp_server.py`](../../tests/interface/mcp/test_mcp_server.py) runs (it `@skipUnless`-skips in the `test` job) and asserts all **47** tools register — closing what would otherwise be an MCP coverage gap while keeping the zero-dependency signal from the `test` job.
 
 > Not to be confused with the release **gate** action at
 > [`../../action.yml`](../../action.yml), which is a reusable composite action

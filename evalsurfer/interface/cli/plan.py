@@ -1,7 +1,7 @@
 """Command-line interface for the EvalSurfer adaptive planner.
 
 Reads a JSON payload describing an evaluation target and prints the plan: which
-pillars and criteria apply, why, and a coverage score. No model calls.
+categories and criteria apply, why, and a coverage score. No model calls.
 
 Accepts one of::
 

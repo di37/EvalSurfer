@@ -1,12 +1,12 @@
-"""Core scoring, adaptive planning, orchestration, validation, and gating."""
+"""Core scoring, adaptive planning, report assembly, validation, and gating."""
 
 from evalsurfer.core.evaluate import Evaluator
 from evalsurfer.core.planner import (
     Criterion,
     EvaluationPlan,
     EvaluationPlanner,
+    PlannedCategory,
     PlannedCriterion,
-    PlannedPillar,
     Signals,
 )
 from evalsurfer.core.report import Gate, ReportValidator
@@ -19,7 +19,7 @@ __all__ = [
     "Criterion",
     "EvaluationPlan",
     "PlannedCriterion",
-    "PlannedPillar",
+    "PlannedCategory",
     "ReportValidator",
     "Gate",
     "Evaluator",

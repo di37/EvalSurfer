@@ -10,20 +10,16 @@ from evalsurfer.interface.cli.plan import build_report, main, resolve_signals, s
 
 HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# framework.json names the quality pillar "application_quality"; the report
-# schema (and the planner) use "quality".
-_FRAMEWORK_PILLAR_ALIAS = {"application_quality": "quality"}
-
 
 def framework_criteria() -> set[tuple[str, str | None, str, str]]:
     with open(os.path.join(HERE, "spec", "framework.json"), encoding="utf-8") as file:
-        pillars = json.load(file)["eval_surfer"]["pillars"]
+        categories = json.load(file)["eval_surfer"]["categories"]
     out: set[tuple[str, str | None, str, str]] = set()
-    for pillar in pillars:
-        pid = _FRAMEWORK_PILLAR_ALIAS.get(pillar["id"], pillar["id"])
-        for sub in pillar.get("subcategories", [{"id": None, "criteria": pillar.get("criteria", [])}]):
+    for category in categories:
+        cid = category["category"]
+        for sub in category.get("subcategories", [{"id": None, "criteria": category.get("criteria", [])}]):
             for crit in sub["criteria"]:
-                out.add((pid, sub["id"], crit["id"], crit["name"]))
+                out.add((cid, sub["id"], crit["id"], crit["name"]))
     return out
 
 
@@ -31,13 +27,13 @@ def applicable_ids(plan) -> set[str]:
     return {c.id for c in plan.applicable_criteria()}
 
 
-def applicable_pillars(plan) -> set[str]:
-    return {p.id for p in plan.pillars if p.applicable}
+def applicable_categories(plan) -> set[str]:
+    return {p.id for p in plan.categories if p.applicable}
 
 
 class PlannerCatalogTest(unittest.TestCase):
     def test_catalog_matches_framework_json(self) -> None:
-        planner = {(c.pillar, c.group, c.id, c.name) for c in EvaluationPlanner.CRITERIA}
+        planner = {(c.category, c.group, c.id, c.name) for c in EvaluationPlanner.CRITERIA}
         self.assertEqual(planner, framework_criteria())
 
     def test_catalog_has_29_criteria(self) -> None:
@@ -49,7 +45,7 @@ class PlannerApplicabilityTest(unittest.TestCase):
         plan = EvaluationPlanner.plan(
             Signals(answer=True, retrieved_context=True, citations=True)
         )
-        self.assertEqual(applicable_pillars(plan), {"quality", "safety"})
+        self.assertEqual(applicable_categories(plan), {"quality", "safety"})
         ids = applicable_ids(plan)
         self.assertIn("correctness_accuracy", ids)
         self.assertIn("citation_accuracy", ids)
@@ -75,13 +71,13 @@ class PlannerApplicabilityTest(unittest.TestCase):
 
     def test_operational_only_target_skips_safety_without_an_answer(self) -> None:
         plan = EvaluationPlanner.plan(Signals(operational_traces=True))
-        self.assertEqual(applicable_pillars(plan), {"operational"})
+        self.assertEqual(applicable_categories(plan), {"operational"})
         self.assertNotIn("toxicity", applicable_ids(plan))
 
     def test_safety_opt_out_is_explicit(self) -> None:
         plan = EvaluationPlanner.plan(Signals(answer=True, safety_relevant=False))
-        self.assertEqual(applicable_pillars(plan), {"quality"})
-        toxicity = next(c for p in plan.pillars for c in p.criteria if c.id == "toxicity")
+        self.assertEqual(applicable_categories(plan), {"quality"})
+        toxicity = next(c for p in plan.categories for c in p.criteria if c.id == "toxicity")
         self.assertFalse(toxicity.applicable)
         self.assertIn("opted out", toxicity.reason)
 
@@ -92,8 +88,8 @@ class PlannerCoverageTest(unittest.TestCase):
             Signals(answer=True, retrieved_context=True, citations=True)
         )
         cov = EvaluationPlanner.planned_coverage(plan)
-        self.assertEqual(cov["applicable_pillars"], 2)
-        self.assertEqual(cov["total_pillars"], 3)
+        self.assertEqual(cov["applicable_categories"], 2)
+        self.assertEqual(cov["total_categories"], 3)
         self.assertEqual(cov["applicable_criteria"], 13)  # 4 core + 4 rag + 5 safety
         self.assertEqual(cov["total_criteria"], 29)
         self.assertAlmostEqual(cov["score"], round(13 / 29, 3))
@@ -103,15 +99,17 @@ class PlannerCoverageTest(unittest.TestCase):
             Signals(answer=True, retrieved_context=True, citations=True)
         )
         report = {
-            "pillars": {
+            "metrics": {
                 "quality": {
                     "criteria": [
                         {"id": "correctness_accuracy", "score": 4},
                         {"id": "citation_accuracy", "score": None},
                     ]
                 },
+            },
+            "assurance": {
                 "safety": {"criteria": [{"id": "toxicity", "score": 5}]},
-            }
+            },
         }
         cov = EvaluationPlanner.coverage(plan, report)
         self.assertEqual(cov["applicable"], 13)
@@ -153,7 +151,7 @@ class PlannerCliTest(unittest.TestCase):
     def test_build_report_from_sample(self) -> None:
         report = build_report({"sample": {"answer": "x", "retrieved_docs": ["c"]}})
         self.assertIn("signals", report)
-        self.assertEqual(report["plan"]["coverage"]["applicable_pillars"], 2)
+        self.assertEqual(report["plan"]["coverage"]["applicable_categories"], 2)
 
     def test_flags_reject_unknown_signal(self) -> None:
         with self.assertRaises(ValueError):

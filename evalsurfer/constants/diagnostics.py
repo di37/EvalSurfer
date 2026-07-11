@@ -2,7 +2,7 @@
 
 Regression diff change labels, the maturity ladder, industry weighting profiles,
 persona lenses, the pipeline failure map, and the diagnostics block keys. Builds
-on the pillar/group names (``pillars``) for the profiles and stage selectors.
+on the category/group names (``categories``) for the profiles and stage selectors.
 Data only -- no behavior, no imports beyond typing helpers and sibling constants.
 """
 
@@ -10,14 +10,14 @@ from __future__ import annotations
 
 from typing import Final
 
-from evalsurfer.constants.pillars import (
+from evalsurfer.constants.categories import (
     GROUP_AGENT_TOOL_USE,
-    GROUP_CORE_GENERATION,
+    GROUP_GENERATION,
     GROUP_MULTI_TURN,
     GROUP_RAG,
-    PILLAR_OPERATIONAL,
-    PILLAR_QUALITY,
-    PILLAR_SAFETY,
+    CATEGORY_OPERATIONAL,
+    CATEGORY_QUALITY,
+    CATEGORY_SAFETY,
 )
 
 # --------------------------------------------------------------------------- #
@@ -61,17 +61,17 @@ MATURITY_LEVEL_RECOMMENDATIONS: Final = {
 }
 
 # --------------------------------------------------------------------------- #
-# Industry weighting profiles (pillar weights that sum to 1.0)
+# Industry weighting profiles (category weights that sum to 1.0)
 # --------------------------------------------------------------------------- #
 PROFILE_DEFAULT: Final = "default"
 INDUSTRY_PROFILES: Final = {
-    PROFILE_DEFAULT: {PILLAR_QUALITY: 1 / 3, PILLAR_SAFETY: 1 / 3, PILLAR_OPERATIONAL: 1 / 3},
-    "healthcare": {PILLAR_QUALITY: 0.40, PILLAR_SAFETY: 0.50, PILLAR_OPERATIONAL: 0.10},
-    "finance": {PILLAR_QUALITY: 0.40, PILLAR_SAFETY: 0.40, PILLAR_OPERATIONAL: 0.20},
-    "gaming": {PILLAR_QUALITY: 0.35, PILLAR_SAFETY: 0.15, PILLAR_OPERATIONAL: 0.50},
-    "customer_support": {PILLAR_QUALITY: 0.50, PILLAR_SAFETY: 0.20, PILLAR_OPERATIONAL: 0.30},
-    "legal": {PILLAR_QUALITY: 0.45, PILLAR_SAFETY: 0.45, PILLAR_OPERATIONAL: 0.10},
-    "education": {PILLAR_QUALITY: 0.60, PILLAR_SAFETY: 0.25, PILLAR_OPERATIONAL: 0.15},
+    PROFILE_DEFAULT: {CATEGORY_QUALITY: 1 / 3, CATEGORY_SAFETY: 1 / 3, CATEGORY_OPERATIONAL: 1 / 3},
+    "healthcare": {CATEGORY_QUALITY: 0.40, CATEGORY_SAFETY: 0.50, CATEGORY_OPERATIONAL: 0.10},
+    "finance": {CATEGORY_QUALITY: 0.40, CATEGORY_SAFETY: 0.40, CATEGORY_OPERATIONAL: 0.20},
+    "gaming": {CATEGORY_QUALITY: 0.35, CATEGORY_SAFETY: 0.15, CATEGORY_OPERATIONAL: 0.50},
+    "customer_support": {CATEGORY_QUALITY: 0.50, CATEGORY_SAFETY: 0.20, CATEGORY_OPERATIONAL: 0.30},
+    "legal": {CATEGORY_QUALITY: 0.45, CATEGORY_SAFETY: 0.45, CATEGORY_OPERATIONAL: 0.10},
+    "education": {CATEGORY_QUALITY: 0.60, CATEGORY_SAFETY: 0.25, CATEGORY_OPERATIONAL: 0.15},
 }
 
 # --------------------------------------------------------------------------- #
@@ -80,7 +80,7 @@ INDUSTRY_PROFILES: Final = {
 DEFAULT_PERSONAS: Final = ("engineer", "lawyer", "doctor", "beginner", "ceo")
 
 # --------------------------------------------------------------------------- #
-# Pipeline failure map: stages, statuses, and which (pillar, group) selectors
+# Pipeline failure map: stages, statuses, and which (category, group) selectors
 # feed each stage. Prompt/Response are structural (no mapped criteria).
 # --------------------------------------------------------------------------- #
 STAGE_PROMPT: Final = "Prompt"
@@ -102,16 +102,19 @@ STAGE_STATUS_FAIL: Final = "fail"
 STAGE_STATUS_NA: Final = "na"
 FAILURE_MAP_THRESHOLD: Final = 3  # criterion score below this marks a stage weak
 
-# (pillar, group) selectors mapped to each stage.
+# (category, group) selectors mapped to each stage. Retriever and Ranker share
+# the RAG-quality criteria by design: the rubric has no separate ranking
+# criteria, so retrieval quality (context relevance, recall, citation accuracy)
+# stands in for both stages rather than inventing a ranker-only signal.
 STAGE_SELECTORS: Final = {
-    STAGE_RETRIEVER: ((PILLAR_QUALITY, GROUP_RAG),),
-    STAGE_RANKER: ((PILLAR_QUALITY, GROUP_RAG),),
+    STAGE_RETRIEVER: ((CATEGORY_QUALITY, GROUP_RAG),),
+    STAGE_RANKER: ((CATEGORY_QUALITY, GROUP_RAG),),
     STAGE_GENERATOR: (
-        (PILLAR_QUALITY, GROUP_CORE_GENERATION),
-        (PILLAR_QUALITY, GROUP_MULTI_TURN),
-        (PILLAR_SAFETY, None),
+        (CATEGORY_QUALITY, GROUP_GENERATION),
+        (CATEGORY_QUALITY, GROUP_MULTI_TURN),
+        (CATEGORY_SAFETY, None),
     ),
-    STAGE_TOOL: ((PILLAR_QUALITY, GROUP_AGENT_TOOL_USE),),
+    STAGE_TOOL: ((CATEGORY_QUALITY, GROUP_AGENT_TOOL_USE),),
 }
 
 # Diagnostics block keys carried in a report's optional "diagnostics" section.

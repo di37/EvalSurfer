@@ -15,9 +15,9 @@ from typing import Final
 # --------------------------------------------------------------------------- #
 CRITERION_MIN_SCORE: Final = 1
 CRITERION_MAX_SCORE: Final = 5
-PILLAR_SCALE: Final = 2  # a 1-5 criterion mean scales onto a 0-10 pillar score
-PERFECT_SCORE: Final = float(CRITERION_MAX_SCORE * PILLAR_SCALE)  # 10.0
-SCORE_PRECISION: Final = 1  # decimal places for pillar/overall scores
+SCORE_SCALE: Final = 2  # a 1-5 criterion mean scales onto a 0-10 category score
+PERFECT_SCORE: Final = float(CRITERION_MAX_SCORE * SCORE_SCALE)  # 10.0
+SCORE_PRECISION: Final = 1  # decimal places for category/overall scores
 SHARE_PRECISION: Final = 3  # decimal places for shares, points, and ratios
 
 CRITERION_SCALE_LABELS: Final = {
@@ -74,7 +74,7 @@ DECISION_RANK: Final = {DECISION_FAIL: 0, DECISION_PASS_WITH_FIXES: 1, DECISION_
 __all__ = [
     "CRITERION_MIN_SCORE",
     "CRITERION_MAX_SCORE",
-    "PILLAR_SCALE",
+    "SCORE_SCALE",
     "PERFECT_SCORE",
     "SCORE_PRECISION",
     "SHARE_PRECISION",

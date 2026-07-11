@@ -12,7 +12,7 @@ def _valid_report():
 
     return {
         "overall": {"score": 8.0, "decision": constants.DECISION_PASS, "summary": "ok"},
-        "pillars": {
+        "metrics": {
             "quality": {
                 "score": 8.0,
                 "criteria": [
@@ -20,6 +20,8 @@ def _valid_report():
                     {"id": "completeness", "name": "Completeness", "score": None, "evidence": "..."},
                 ],
             },
+        },
+        "assurance": {
             "safety": {
                 "score": 9.0,
                 "criteria": [
@@ -49,7 +51,7 @@ class ReportValidatorTest(unittest.TestCase):
         self.assertTrue(result["errors"])
 
     def test_missing_each_required_key_is_reported(self) -> None:
-        for key in ("overall", "pillars", "decision", "top_issues"):
+        for key in ("overall", "decision", "top_issues"):
             report = _valid_report()
             del report[key]
             result = ReportValidator.validate(report)
@@ -60,8 +62,8 @@ class ReportValidatorTest(unittest.TestCase):
         result = ReportValidator.validate({})
         self.assertFalse(result["valid"])
         # Exactly one "missing required key" error per required key, nothing else.
-        self.assertEqual(len(result["errors"]), 4)
-        for key in ("overall", "pillars", "decision", "top_issues"):
+        self.assertEqual(len(result["errors"]), 3)
+        for key in ("overall", "decision", "top_issues"):
             self.assertIn(f"missing required key: {key!r}", result["errors"])
 
     def test_invalid_top_level_decision(self) -> None:
@@ -78,23 +80,23 @@ class ReportValidatorTest(unittest.TestCase):
         self.assertFalse(result["valid"])
         self.assertTrue(any("overall.decision 'unsure'" in e for e in result["errors"]))
 
-    def test_unknown_pillar_key(self) -> None:
+    def test_unknown_category_key(self) -> None:
         report = _valid_report()
-        report["pillars"]["speed"] = {"score": 5.0, "criteria": []}
+        report["metrics"]["speed"] = {"score": 5.0, "criteria": []}
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
-        self.assertTrue(any("pillar key 'speed'" in e for e in result["errors"]))
+        self.assertTrue(any("category key 'speed'" in e for e in result["errors"]))
 
-    def test_all_known_pillar_keys_accepted(self) -> None:
+    def test_all_known_category_keys_accepted(self) -> None:
         report = _valid_report()
-        report["pillars"]["operational"] = {"score": 7.0, "criteria": []}
+        report["metrics"]["operational"] = {"score": 7.0, "criteria": []}
         result = ReportValidator.validate(report)
         self.assertEqual(result, {"valid": True, "errors": []})
 
     def test_criterion_score_out_of_range(self) -> None:
         for bad_score in (0, 6, -1, 10):
             report = _valid_report()
-            report["pillars"]["quality"]["criteria"][0]["score"] = bad_score
+            report["metrics"]["quality"]["criteria"][0]["score"] = bad_score
             result = ReportValidator.validate(report)
             self.assertFalse(result["valid"], bad_score)
             self.assertTrue(
@@ -107,33 +109,33 @@ class ReportValidatorTest(unittest.TestCase):
             constants.CRITERION_MAX_SCORE,
         ):
             report = _valid_report()
-            report["pillars"]["quality"]["criteria"][0]["score"] = good_score
+            report["metrics"]["quality"]["criteria"][0]["score"] = good_score
             result = ReportValidator.validate(report)
             self.assertTrue(result["valid"], good_score)
 
     def test_criterion_score_float_is_rejected(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["criteria"][0]["score"] = 4.0
+        report["metrics"]["quality"]["criteria"][0]["score"] = 4.0
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
         self.assertTrue(any("criterion 'relevance'" in e for e in result["errors"]))
 
     def test_criterion_score_bool_is_rejected(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["criteria"][0]["score"] = True
+        report["metrics"]["quality"]["criteria"][0]["score"] = True
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
         self.assertTrue(any("criterion 'relevance'" in e for e in result["errors"]))
 
     def test_criterion_score_none_is_allowed(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["criteria"][0]["score"] = None
+        report["metrics"]["quality"]["criteria"][0]["score"] = None
         result = ReportValidator.validate(report)
         self.assertEqual(result, {"valid": True, "errors": []})
 
     def test_criterion_without_id_uses_unknown_label(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["criteria"][0] = {"name": "x", "score": 9, "evidence": "."}
+        report["metrics"]["quality"]["criteria"][0] = {"name": "x", "score": 9, "evidence": "."}
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
         self.assertTrue(any("criterion 'unknown'" in e for e in result["errors"]))
@@ -174,25 +176,25 @@ class ReportValidatorTest(unittest.TestCase):
             result = ReportValidator.validate(report)
             self.assertTrue(result["valid"], good_score)
 
-    def test_pillar_score_out_of_range(self) -> None:
+    def test_category_score_out_of_range(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["score"] = 11.0
+        report["metrics"]["quality"]["score"] = 11.0
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
-        self.assertTrue(any("pillar 'quality' score" in e for e in result["errors"]))
+        self.assertTrue(any("category 'quality' score" in e for e in result["errors"]))
 
-    def test_pillar_score_none_is_allowed(self) -> None:
+    def test_category_score_none_is_allowed(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["score"] = None
+        report["metrics"]["quality"]["score"] = None
         result = ReportValidator.validate(report)
         self.assertEqual(result, {"valid": True, "errors": []})
 
     def test_score_bool_is_rejected_for_aggregate(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["score"] = True
+        report["metrics"]["quality"]["score"] = True
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
-        self.assertTrue(any("pillar 'quality' score" in e for e in result["errors"]))
+        self.assertTrue(any("category 'quality' score" in e for e in result["errors"]))
 
     def test_non_mapping_report_is_invalid_not_raised(self) -> None:
         result = ReportValidator.validate(["not", "a", "mapping"])
@@ -205,19 +207,19 @@ class ReportValidatorTest(unittest.TestCase):
         self.assertFalse(result["valid"])
         self.assertIn("overall must be a mapping", result["errors"])
 
-    def test_pillars_not_a_mapping(self) -> None:
+    def test_metrics_layer_not_a_mapping(self) -> None:
         report = _valid_report()
-        report["pillars"] = ["quality", "safety"]
+        report["metrics"] = ["quality", "operational"]
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
-        self.assertIn("pillars must be a mapping", result["errors"])
+        self.assertIn("metrics must be a mapping", result["errors"])
 
-    def test_pillar_value_not_a_mapping(self) -> None:
+    def test_category_value_not_a_mapping(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"] = "great"
+        report["metrics"]["quality"] = "great"
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
-        self.assertIn("pillar 'quality' must be a mapping", result["errors"])
+        self.assertIn("category 'quality' must be a mapping", result["errors"])
 
     def test_top_issues_not_a_list(self) -> None:
         report = _valid_report()
@@ -236,8 +238,8 @@ class ReportValidatorTest(unittest.TestCase):
     def test_accumulates_multiple_errors(self) -> None:
         report = _valid_report()
         report["decision"] = "bad"
-        report["pillars"]["speed"] = {"score": 5.0, "criteria": []}
-        report["pillars"]["quality"]["criteria"][0]["score"] = 99
+        report["metrics"]["speed"] = {"score": 5.0, "criteria": []}
+        report["metrics"]["quality"]["criteria"][0]["score"] = 99
         report["top_issues"][0]["severity"] = "urgent"
         result = ReportValidator.validate(report)
         self.assertFalse(result["valid"])
@@ -252,14 +254,14 @@ class ReportValidatorTest(unittest.TestCase):
 
     def test_result_is_deterministic(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["criteria"][0]["score"] = 42
+        report["metrics"]["quality"]["criteria"][0]["score"] = 42
         self.assertEqual(
             ReportValidator.validate(report), ReportValidator.validate(report)
         )
 
     def test_tolerates_malformed_criteria_container(self) -> None:
         report = _valid_report()
-        report["pillars"]["quality"]["criteria"] = "not a list"
+        report["metrics"]["quality"]["criteria"] = "not a list"
         # Traversal is delegated to ScoringModel; malformed criteria are skipped.
         result = ReportValidator.validate(report)
         self.assertTrue(result["valid"])

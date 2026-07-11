@@ -2,7 +2,7 @@
 
 Keeps ``examples/report.json`` and ``report.schema.json`` from drifting apart.
 The test needs the optional ``jsonschema`` dependency; it skips (rather than
-fails) when that package is not installed, so the zero-dependency core test run
+fails) when that package is not installed, so the zero-dependency package test run
 still passes.
 """
 
@@ -47,8 +47,8 @@ class ReportSchemaTest(unittest.TestCase):
         self.assertEqual(errors, [], f"example/report.json is invalid:\n{messages}")
 
     def test_invalid_report_is_rejected(self) -> None:
-        # A report missing the required "pillars"/"decision"/"top_issues" keys
-        # and with an out-of-range score must not validate.
+        # A report missing the required "decision"/"top_issues" keys and with an
+        # out-of-range score must not validate.
         invalid = {"overall": {"score": 42, "decision": "excellent"}}
         with self.assertRaises(jsonschema.ValidationError):
             Draft202012Validator(self.schema).validate(invalid)

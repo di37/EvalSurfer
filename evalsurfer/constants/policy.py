@@ -1,7 +1,7 @@
 """Release guardrail policy.
 
-Machine-readable rule names the gate enforces on a report; the field names are
-the keys of a guardrails.json policy file.
+Machine-readable rule names Assurance ``guardrail_gate`` / ``Guardrails`` enforce
+on a report; the field names are the keys of a guardrails.json policy file.
 Data only -- no behavior, no imports beyond typing helpers.
 """
 
@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Final
 
 # --------------------------------------------------------------------------- #
-# Release guardrail policy: machine-readable rules the gate enforces on a report.
+# Release guardrail policy: rules Assurance Guardrails enforces on a report.
 # Field names are the keys of a guardrails.json policy file.
 # --------------------------------------------------------------------------- #
 GUARDRAIL_MIN_DECISION: Final = "min_decision"

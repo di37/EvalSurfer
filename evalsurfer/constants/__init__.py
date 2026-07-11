@@ -5,15 +5,15 @@ constant, so scoring thresholds, the rubric catalog, decision names, and the lik
 are defined exactly once and imported everywhere else (DRY).
 
 The package holds data only -- no behavior, no imports beyond typing helpers. It
-is split into cohesive domain modules (pillars, signals, scoring, rubric, ...);
+is split into cohesive domain modules (categories, signals, scoring, rubric, ...);
 this ``__init__`` re-exports every constant so ``import evalsurfer.constants as
 constants; constants.X`` keeps working exactly as before.
 """
 
 from __future__ import annotations
 
-# Dependency order: pillars/signals before rubric; pillars before diagnostics.
-from evalsurfer.constants.pillars import *  # noqa: F401,F403
+# Dependency order: categories/signals before rubric; categories before diagnostics.
+from evalsurfer.constants.categories import *  # noqa: F401,F403
 from evalsurfer.constants.signals import *  # noqa: F401,F403
 from evalsurfer.constants.scoring import *  # noqa: F401,F403
 from evalsurfer.constants.rubric import *  # noqa: F401,F403

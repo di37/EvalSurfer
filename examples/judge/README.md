@@ -18,7 +18,7 @@ Python script.
  (examples/judge/qa_pairs)    └────────────────────────────────┘
                               ┌─ B. PYTHON SCRIPT + LLM ───────┐
                         ─────▶│  llm_judge.py → Claude judges  │────▶ printed + report.json
-                              │  → EvalSurfer assembles report │
+                              │  → Interface pipeline report   │
                               └────────────────────────────────┘
 ```
 
@@ -73,7 +73,7 @@ transcript of the agent calling `plan`, `evaluate`, and `gate` as deterministic 
 > model API directly; it's for pipelines/CI that have no harness LLM.
 
 For pipelines/CI, run the judge as a script. It calls Claude to produce the
-scores, then EvalSurfer's deterministic layer assembles, prints, and saves them:
+scores, then the Interface pipeline runs (Metrics enrich → Core assemble → Analysis diagnose), prints, and saves them:
 
 ```bash
 pip install "evalsurfer[llm]"        # installs the anthropic SDK (optional extra)
@@ -99,7 +99,7 @@ python examples/judge/llm_judge.py examples/judge/qa_pairs.json \
 saved report → report.json
 ```
 
-The saved `report.json` is a full EvalSurfer report (pillars, overall, decision,
+The saved `report.json` is a full EvalSurfer report (metrics, assurance, overall, decision,
 coverage, diagnostics) — treat it like any other report:
 
 ```bash
@@ -113,7 +113,7 @@ evalsurfer gate report.json --min pass    # exit 0 — it's a PASS
 ## ⚠️ Teaching moment — the judge caught it, but it still PASSED
 
 Look again: the judge flagged a real, ungrounded error (`correctness_accuracy`
-2/5, **with evidence**) — yet the decision is **pass** at 8.7, and a guardrail gate
+2/5, **with evidence**) — yet the decision is **pass** at 8.7, and Core's `gate`
 allows it. That's the [Average-Washing](../../docs/failure-modes.md#average-washing)
 failure mode: one `major` **quality** issue doesn't sink a strong aggregate, and
 EvalSurfer's hard-fail override fires only on **critical safety** issues, not
@@ -138,5 +138,5 @@ Separating the **LLM's judgment** (catch it, with evidence) from the
 | [`qa_pairs.json`](qa_pairs.json) | The query/answer/context pairs to judge. |
 | [`mock_scores.json`](mock_scores.json) | Canned judge output, so the pipeline runs without an API key. |
 
-> The core `evalsurfer` package never imports `anthropic`; only this example does.
+> The `evalsurfer` package never imports `anthropic`; only this example does.
 > `pip install "evalsurfer[llm]"` adds the SDK for Path B.

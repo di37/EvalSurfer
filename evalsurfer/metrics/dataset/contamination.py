@@ -1,6 +1,6 @@
 """Contamination controls for the golden dataset artifact.
 
-A golden set is only trustworthy if it is free of accidental leakage: exact
+A golden dataset is only trustworthy if it is free of accidental leakage: exact
 content duplicates that inflate agreement, blocked terms that must never appear,
 and canary strings planted to detect train/test contamination. These are pure,
 standard-library-only checks over case-like objects (anything exposing

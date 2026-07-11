@@ -54,7 +54,7 @@ consume. (See [`to_judge/`](to_judge/) for the full explanation.)
 see the **[`mcp/`](mcp/) walkthrough**: connect the server, load the skill, and watch
 the agent call `plan` → judge → `evaluate` → `gate`, no external model. For a pipeline
 with **no harness LLM**, [`judge/`](judge/) has a runnable script (`llm_judge.py`) that
-calls the Claude API directly to score, then assembles the report — run it for real
+calls the Claude API directly to score, then runs the Interface pipeline — run it for real
 with an API key, or **offline** with `--mock` ([`judge/README.md`](judge/README.md)).
 
 ## 2. ⚙️ Plan — which criteria should the judge even score?
@@ -72,11 +72,13 @@ evalsurfer plan examples/plan/agent.json         # + tool calls
 comes back with a reason, plus a coverage score. (Deterministic — this tells the
 judge *what* to score.)
 
-## 3. ⚙️ Evaluate — assemble the judge's scores into a report
+## 3. ⚙️ Evaluate — Interface pipeline (Metrics enrich → Core assemble → Analysis diagnose)
 
 [`sample.json`](sample.json) is a full request: the sample, the **judge's**
-per-criterion scores + evidence, traces + an SLO, and top issues. `evaluate`
-assembles the report (pillars, overall, decision, coverage, diagnostics):
+per-criterion scores + evidence, traces + an SLO, and top issues. Interface
+`evaluate` (CLI/MCP) runs the full pipeline — Metrics ops enrich → Core assemble →
+Analysis diagnostics — producing metrics, assurance, overall, decision, coverage,
+and diagnostics:
 
 ```bash
 evalsurfer evaluate examples/sample.json --pretty --out my_report.json
@@ -136,7 +138,7 @@ evalsurfer diagnose examples/report.json --before examples/report_before.json
 evalsurfer metrics examples/traces.json --pretty
 ```
 → `requests 3, failure_rate 0.333`, plus latency/TTFT percentiles, cost, and
-latency-under-load. The operational pillar is fully deterministic — no judge needed.
+latency-under-load. The operational category is fully deterministic — no judge needed.
 
 ## 8. 🧠→⚙️ Calibrate — evaluate the evaluator
 

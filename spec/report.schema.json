@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/di37/EvalSurfer/main/report.schema.json",
+  "$id": "https://raw.githubusercontent.com/di37/EvalSurfer/main/spec/report.schema.json",
   "title": "EvalSurfer Report",
   "type": "object",
-  "required": ["overall", "pillars", "decision", "top_issues"],
+  "required": ["overall", "decision", "top_issues"],
   "additionalProperties": false,
   "properties": {
     "overall": {
@@ -11,18 +11,24 @@
       "required": ["score", "decision"],
       "additionalProperties": false,
       "properties": {
-        "score": { "type": "number", "minimum": 0, "maximum": 10 },
+        "score": { "type": ["number", "null"], "minimum": 0, "maximum": 10 },
         "decision": { "$ref": "#/$defs/decision" },
         "summary": { "type": "string" }
       }
     },
-    "pillars": {
+    "metrics": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "quality": { "$ref": "#/$defs/pillar" },
-        "safety": { "$ref": "#/$defs/pillar" },
-        "operational": { "$ref": "#/$defs/pillar" }
+        "quality": { "$ref": "#/$defs/category" },
+        "operational": { "$ref": "#/$defs/category" }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "safety": { "$ref": "#/$defs/category" }
       }
     },
     "decision": { "$ref": "#/$defs/decision" },
@@ -130,7 +136,7 @@
         "criterion_id": { "type": "string" }
       }
     },
-    "pillar": {
+    "category": {
       "type": "object",
       "required": ["score", "criteria"],
       "additionalProperties": false,

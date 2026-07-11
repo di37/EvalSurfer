@@ -30,8 +30,11 @@ _WORD_RE = re.compile(r"\w+", re.UNICODE)
 _PUNCTUATION_TABLE = str.maketrans("", "", string.punctuation)
 
 # Common inflectional suffixes stripped by :func:`light_stem`, longest first so
-# that e.g. ``"ies"`` is tried before ``"s"``.
-_LIGHT_SUFFIXES = ("ies", "ing", "ted", "ed", "es", "ly", "s")
+# that e.g. ``"ies"`` is tried before ``"s"``. Note there is deliberately no
+# ``"ted"`` entry: past-tense ``-ed`` already covers ``"started" -> "start"``,
+# and a ``"ted"`` rule would wrongly strip the stem's own ``t`` ("started" ->
+# "star", "wanted" -> "wan"), breaking METEOR stem matching for ``-ted`` verbs.
+_LIGHT_SUFFIXES = ("ies", "ing", "ed", "es", "ly", "s")
 _MIN_STEM_LENGTH = 3
 
 
@@ -112,7 +115,7 @@ def light_stem(token: str) -> str:
     """Strip a common English inflectional suffix (a light, dependency-free stem).
 
     This is a deliberately small stemmer -- it removes a single trailing
-    ``-ies/-ing/-ted/-ed/-es/-ly/-s`` when a stem of at least
+    ``-ies/-ing/-ed/-es/-ly/-s`` when a stem of at least
     ``_MIN_STEM_LENGTH`` characters remains. It is *not* a full Porter stemmer
     and carries no synonym lexicon; it only lets METEOR match obvious
     inflections (``"walk"`` vs ``"walked"``, ``"cat"`` vs ``"cats"``). It does

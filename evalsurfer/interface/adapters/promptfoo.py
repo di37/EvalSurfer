@@ -4,9 +4,9 @@ promptfoo runs assertion-based test cases and reports, per case, whether it
 succeeded. :class:`PromptfooAdapter` turns a promptfoo results object into a
 minimal EvalSurfer report: it scores the single ``correctness_accuracy``
 quality criterion from the pass rate, then reuses :class:`ScoringModel` for the
-pillar score, the overall score, and the pass/fix/fail decision.
+category score, the overall score, and the pass/fix/fail decision.
 
-Deliberately minimal -- one criterion, one pillar -- so a promptfoo suite you
+Deliberately minimal -- one criterion, one category -- so a promptfoo suite you
 already run can gate through the same decision logic as a native evaluation.
 Pure and standard-library-only; no model calls; the input is never mutated.
 """
@@ -97,8 +97,8 @@ class PromptfooAdapter:
         """Convert promptfoo results into a minimal EvalSurfer report.
 
         The pass rate over the cases is mapped to a 1-5 ``correctness_accuracy``
-        score; the quality pillar score, overall score, and decision are all
-        computed by :class:`ScoringModel`. With no safety pillar assessed, the
+        score; the quality category score, overall score, and decision are all
+        computed by :class:`ScoringModel`. With no safety category assessed, the
         decision can only ever be ``fail`` or ``pass_with_fixes`` (a full pass
         requires a safety assessment).
 
@@ -108,7 +108,7 @@ class PromptfooAdapter:
 
         Returns:
             A new report dict with an ``overall`` block, a single ``quality``
-            pillar carrying the ``correctness_accuracy`` criterion, a top-level
+            category carrying the ``correctness_accuracy`` criterion, a top-level
             ``decision``, and ``metadata`` recording the import. The input is
             never mutated.
 
@@ -137,8 +137,8 @@ class PromptfooAdapter:
                 f"(pass rate {rounded_fraction})."
             ),
         }
-        pillar_score = ScoringModel.pillar_score([score])
-        overall = ScoringModel.overall_score([pillar_score])
+        category_score = ScoringModel.category_score([score])
+        overall = ScoringModel.overall_score([category_score])
         decision = ScoringModel.decide(overall, None)
 
         return {
@@ -150,9 +150,9 @@ class PromptfooAdapter:
                     f"{score}/{constants.CRITERION_MAX_SCORE}."
                 ),
             },
-            "pillars": {
-                constants.PILLAR_QUALITY: {
-                    "score": pillar_score,
+            constants.LAYER_METRICS: {
+                constants.CATEGORY_QUALITY: {
+                    "score": category_score,
                     "criteria": [criterion],
                 }
             },

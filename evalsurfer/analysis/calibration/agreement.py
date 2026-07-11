@@ -233,7 +233,7 @@ class AgreementStats:
         )
 
     @staticmethod
-    def krippendorff_alpha(reliability_data: Sequence[Sequence[Any]]) -> float:
+    def krippendorff_alpha(reliability_data: Sequence[Sequence[Any]]) -> float | None:
         """Krippendorff's alpha (nominal): chance-corrected agreement with gaps.
 
         Builds the nominal coincidence matrix over units that have at least two
@@ -251,9 +251,10 @@ class AgreementStats:
 
         Returns:
             The alpha coefficient rounded to ``constants.SHARE_PRECISION``
-            decimals. When there is no expected disagreement -- every valid rating
-            shares one label, or no unit is pairable (``D_e == 0``) -- returns
-            ``1.0``.
+            decimals, or ``None`` when there is no pairable data at all (no unit
+            has two or more valid ratings), since agreement is then undefined
+            rather than perfect. When there *is* pairable data but every valid
+            rating shares one label (``D_e == 0``), returns ``1.0``.
 
         Raises:
             TypeError: If ``reliability_data`` or any unit is a string, bytes, or
@@ -273,7 +274,9 @@ class AgreementStats:
         row_totals = {label: sum(row.values()) for label, row in coincidence.items()}
         total = sum(row_totals.values())
         if total == 0:
-            return 1.0
+            # No unit had two or more valid ratings: there is no evidence of
+            # (dis)agreement, so alpha is undefined -- not perfect agreement.
+            return None
         observed_disagreement = sum(
             value
             for label, row in coincidence.items()

@@ -32,8 +32,8 @@ Issues = "https://github.com/di37/EvalSurfer/issues"
 Documentation = "https://github.com/di37/EvalSurfer#readme"
 
 [project.optional-dependencies]
-# Only needed to run the report-schema validation test; the core stays zero-dependency.
-dev = ["jsonschema>=4"]
+# Only needed for schema/spec consistency tests; the runtime stays zero-dependency.
+dev = ["jsonschema>=4", "PyYAML>=6", "types-PyYAML"]
 # Optional: the LLM-backed judge example (examples/judge/). The core package never
 # imports anthropic — only the example script does.
 llm = ["anthropic"]
@@ -48,6 +48,7 @@ evalsurfer-metrics = "evalsurfer.interface.cli.metrics:main"
 evalsurfer-plan = "evalsurfer.interface.cli.plan:main"
 evalsurfer-quality = "evalsurfer.interface.cli.quality:main"
 evalsurfer-dataset = "evalsurfer.interface.cli.dataset:main"
+evalsurfer-agreement = "evalsurfer.interface.cli.agreement:main"
 evalsurfer-mcp = "evalsurfer.interface.mcp.server:main"
 
 [tool.setuptools.packages.find]

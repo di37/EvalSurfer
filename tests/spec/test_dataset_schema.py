@@ -2,7 +2,7 @@
 
 Keeps ``dataset.schema.json`` in step with :class:`Dataset.to_dict`. Needs the
 optional ``jsonschema`` dependency; it skips (rather than fails) when the package
-is absent, so the zero-dependency core test run still passes.
+is absent, so the zero-dependency package test run still passes.
 """
 
 from __future__ import annotations

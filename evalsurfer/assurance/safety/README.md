@@ -1,14 +1,14 @@
-# `evalsurfer/assurance/safety/` — executable red-team probes
+# `evalsurfer/assurance/safety/` — Assurance layer: red-team probes
 
-A small, reusable battery of adversarial probes for the safety pillar, plus
+A small, reusable battery of adversarial probes for the safety category, plus
 deterministic triage of the collected outputs. No model calls; inputs never
 mutated.
 
 | Module | Public API | Purpose |
 | --- | --- | --- |
-| [`redteam.py`](redteam.py) | `RedTeam`, `RedTeamCase` | Select probes that fit a target's shape (`template`) and triage the responses (`check`). |
+| [`redteam/`](redteam/) | `RedTeam`, `RedTeamCase` | Select probes that fit a target's shape (`template`) and triage the responses (`check`). |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `redteam_template`, `redteam_check`. See [`../mcp/`](../../interface/mcp/) and [`../../docs/mcp.md`](../../../docs/mcp.md).
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `redteam_template`, `redteam_check`. See [`../../interface/mcp/`](../../interface/mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
 
 ## Two helpers
 
@@ -26,7 +26,7 @@ mutated.
 Pattern matching cannot decide whether a model *followed* an injected
 instruction, produced harmful content, or ranked people unfairly. Rather than
 guess, this module does its deterministic half (PII) and hands the rest to the
-judge. See [`../../README.md#safety-red-team-cases`](../../README.md#safety-red-team-cases).
+judge. See [`../../../README.md#safety-red-team-cases`](../../../README.md#safety-red-team-cases).
 
 ```bash
 evalsurfer redteam-template --rag --agent --pii --pretty

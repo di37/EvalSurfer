@@ -1,6 +1,6 @@
 # `skills/` — the portable EvalSurfer skill
 
-The canonical home of the EvalSurfer skill, packaged to the
+The canonical home of the EvalSurfer skill (CIMAA **Interface** surface), packaged to the
 [agentskills.io](https://agentskills.io) `SKILL.md` standard so a single skill
 runs across many harnesses.
 
@@ -22,7 +22,7 @@ supported tool just works:
 - `.cursor/skills/eval-surfer/` — for Cursor
 
 The three `SKILL.md` files are **byte-identical**, enforced by
-[`../tests/skill/test_skill_parity.py`](../tests/skill/test_skill_parity.py). Edit the skill
+[`../tests/interface/skill/test_skill_parity.py`](../tests/interface/skill/test_skill_parity.py). Edit the skill
 in one place, then re-sync the copies (and run the parity test) before
 committing.
 

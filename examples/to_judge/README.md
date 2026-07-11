@@ -26,5 +26,5 @@ The scores it produces are exactly the `scores` block captured in
 [tutorial](../README.md) can run offline with no API key.
 
 In an agent session, that same agent then calls EvalSurfer's **MCP tools** —
-`evaluate` to assemble the report, `gate` to decide — with no external model. The
+`evaluate` for the full Interface pipeline (Metrics → Core → Analysis), `gate` to decide — with no external model. The
 full transcript is in the [`../mcp/`](../mcp/) walkthrough.

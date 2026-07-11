@@ -1,6 +1,6 @@
-"""Surfaces & ecosystem — the command-line interface, the MCP tool server, and
-the import adapters for external eval/trace tools.
+"""Surfaces & ecosystem — CLI, MCP tool server, adapters, and the full-run pipeline.
 
-Groups the ``cli``, ``mcp``, and ``adapters`` subpackages. Import from the
-subpackage directly, e.g. ``from evalsurfer.interface.adapters import RagasAdapter``.
+Groups ``pipeline``, ``cli``, ``mcp``, and ``adapters``. Import from the
+subpackage directly, e.g. ``from evalsurfer.interface.pipeline import evaluate``
+or ``from evalsurfer.interface.adapters import RagasAdapter``.
 """

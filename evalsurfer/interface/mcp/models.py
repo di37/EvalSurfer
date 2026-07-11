@@ -103,12 +103,12 @@ class EvidenceInput(BaseModel):
 
 
 class EvaluateRequest(BaseModel):
-    """Everything needed to assemble a report from your (the judge's) scores."""
+    """Judge scores plus optional traces/SLO for the Interface full-run pipeline."""
 
     sample: Sample
     scores: dict[str, Any] = Field(
         default_factory=dict,
-        description="criterion_id -> 1-5, or pillar -> {criterion_id: 1-5}",
+        description="criterion_id -> 1-5, or category -> {criterion_id: 1-5}",
     )
     evidence: dict[str, Any] = Field(default_factory=dict, description="criterion_id -> evidence")
     top_issues: list[TopIssue] = Field(default_factory=list)
@@ -125,7 +125,7 @@ class DecideInput(BaseModel):
     critical_safety_issue: bool = False
     failure_rate: float | None = None
     p95_within_slo: bool | None = None
-    core_task_failed: bool = False
+    task_failed: bool = False
 
 
 class GuardrailPolicyInput(BaseModel):
@@ -139,8 +139,8 @@ class GuardrailPolicyInput(BaseModel):
     max_fix_attempts: int | None = None
 
 
-class PillarScores(BaseModel):
-    """The three pillar scores on a 0-10 scale (any may be null)."""
+class CategoryScores(BaseModel):
+    """The three category scores on a 0-10 scale (any may be null)."""
 
     quality: float | None = None
     safety: float | None = None
@@ -153,7 +153,7 @@ class CalibrationCaseInput(BaseModel):
     name: str = "calibration-case"
     signals: Signals | None = None
     sample: Sample | None = None
-    expected_applicable_pillars: list[str] = Field(default_factory=list)
+    expected_applicable_categories: list[str] = Field(default_factory=list)
     expected_score_ranges: dict[str, list[int]] = Field(default_factory=dict)
     expected_decision: str = constants.DECISION_PASS_WITH_FIXES
     expected_top_issue_severity: str | None = None
@@ -166,7 +166,7 @@ class Report(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     overall: dict[str, Any] | None = None
-    pillars: dict[str, Any] | None = None
+    categories: dict[str, Any] | None = None
     decision: str | None = None
     top_issues: list[dict[str, Any]] | None = None
     coverage: dict[str, Any] | None = None

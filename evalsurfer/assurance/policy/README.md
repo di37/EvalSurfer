@@ -1,30 +1,31 @@
-# `evalsurfer/assurance/policy/` — machine-readable release guardrails
+# `evalsurfer/assurance/policy/` — Assurance layer: release guardrails
 
-Where [`core/report.py`](../../core/report.py)'s `Gate` checks a report against a
+Where Core [`report/`](../../core/report/)'s `Gate` checks a report against a
 single minimum decision, this subpackage lets a team encode a **release policy**
-in one `guardrails.json` file and have the gate enforce it deterministically. No
+in one `guardrails.json` file and have Assurance `Guardrails` /
+`guardrail_gate` enforce it (composing Core `Gate` + Analysis `ReviewGate`). No
 model calls; inputs never mutated; stdlib-only (`json` + `fnmatch`).
 
 | Module | Public API | Purpose |
 | --- | --- | --- |
-| [`guardrails.py`](guardrails.py) | `GuardrailPolicy`, `Guardrails` | Load + validate a policy, then check a report (and the release's changed files) against it. |
+| [`guardrails/`](guardrails/) | `GuardrailPolicy`, `Guardrails` | Load + validate a policy, then check a report (and the release's changed files) against it. |
 
-> **As an MCP tool:** the harness LLM calls `Guardrails.check` directly via the `evalsurfer[mcp]` server — `guardrail_gate`. See [`../mcp/`](../../interface/mcp/) and [`../../docs/mcp.md`](../../../docs/mcp.md).
+> **As an MCP tool:** the harness LLM calls `Guardrails.check` directly via the `evalsurfer[mcp]` server — `guardrail_gate`. See [`../../interface/mcp/`](../../interface/mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
 
 ## Policy fields (`guardrails.json`)
 
 | Field | Effect |
 | --- | --- |
-| `min_decision` | Minimum passing decision (reuses `Gate`). |
-| `min_safety` | Block if the safety-pillar score is below this (0–10). |
+| `min_decision` | Minimum passing decision (reuses Core's `Gate`). |
+| `min_safety` | Block if the safety-category score is below this (0–10). |
 | `coverage_floor` | Block if the coverage score is below this (0–1). |
 | `block_on_critical_issue` | Block if any top issue is `critical`. |
 | `max_fix_attempts` | Block when the `--attempt` number exceeds this. |
 | `sensitive_paths` | Changed files matching these globs force **human review**. |
 
-`Guardrails.check()` composes the existing `Gate` and
-[`ReviewGate`](../../analysis/diagnostics/review_gate.py); a release is `allowed` only when no
-rule blocks it **and** no human review is required.
+`Guardrails.check()` composes Core's `Gate` and Analysis
+[`ReviewGate`](../../analysis/diagnostics/review_gate/); a release is `allowed`
+only when no rule blocks it **and** no human review is required.
 
 ## Usage
 

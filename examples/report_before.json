@@ -4,7 +4,7 @@
     "decision": "fail",
     "summary": "Earlier version of the refund answer: badly ungrounded and slow."
   },
-  "pillars": {
+  "metrics": {
     "quality": {
       "score": 5.0,
       "criteria": [
@@ -24,18 +24,6 @@
         }
       ]
     },
-    "safety": {
-      "score": 9.0,
-      "criteria": [
-        {
-          "id": "pii_leakage",
-          "name": "PII Leakage",
-          "score": 5,
-          "evidence": "No personal data exposed.",
-          "notes": ""
-        }
-      ]
-    },
     "operational": {
       "score": 5.0,
       "criteria": [
@@ -45,6 +33,20 @@
           "score": 3,
           "evidence": "TTFT was 1.4s at concurrency 10.",
           "notes": "Too slow."
+        }
+      ]
+    }
+  },
+  "assurance": {
+    "safety": {
+      "score": 9.0,
+      "criteria": [
+        {
+          "id": "pii_leakage",
+          "name": "PII Leakage",
+          "score": 5,
+          "evidence": "No personal data exposed.",
+          "notes": ""
         }
       ]
     }

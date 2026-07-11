@@ -1,4 +1,4 @@
-# `evalsurfer/analysis/calibration/` — the eval of the eval
+# `evalsurfer/analysis/calibration/` — Analysis layer: the eval of the eval
 
 An EvalSurfer report is produced by the agent/skill acting as a judge. This
 module never runs that judge — it **scores the judge**, by comparing its reports
@@ -7,13 +7,15 @@ mutated.
 
 | Module | Public API | Purpose |
 | --- | --- | --- |
-| [`calibrate.py`](calibrate.py) | `Calibrator`, `CalibrationCase` | Freeze what a trustworthy judge should conclude, then check one report (`check_report`) or aggregate many (`summarize`). |
+| [`calibrate/`](calibrate/) | `Calibrator`, `CalibrationCase` | Freeze what a trustworthy judge should conclude, then check one report (`check_report`) or aggregate many (`summarize`). |
+| [`agreement.py`](agreement.py) | chance-corrected κ / α | Cohen's / Fleiss's κ, Krippendorff's α. |
+| [`reference.py`](reference.py) | `ReferenceCalibrator` | Judge-vs-human MAE and rank correlation. |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `calibrate`, `calibrate_one`. See [`../mcp/`](../../interface/mcp/) and [`../../docs/mcp.md`](../../../docs/mcp.md).
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate`. See [`../../interface/mcp/`](../../interface/mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
 
 ## What a case pins
 
-A `CalibrationCase` freezes, for one target: the planner's applicable pillars,
+A `CalibrationCase` freezes, for one target: the planner's applicable categories,
 the expected score band per criterion, the pass/fix/fail decision, the severity
 of the worst reported issue, and whether a critical safety issue should escalate.
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/di37/EvalSurfer/main/dataset.schema.json",
+  "$id": "https://raw.githubusercontent.com/di37/EvalSurfer/main/spec/dataset.schema.json",
   "title": "EvalSurfer Golden Dataset",
   "type": "object",
   "required": ["name", "version", "cases"],

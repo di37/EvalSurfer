@@ -1,4 +1,4 @@
-# `evalsurfer/interface/adapters/` — ecosystem importers
+# `evalsurfer/interface/adapters/` — Interface layer: ecosystem importers
 
 Reuse scores and telemetry you already collected. Each adapter is a small,
 stateless service that maps another tool's native output into an EvalSurfer
@@ -8,10 +8,10 @@ shape — with no model, network, or API calls, and no mutation of the input.
 | --- | --- | --- | --- |
 | [`ragas.py`](ragas.py) | `RagasAdapter.to_criteria` | RAGAS metrics (`faithfulness`, `answer_relevancy`, `context_precision`, `context_recall`) in `[0,1]` | rubric criteria, rescaled to 1–5 |
 | [`promptfoo.py`](promptfoo.py) | `PromptfooAdapter.to_report` | a promptfoo results object (`{"results": [{"success": …}]}`) | a minimal report (pass rate → `correctness_accuracy`) |
-| [`otel.py`](otel.py) | `OtelAdapter.to_traces` | OpenTelemetry spans (epoch-nanosecond timestamps + GenAI token attributes) | request traces for the operational layer |
-| [`langsmith.py`](langsmith.py) | `LangSmithAdapter.to_traces` | LangSmith runs (ISO timestamps + token usage) | request traces for the operational layer |
+| [`otel.py`](otel.py) | `OtelAdapter.to_traces` | OpenTelemetry spans (epoch-nanosecond timestamps + GenAI token attributes) | request traces for Metrics operational scoring |
+| [`langsmith.py`](langsmith.py) | `LangSmithAdapter.to_traces` | LangSmith runs (ISO timestamps + token usage) | request traces for Metrics operational scoring |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`. See [`../mcp/`](../mcp/) and [`../../docs/mcp.md`](../../../docs/mcp.md).
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`. See [`../mcp/`](../mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
 
 ## Example
 

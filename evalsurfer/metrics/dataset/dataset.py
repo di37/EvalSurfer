@@ -2,7 +2,7 @@
 
 A :class:`Dataset` is a named, versioned tuple of
 :class:`~evalsurfer.metrics.dataset.case.DatasetCase` objects with the operations a
-golden set needs: content-hash :meth:`~Dataset.dedupe`, a deterministic
+golden dataset needs: content-hash :meth:`~Dataset.dedupe`, a deterministic
 (RNG-free) eval/held-out :meth:`~Dataset.split`, a version-to-version
 :meth:`~Dataset.diff`, harvesting fresh cases from raw traces
 (:meth:`~Dataset.from_traces`), a :meth:`~Dataset.coverage_summary`, and a

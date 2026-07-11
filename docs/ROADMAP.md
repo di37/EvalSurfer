@@ -1,7 +1,7 @@
 # EvalSurfer Roadmap
 
 EvalSurfer is a skill-first, agent-native evaluation protocol for AI applications:
-your coding agent is the judge, and a deterministic, zero-dependency core does the
+your coding agent is the judge, and a deterministic, zero-dependency CIMAA stack does the
 measurement — the framework itself makes **zero LLM calls**. This document sets the
 direction for the next releases.
 
@@ -10,38 +10,38 @@ It is informed by a review of current LLM-evaluation practice and academic metho
 metrics, LLM-as-a-judge and its biases, retrieval and agent-tool evaluation, benchmarks,
 human annotation, and statistical rigor. Two findings shape everything below:
 
-1. **The landscape validates EvalSurfer's core.** It independently arrives at
+1. **The landscape validates EvalSurfer's design.** It independently arrives at
    application-eval (not model-eval); a Quality / Safety / Operational risk model that is
-   exactly EvalSurfer's three pillars; criteria-based rubric scoring; LLM-as-judge; and a
-   repeatable deterministic core. Nothing contradicts the design — the items below are
-   **additive**.
-2. **It endorses the zero-LLM-core split.** The rigorous view is that hard-coded metrics
+   exactly EvalSurfer's three categories; criteria-based rubric scoring; LLM-as-judge; and a
+   repeatable deterministic measurement stack. Nothing contradicts the design — the items
+   below are **additive**.
+2. **It endorses the zero-LLM split.** The rigorous view is that hard-coded metrics
    are preferable *precisely because* an LLM-judge "introduces another layer of potential
-   errors." That is EvalSurfer's exact stance: **deterministic metrics live in the core;
-   judgment lives in the agent.** Every roadmap item is placed on the correct side of that
-   line.
+   errors." That is EvalSurfer's exact stance: **deterministic metrics live in the Metrics
+   layer (and Core scoring rules); judgment lives in the agent.** Every roadmap item is
+   placed on the correct side of that line.
 
 ## Design principles (unchanged)
 
-- **Zero LLM calls in the core.** The harness agent is the judge; the deterministic core
-  only measures. Automatic metrics (BLEU, kappa, Recall@k, pass^k, weighted aggregation)
-  are code → core. Judgment techniques (pairwise, bias-swap voting, fact decomposition,
-  RAG/web fact-checking) are the agent's job → skill/MCP.
-- **Zero runtime dependencies in the core.** Anything needing a library goes in an optional
-  extra, never the core.
+- **Zero LLM calls in the `evalsurfer` package.** The harness agent is the judge; CIMAA
+  layers only measure. Automatic metrics (BLEU, kappa, Recall@k, pass^k, weighted
+  aggregation) are code → Metrics / Core. Judgment techniques (pairwise, bias-swap voting,
+  fact decomposition, RAG/web fact-checking) are the agent's job → skill/MCP.
+- **Zero runtime dependencies in the package** (outside optional extras). Anything needing
+  a library goes in an optional extra, never the default install.
 - **One capability, three surfaces.** Every capability is an MCP tool, a CLI verb, and a
   Python import — deterministic, immutable, tested.
 
 ## Already shipped (0.1.x)
 
-Three pillars — Application Quality / Safety / Operational (29 criteria) · adaptive planner
+Three categories — Application Quality / Safety / Operational (judged rubric criteria; reference metrics sit alongside under Metrics) · adaptive planner
 + coverage · 1–5 → `pass` / `pass_with_fixes` / `fail` with a safety floor · diagnostics
-(attribution, root-cause, regression diff, maturity, industry profiles, human-review gate,
+(attribution, root-cause, regression diff, maturity, industry profiles, Analysis `ReviewGate`,
 personas, failure map, golden self-test) · operational metrics from traces · calibration
 (judge agreement, false-pass/fail, variance) · red-team + PII detection · agent-trajectory
-diffs · RAGAS/promptfoo/OTel/LangSmith adapters · guardrails + CI gate · a 36-tool MCP
-server + a portable skill. (0.1.3 — implemented below — adds datasets, deterministic quality
-metrics, and chance-corrected calibration, bringing the MCP server to **47 tools**.)
+diffs · RAGAS/promptfoo/OTel/LangSmith adapters · guardrails + CI gate · a **47-tool** MCP
+server + a portable skill. (0.1.3 added datasets, deterministic quality metrics, and
+chance-corrected calibration on top of the earlier 36-tool surface.)
 
 ---
 
@@ -50,7 +50,7 @@ metrics, and chance-corrected calibration, bringing the MCP server to **47 tools
 **Status:** implemented and tested on `main` (full suite green; **47 MCP tools**) and staged
 for the 0.1.3 release. The widest, most-repeated gap was a **first-class golden dataset** and
 the **reference-based** and **programmatic** methods that ride on it — all deterministic, all
-core-side. What shipped, per item:
+in the Metrics / Analysis layers. What shipped, per item:
 
 ### 1. First-class eval dataset — `dataset`
 - **What.** A versioned dataset artifact: cases with an input, optional gold
@@ -95,9 +95,9 @@ core-side. What shipped, per item:
   lives in item 2's text/match metrics; `reference_calibrate` compares judge *scores* against
   human *scores* (per-criterion error, MAE, Spearman rank correlation).
 
-**Done. ✅** Build a golden set (incl. from traces, with contamination guards) → score
+**Done. ✅** Build an eval golden dataset (incl. from traces, with contamination guards) → score
 retrieval/classification/text with deterministic metrics → calibrate the judge against human
-gold with chance-corrected agreement — all with **zero LLM calls in the core**.
+gold with chance-corrected agreement — all with **zero LLM calls in the `evalsurfer` package**.
 
 ---
 
@@ -141,8 +141,8 @@ trimming verbose tool output).
 ### 8. Claim-level factuality / hallucination scoring
 Upgrade the factuality criterion from a single judged 1–5 to **decompose → verify →
 weighted-aggregate**: the agent extracts atomic claims and verifies each via RAG/web; the
-**core** computes the weighted score `Σ αᵢ·correctnessᵢ / Σ αᵢ`. (Decomposition/verification =
-agent + retrieval; the aggregation math = a deterministic core helper.)
+**Core/Metrics** layer computes the weighted score `Σ αᵢ·correctnessᵢ / Σ αᵢ`. (Decomposition/verification =
+agent + retrieval; the aggregation math = a deterministic Core/Metrics helper.)
 
 ### 9. Reliability & frontier reporting *(deterministic)*
 - **pass^k** (probability *all* k attempts succeed) alongside pass@k — the right reliability
@@ -196,12 +196,12 @@ agent + retrieval; the aggregation math = a deterministic core helper.)
 - **Self-enhancement vs "the agent IS the judge."** When the app under test shares a model
   family with the judging agent (especially in the flywheel), self-preference bias is real.
   Mitigation: let users designate a distinct/bigger judge model. This is a skill/harness
-  concern — it does **not** break the zero-LLM-core rule.
+  concern — it does **not** break the zero-LLM package rule.
 - **Calibration as a recurring gate (Goodhart).** The judge score is a *proxy* for human
   ratings; over-optimizing it is a trap. Make judge↔human calibration (item 3) a periodic
   requirement, not an afterthought.
 
 ---
 
-*Nothing here changes the core promise: your agent judges, the tools measure, and the
+*Nothing here changes the product promise: your agent judges, the tools measure, and the
 framework never calls a model. Feedback and disagreement welcome — open an issue.*

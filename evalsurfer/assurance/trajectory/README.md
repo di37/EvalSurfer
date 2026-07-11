@@ -1,4 +1,4 @@
-# `evalsurfer/assurance/trajectory/` — agent tool-call evaluation
+# `evalsurfer/assurance/trajectory/` — Assurance layer: agent tool-call evaluation
 
 Compare an agent's *actual* trajectory (the ordered tool calls it made) against
 an *expected* specification, and report structured, deterministic findings. No
@@ -6,9 +6,9 @@ model calls; inputs never mutated.
 
 | Module | Public API | Purpose |
 | --- | --- | --- |
-| [`agent_trace.py`](agent_trace.py) | `TrajectoryEvaluator`, `ToolCall`, `Finding` | Diff `actual` vs `expected` and return findings + error-recovery status. |
+| [`agent_trace/`](agent_trace/) | `TrajectoryEvaluator`, `ToolCall`, `Finding` | Diff `actual` vs `expected` and return findings + error-recovery status. |
 
-> **As an MCP tool:** the harness LLM calls this directly via the `evalsurfer[mcp]` server — `trajectory`. See [`../mcp/`](../../interface/mcp/) and [`../../docs/mcp.md`](../../../docs/mcp.md).
+> **As an MCP tool:** the harness LLM calls this directly via the `evalsurfer[mcp]` server — `trajectory`. See [`../../interface/mcp/`](../../interface/mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
 
 ## Checks
 

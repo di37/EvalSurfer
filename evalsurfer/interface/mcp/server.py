@@ -11,7 +11,7 @@ decorators, registering them on the shared :data:`evalsurfer.interface.mcp.insta
 server, and re-exports every tool as an attribute of this module (so
 ``server.rubric`` and friends are callable directly). Tool inputs use pydantic
 models (:mod:`evalsurfer.interface.mcp.models`) so each tool has a clean, validated schema.
-Optional: requires ``pip install "evalsurfer[mcp]"``. The core ``evalsurfer``
+Optional: requires ``pip install "evalsurfer[mcp]"``. The ``evalsurfer``
 package never imports ``mcp`` or ``pydantic`` — only this subpackage does — so the
 package stays zero-dependency.
 
@@ -23,13 +23,13 @@ Run it (stdio transport):
 from __future__ import annotations
 
 from evalsurfer.interface.mcp.instance import mcp
-from evalsurfer.interface.mcp.tools.adapters import (
+from evalsurfer.interface.mcp.tools.interface.adapters import (
     adapter_langsmith,
     adapter_otel,
     adapter_promptfoo,
     adapter_ragas,
 )
-from evalsurfer.interface.mcp.tools.calibration import (
+from evalsurfer.interface.mcp.tools.analysis.calibration import (
     calibrate,
     calibrate_one,
     cohen_kappa,
@@ -37,26 +37,7 @@ from evalsurfer.interface.mcp.tools.calibration import (
     krippendorff_alpha,
     reference_calibrate,
 )
-from evalsurfer.interface.mcp.tools.core import (
-    coverage,
-    decide,
-    evaluate,
-    gate,
-    guardrail_gate,
-    plan,
-    rubric,
-    score_overall,
-    score_pillar,
-    score_report,
-    validate_report,
-)
-from evalsurfer.interface.mcp.tools.dataset import (
-    dataset_contamination,
-    dataset_coverage,
-    dataset_diff,
-    dataset_from_traces,
-)
-from evalsurfer.interface.mcp.tools.diagnostics import (
+from evalsurfer.interface.mcp.tools.analysis.diagnostics import (
     build_evidence,
     diagnose,
     explain,
@@ -70,21 +51,40 @@ from evalsurfer.interface.mcp.tools.diagnostics import (
     review_gate,
     root_cause,
 )
-from evalsurfer.interface.mcp.tools.operational import (
+from evalsurfer.interface.mcp.tools.assurance.tools import (
+    guardrail_gate,
+    redteam_check,
+    redteam_template,
+    trajectory,
+)
+from evalsurfer.interface.mcp.tools.core.assemble import (
+    coverage,
+    decide,
+    gate,
+    plan,
+    rubric,
+    score_overall,
+    score_category,
+    score_report,
+    validate_report,
+)
+from evalsurfer.interface.mcp.tools.interface.evaluate import evaluate
+from evalsurfer.interface.mcp.tools.metrics.dataset import (
+    dataset_contamination,
+    dataset_coverage,
+    dataset_diff,
+    dataset_from_traces,
+)
+from evalsurfer.interface.mcp.tools.metrics.operational import (
     cost_per_request,
     metrics,
     operational_score,
     token_efficiency,
 )
-from evalsurfer.interface.mcp.tools.quality import (
+from evalsurfer.interface.mcp.tools.metrics.quality import (
     match_metrics,
     retrieval_metrics,
     text_metrics,
-)
-from evalsurfer.interface.mcp.tools.safety import (
-    redteam_check,
-    redteam_template,
-    trajectory,
 )
 
 __all__ = [
@@ -94,17 +94,17 @@ __all__ = [
     "rubric",
     "plan",
     "coverage",
-    # scoring
-    "score_pillar",
+    # scoring (Core)
+    "score_category",
     "score_overall",
     "decide",
     "score_report",
-    # assemble / gate
+    # full run (Interface pipeline)
     "evaluate",
+    # assemble / gate (Core)
     "validate_report",
     "gate",
-    "guardrail_gate",
-    # diagnostics
+    # diagnostics (Analysis)
     "explain",
     "root_cause",
     "regression_diff",
@@ -126,7 +126,8 @@ __all__ = [
     "retrieval_metrics",
     "match_metrics",
     "text_metrics",
-    # safety & trajectory
+    # assurance
+    "guardrail_gate",
     "redteam_template",
     "redteam_check",
     "trajectory",

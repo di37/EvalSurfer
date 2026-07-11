@@ -5,7 +5,7 @@ each. Use this when an eval result feels wrong, when a bad release slipped
 through, or when deciding how far to trust a score.
 
 > Each mitigation below is exposed as an MCP tool the harness LLM calls — see
-> [the MCP tool server](mcp.md). The core makes no model calls; the agent judges,
+> [the MCP tool server](mcp.md). The `evalsurfer` package makes no model calls; the agent judges,
 > the tools measure.
 
 > Format inspired by the failure-mode catalog in
@@ -77,13 +77,13 @@ through, or when deciding how far to trust a score.
 
 ## Average-Washing
 
-**Symptom**: A critical safety failure is hidden by a healthy pillar average — overall looks fine, so it ships.
+**Symptom**: A critical safety failure is hidden by a healthy category average — overall looks fine, so it ships.
 
 **Severity**: S3
 
 **Causes**: Trusting aggregate means; one criterion at 1/5 disappears into four at 5/5.
 
-**How EvalSurfer mitigates**: The decision logic has an explicit **safety floor** and a **critical-issue override** — a single `critical` safety issue fails the release regardless of the averages (e.g. overall `7.1`, safety pillar `8.4`, decision **fail**).
+**How EvalSurfer mitigates**: The decision logic has an explicit **safety floor** and a **critical-issue override** — a single `critical` safety issue fails the release regardless of the averages (e.g. overall `7.1`, safety category `8.4`, decision **fail**).
 
 ---
 
@@ -95,7 +95,7 @@ through, or when deciding how far to trust a score.
 
 **Causes**: Quality-only rubrics; treating safety and ops as someone else's problem.
 
-**How EvalSurfer mitigates**: **Three pillars** — Application Quality, Safety (assessed by default), and Operational — including deterministic SLO scoring of the five numbers of inference (TTFT, inter-token latency, throughput, P99 tail, $/1M tokens).
+**How EvalSurfer mitigates**: **Three categories** — Application Quality, Safety (assessed by default), and Operational — including deterministic SLO scoring of the five numbers of inference (TTFT, inter-token latency, throughput, P99 tail, $/1M tokens).
 
 ---
 
@@ -107,7 +107,7 @@ through, or when deciding how far to trust a score.
 
 **Causes**: A stochastic judge, and scaffolding (scoring, aggregation, gating) coupled to that stochastic call so *nothing* is reproducible.
 
-**How EvalSurfer mitigates**: The core **separates measurement from judgment** — planning, aggregation, decision, operational scoring, and diagnostics are fully deterministic; only the subjective scores come from the judge. `Calibrator.score_variance` quantifies the remaining judgment drift.
+**How EvalSurfer mitigates**: The CIMAA layers **separate measurement from judgment** — Core planning/aggregation/decision, Metrics operational scoring, and Analysis diagnostics are fully deterministic; only the subjective scores come from the judge. `Calibrator.score_variance` quantifies the remaining judgment drift.
 
 ---
 
@@ -119,7 +119,7 @@ through, or when deciding how far to trust a score.
 
 **Causes**: Comparing only headline numbers between versions.
 
-**How EvalSurfer mitigates**: `RegressionDiffer` (`diagnose --before`, MCP `regression_diff`) reports per-criterion **improvements *and* regressions**, pillar deltas, and any decision change — so a `relevance` drop is visible even as `completeness` rises.
+**How EvalSurfer mitigates**: `RegressionDiffer` (`diagnose --before`, MCP `regression_diff`) reports per-criterion **improvements *and* regressions**, category deltas, and any decision change — so a `relevance` drop is visible even as `completeness` rises.
 
 ---
 
@@ -143,7 +143,7 @@ through, or when deciding how far to trust a score.
 
 **Causes**: No human gate for high-risk changes; comprehension debt — nobody reads the report.
 
-**How EvalSurfer mitigates**: `ReviewGate` (MCP `review_gate`) returns `needs_human_review` with reasons (unresolved `critical` issues, low-confidence criteria); the release `gate` exposes exit codes for CI; the skill's Judge Reliability guidance mandates human review for unresolved `critical`, legal/compliance risk, or judge disagreement. These gates are enforceable in CI via a machine-readable `guardrails.json` policy (`evalsurfer gate --policy`, MCP `guardrail_gate` / `gate`). See [SECURITY.md](SECURITY.md#using-the-ci-gate-safely).
+**How EvalSurfer mitigates**: Analysis `ReviewGate` (MCP `review_gate`) returns `needs_human_review` with reasons (unresolved `critical` issues, low-confidence criteria); Core's `gate` exposes exit codes for CI; Assurance `guardrail_gate` enforces a machine-readable `guardrails.json` policy on top of that gate (`evalsurfer gate --policy`). The skill's Judge Reliability guidance mandates human review for unresolved `critical`, legal/compliance risk, or judge disagreement. See [SECURITY.md](SECURITY.md#using-the-ci-gate-safely).
 
 ---
 

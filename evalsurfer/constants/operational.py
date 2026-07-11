@@ -41,6 +41,8 @@ SLO_FIELDS: Final = (
 )
 
 # Operational criterion id -> the SLO field it is scored against.
+# ``token_efficiency`` is deliberately absent: it has no SLO target, so it is
+# never auto-scored and stays "not assessed" unless a judge scores it directly.
 OPERATIONAL_CRITERION_SLO: Final = {
     "end_to_end_latency": SLO_P95_LATENCY_MS,
     "time_to_first_token": SLO_TTFT_MS,

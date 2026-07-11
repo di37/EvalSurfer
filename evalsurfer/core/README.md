@@ -1,29 +1,29 @@
-# `evalsurfer/core/` — scoring, planning, reports, orchestration
+# `evalsurfer/core/` — CIMAA Core: planner, scoring, report, evaluate
 
-The heart of the deterministic layer: turn agent-produced criterion scores into a
-validated, gated report. No model or API calls; inputs are never mutated.
+Turn agent-produced criterion scores into a schema-shaped report and a Core `Gate`
+decision. Four modules, no model or API calls; inputs are never mutated. Core does
+**not** import Metrics or Analysis — ops enrich and diagnostics are applied by
+[`../interface/pipeline.py`](../interface/pipeline.py).
 
 | Module | Public API | Purpose |
 | --- | --- | --- |
-| [`scoring.py`](scoring.py) | `ScoringModel` | Pillar score (criterion mean ×2), overall score, and the `pass` / `pass_with_fixes` / `fail` decision — with the safety floor, critical-issue override, failure-rate and P95-within-SLO gates. Also iterates/collects assessed criteria. |
-| [`planner.py`](planner.py) | `Signals`, `EvaluationPlanner`, `EvaluationPlan` | Adaptive scoping: infer which pillars/criteria apply from the inputs actually present (`Signals.from_sample`), with a reason per skip and a coverage score. |
-| [`report.py`](report.py) | `ReportValidator`, `Gate` | Pure-Python structural validation of a report (`{"valid", "errors"}`) and a release gate against a minimum decision (`{"passed", "decision", "minimum", "reason"}`). |
-| [`evaluate.py`](evaluate.py) | `Evaluator` | The end-to-end orchestrator: infer the plan, place provided scores, auto-score operations from traces + SLO, recompute pillar/overall, decide, measure coverage, and attach the diagnostics block. |
+| [`planner/`](planner/) | `Signals`, `EvaluationPlanner`, `EvaluationPlan` | Adaptive scoping from `Signals.from_sample`. |
+| [`scoring.py`](scoring.py) | `ScoringModel` | Category / overall scores and `pass` / `pass_with_fixes` / `fail`. |
+| [`report/`](report/) | `ReportValidator`, `Gate` | Structural validation and decision-vs-minimum gate. |
+| [`evaluate.py`](evaluate.py) | `Evaluator` | Assemble only: plan → place scores → score → decide → coverage. |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `plan`, `coverage`, `score_pillar`, `score_overall`, `decide`, `score_report`, `evaluate`, `validate_report`, `gate`. See [`../mcp/`](../interface/mcp/) and [`../../docs/mcp.md`](../../docs/mcp.md).
+> **As MCP tools (Core):** `plan`, `coverage`, `score_*`, `decide`, `validate_report`, `gate`.
+> The MCP/CLI **`evaluate` tool** is Interface — it runs
+> [`../interface/pipeline.py`](../interface/pipeline.py) (Metrics + Core + Analysis).
+> See [`../interface/mcp/`](../interface/mcp/).
 
 ## Flow
 
 ```
 sample ──► Signals.from_sample ──► EvaluationPlanner.plan ──► applicable criteria
-scores ──►                          ScoringModel (pillars, overall, decision)
-traces ──► OperationalScorer ─────► operational pillar
-                                    └─► Evaluator assembles ─► ReportValidator / Gate / DiagnosticsBundle
+scores ──►                          ScoringModel (categories, overall, decision)
+                                    └─► Evaluator assembles report (no diagnostics)
+Interface pipeline: Metrics enrich → Core Evaluator → Analysis DiagnosticsBundle
 ```
 
-The judge's quality and safety scores come from the agent/skill via the request;
-`core` never invents them.
-
-Related: [`../operational/`](../metrics/operational/) (ops scoring),
-[`../diagnostics/`](../analysis/diagnostics/) (the diagnostics block),
-[`../cli/`](../interface/cli/) (command-line front end).
+Shared rubric constants: [`../constants/`](../constants/) and [`../../spec/framework.yaml`](../../spec/framework.yaml).
