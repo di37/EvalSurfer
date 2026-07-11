@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/di37/EvalSurfer/main/spec/report.schema.json",
+  "title": "EvalSurfer Report",
+  "type": "object",
+  "required": ["overall", "decision", "top_issues"],
+  "additionalProperties": false,
+  "properties": {
+    "overall": {
+      "type": "object",
+      "required": ["score", "decision"],
+      "additionalProperties": false,
+      "properties": {
+        "score": { "type": ["number", "null"], "minimum": 0, "maximum": 10 },
+        "decision": { "$ref": "#/$defs/decision" },
+        "summary": { "type": "string" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "quality": { "$ref": "#/$defs/category" },
+        "operational": { "$ref": "#/$defs/category" }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "safety": { "$ref": "#/$defs/category" }
+      }
+    },
+    "decision": { "$ref": "#/$defs/decision" },
+    "top_issues": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "not_assessed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "applicable": { "type": "integer", "minimum": 0 },
+        "assessed": { "type": "integer", "minimum": 0 },
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "missing": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "judge_reliability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["single_judge", "self_consistency", "multi_judge", "human_review"]
+        },
+        "agreement": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "explainability": { "type": "object" },
+        "root_cause": { "type": "object" },
+        "failure_map": { "type": "object" },
+        "review_gate": { "type": "object" },
+        "maturity": { "type": "object" },
+        "regression": { "type": "object" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "decision": {
+      "type": "string",
+      "enum": ["pass", "pass_with_fixes", "fail"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["critical", "major", "minor"]
+    },
+    "criterion": {
+      "type": "object",
+      "required": ["id", "name", "score", "evidence"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "score": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5
+        },
+        "evidence": {
+          "oneOf": [
+            { "type": "string" },
+            { "$ref": "#/$defs/evidence_detail" }
+          ]
+        },
+        "notes": { "type": "string" },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "evidence_detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "claim": { "type": "string" },
+        "supporting_context": { "type": "string" },
+        "mismatch": { "type": "string" },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "required": ["severity", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "severity": { "$ref": "#/$defs/severity" },
+        "description": { "type": "string" },
+        "recommendation": { "type": "string" },
+        "criterion_id": { "type": "string" }
+      }
+    },
+    "category": {
+      "type": "object",
+      "required": ["score", "criteria"],
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 10
+        },
+        "criteria": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/criterion" }
+        }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ Ten mistakes teams make when evaluating AI applications — and what to do inste
 Each maps to the EvalSurfer feature that prevents it.
 
 > Each mitigation below is exposed as an MCP tool the harness LLM calls — see
-> [the MCP tool server](mcp.md). The core makes no model calls; the agent judges,
+> [the MCP tool server](mcp.md). The `evalsurfer` package makes no model calls; the agent judges,
 > the tools measure.
 
 > Format inspired by the anti-patterns list in
@@ -32,7 +32,7 @@ Each maps to the EvalSurfer feature that prevents it.
 
 **5. No calibration — *quis custodiet ipsos custodes?***
 - *Problem*: The judge is never itself evaluated, so you don't know if its passes mean anything.
-- *Instead*: Run the "eval of the eval" — `Calibrator` (MCP `calibrate` / `calibrate_one`) scores agreement, false-pass / false-fail rate, and score variance against a hand-authored oracle; the `GoldenSet` validates the deterministic layer.
+- *Instead*: Run the "eval of the eval" — `Calibrator` (MCP `calibrate` / `calibrate_one`) scores agreement, false-pass / false-fail rate, and score variance against a hand-authored **calibration oracle** (`examples/golden/`); Analysis `GoldenSet` separately self-tests the deterministic planner/scoring layer (≠ Metrics eval golden dataset).
 
 **6. Judge shares the app's model and context**
 - *Problem*: Self-enhancement bias — a model grading its own family/output inflates the score.
@@ -40,7 +40,7 @@ Each maps to the EvalSurfer feature that prevents it.
 
 **7. Quality-only; safety and ops as an afterthought**
 - *Problem*: A "good" answer that is unsafe, too slow, or too expensive still fails in production.
-- *Instead*: Evaluate all **three pillars** — safety is assessed by default; operational readiness is auto-scored (MCP `operational_score` / `metrics`) against SLOs (the five numbers of inference).
+- *Instead*: Evaluate all **three categories** — safety is assessed by default; operational readiness is auto-scored (MCP `operational_score` / `metrics`) against SLOs (the five numbers of inference).
 
 **8. Fabricating a verdict for what can't be measured**
 - *Problem*: Reporting "injection-resistant: pass" or "answer consistent: yes" without actually testing it.
@@ -52,7 +52,7 @@ Each maps to the EvalSurfer feature that prevents it.
 
 **10. Auto-shipping on a green eval, no human gate**
 - *Problem*: A passing report is treated as merge authorization for sensitive changes.
-- *Instead*: Wire `ReviewGate` (MCP `review_gate`) + the release `gate` into CI, but require **human approval** for unresolved `critical` issues and for auth / payments / PII / infra paths. This is enforceable: a `guardrails.json` policy with `evalsurfer gate --policy … --changed-files …` (MCP `guardrail_gate` / `gate`) blocks the merge (non-zero exit) when a sensitive path is touched or any rule trips. See [SECURITY.md](../SECURITY.md#using-the-ci-gate-safely).
+- *Instead*: Wire Analysis `ReviewGate` (MCP `review_gate`) + Core's `gate` into CI, and require **human approval** for unresolved `critical` issues and for auth / payments / PII / infra paths. Enforceable via Assurance: a `guardrails.json` policy with `evalsurfer gate --policy … --changed-files …` (MCP `guardrail_gate`) blocks the merge when a sensitive path is touched or any rule trips. See [SECURITY.md](SECURITY.md#using-the-ci-gate-safely).
 
 ---
 
@@ -61,5 +61,5 @@ Each maps to the EvalSurfer feature that prevents it.
 Most of these reduce to one principle: **separate what can be measured
 deterministically from what must be judged — make the measurement reproducible
 and auditable, and never fabricate the judgment.** That principle is the reason
-EvalSurfer's core makes no model calls and flags, rather than invents, anything
+EvalSurfer's measurement layer makes no model calls and flags, rather than invents, anything
 it cannot decide.

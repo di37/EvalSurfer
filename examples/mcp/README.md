@@ -5,7 +5,7 @@ calls EvalSurfer's deterministic functions as **MCP tools**. No external model, 
 service — the only LLM in the loop is the agent you are already talking to.
 
 Every number below is real. Reproduce it with the CLI, which calls the identical
-functions: `python -m evalsurfer.cli.main evaluate ../sample.json`.
+functions: `python -m evalsurfer.interface.cli.main evaluate ../sample.json`.
 
 ## 0. Install & connect (once)
 
@@ -23,7 +23,7 @@ the agent knows the workflow — from the repo root:
 ./install-skill.sh claude            # copies the eval-surfer skill into .claude/skills/
 ```
 
-Restart the client. The 36 EvalSurfer tools now appear in the agent's toolset, and the
+Restart the client. The 47 EvalSurfer tools now appear in the agent's toolset, and the
 `eval-surfer` skill tells it how to use them.
 
 ## 1. Ask
@@ -45,7 +45,7 @@ The agent loads `SKILL.md` and drives the tools. A representative transcript:
 **① Scope — `plan`**
 ```
 → plan(sample={query, answer, retrieved_docs})
-← 12 applicable criteria: core generation + RAG + safety.
+← 12 applicable criteria: generation + RAG + safety.
   skipped: agent/tool-use (no tool calls), multi-turn (no history),
            operational (no traces), citation_accuracy (no citations).
 ```
@@ -60,7 +60,7 @@ relevance: 5, completeness: 4, instruction_following: 5,
 context_relevance: 5, retrieval_recall: 4, toxicity … pii_leakage: 5
 ```
 
-**③ Assemble — `evaluate`**
+**③ Full run — `evaluate`** (Interface pipeline: Metrics enrich → Core assemble → Analysis diagnose)
 ```
 → evaluate({sample, scores, evidence, traces, slo, top_issues})
 ← overall 8.7 → pass_with_fixes
@@ -75,7 +75,8 @@ context_relevance: 5, retrieval_recall: 4, toxicity … pii_leakage: 5
    "reason": "Decision 'pass_with_fixes' is below the minimum bar of 'pass'."}
 ```
 
-(Optionally `diagnose(report)` for the explainability / root-cause / review-gate bundle,
+(Optionally `diagnose(report, signals?, before?)` for the explainability / root-cause /
+review-gate bundle plus maturity / regression when those inputs are supplied,
 or `guardrail_gate(report, policy, changed_files)` to enforce a full CI policy.)
 
 ## 3. The point

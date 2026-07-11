@@ -1,11 +1,11 @@
 """LLM-backed judge for EvalSurfer — the "agent is the judge" step as a script.
 
-This is OPTIONAL and lives only in examples/: the core `evalsurfer` package never
+This is OPTIONAL and lives only in examples/: the `evalsurfer` package never
 calls an LLM. Here, Claude plays the judge — it reads a query/answer pair and
-scores each applicable rubric criterion 1-5 with evidence — and then EvalSurfer's
-deterministic layer assembles, displays, and saves the full report.
+scores each applicable rubric criterion 1-5 with evidence — and then the Interface
+pipeline runs (Metrics enrich → Core assemble → Analysis diagnose), displays, and saves the full report.
 
-Pipeline:  query/answer  ->  🧠 Claude scores criteria  ->  ⚙️ Evaluator report  ->  print + save JSON
+Pipeline:  query/answer  ->  🧠 Claude scores criteria  ->  ⚙️ Interface pipeline report  ->  print + save JSON
 
 The on-thesis path is the MCP server (see examples/mcp/ and docs/mcp.md), where your
 harness LLM judges and calls the deterministic tools directly. Use this script only
@@ -30,8 +30,8 @@ import json
 import os
 import sys
 
-from evalsurfer.core.evaluate import Evaluator
 from evalsurfer.core.planner import EvaluationPlanner, Signals
+from evalsurfer.interface.pipeline import evaluate as run_evaluate
 
 MODEL = "claude-opus-4-8"
 
@@ -54,7 +54,7 @@ def applicable_criteria(sample: dict) -> list[dict]:
     return [
         {"id": c.id, "name": c.name}
         for c in plan.applicable_criteria()
-        if c.pillar != "operational"
+        if c.category != "operational"
     ]
 
 
@@ -118,12 +118,13 @@ def build_request(sample: dict, judged: dict) -> dict:
 def display(index: int, total: int, sample: dict, report: dict) -> None:
     """Print a human-readable summary of one evaluated report."""
     overall = report["overall"]
-    pillars = report["pillars"]
+    metrics = report.get("metrics", {})
+    assurance = report.get("assurance", {})
     print(f"\n[{index}/{total}] {sample.get('query', '')[:70]}")
     print(
         f"  decision: {report['decision'].upper()}  |  overall {overall['score']}/10  "
-        f"(quality {pillars.get('quality', {}).get('score')}, "
-        f"safety {pillars.get('safety', {}).get('score')})"
+        f"(quality {metrics.get('quality', {}).get('score')}, "
+        f"safety {assurance.get('safety', {}).get('score')})"
     )
     for issue in report["top_issues"][:3]:
         print(f"    [{issue.get('severity')}] {issue.get('description')}")
@@ -166,7 +167,7 @@ def main(argv=None) -> int:
         else:
             print(f"judging {len(criteria)} criteria via {args.model}…", file=sys.stderr)
             judged = judge_with_llm(client, sample, criteria)      # <-- the LLM step
-        report = Evaluator.evaluate(build_request(sample, judged))  # <-- deterministic
+        report = run_evaluate(build_request(sample, judged))  # <-- deterministic
         reports.append(report)
         display(i, len(pairs), sample, report)
 

@@ -2,7 +2,7 @@
 
 An `npx` launcher for the **EvalSurfer** MCP server. EvalSurfer is an agent-native
 AI-evaluation protocol — your coding agent is the judge, and it calls EvalSurfer's
-36 deterministic tools for the measurement. See the
+47 deterministic tools for the measurement. See the
 [main project](https://github.com/di37/EvalSurfer).
 
 The server itself is a **Python** package (`evalsurfer[mcp]`); this wrapper just

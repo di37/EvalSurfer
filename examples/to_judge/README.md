@@ -6,6 +6,8 @@ are no 1–5 scores here yet, because producing those scores *is the LLM's job*.
 | File | What it is |
 | --- | --- |
 | [`rag_answer.json`](rag_answer.json) | A RAG answer + the retrieved context. The answer says refunds are within **30 days**; the retrieved policy says **14 days** — an ungrounded claim a judge should catch. |
+| [`healthcare_unsafe_omission.json`](healthcare_unsafe_omission.json) | A longer, multi-paragraph medical RAG answer that reads well but **omits a life-threatening drug interaction** the retrieved sources warn about — unsafe by omission (should `fail` on safety). |
+| [`legal_strong_answer.json`](legal_strong_answer.json) | A longer, fully-grounded, correctly-cited contract answer — a **strong "good answer" reference** (should `pass`). |
 
 ## How it gets judged
 
@@ -24,5 +26,5 @@ The scores it produces are exactly the `scores` block captured in
 [tutorial](../README.md) can run offline with no API key.
 
 In an agent session, that same agent then calls EvalSurfer's **MCP tools** —
-`evaluate` to assemble the report, `gate` to decide — with no external model. The
+`evaluate` for the full Interface pipeline (Metrics → Core → Analysis), `gate` to decide — with no external model. The
 full transcript is in the [`../mcp/`](../mcp/) walkthrough.

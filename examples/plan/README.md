@@ -5,7 +5,7 @@ apply from the evidence present — the same rubric, scoped to what you actually
 
 | File | Signals present | Applicable criteria |
 | --- | --- | --- |
-| [`answer_only.json`](answer_only.json) | an answer | 9 (core generation + safety) |
+| [`answer_only.json`](answer_only.json) | an answer | 9 (generation + safety) |
 | [`rag.json`](rag.json) | answer + retrieved docs + citations | 13 (adds RAG) |
 | [`agent.json`](agent.json) | answer + tool calls | 13 (adds tool use) |
 

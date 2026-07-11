@@ -1,6 +1,6 @@
 # `skills/` — the portable EvalSurfer skill
 
-The canonical home of the EvalSurfer skill, packaged to the
+The canonical home of the EvalSurfer skill (CIMAA **Interface** surface), packaged to the
 [agentskills.io](https://agentskills.io) `SKILL.md` standard so a single skill
 runs across many harnesses.
 
@@ -8,7 +8,7 @@ runs across many harnesses.
 | --- | --- |
 | [`eval-surfer/SKILL.md`](eval-surfer/SKILL.md) | The skill itself — the workflow the agent follows to run an evaluation. **This is the product;** the Python package is its supporting toolkit. |
 
-Beyond the workflow, `SKILL.md` routes the agent to EvalSurfer's 36 deterministic
+Beyond the workflow, `SKILL.md` routes the agent to EvalSurfer's 47 deterministic
 [MCP tools](../docs/mcp.md) — install `evalsurfer[mcp]` and run `evalsurfer-mcp` —
 with the CLI and Python API as a fallback when the server isn't connected.
 
@@ -22,7 +22,7 @@ supported tool just works:
 - `.cursor/skills/eval-surfer/` — for Cursor
 
 The three `SKILL.md` files are **byte-identical**, enforced by
-[`../tests/test_skill_parity.py`](../tests/test_skill_parity.py). Edit the skill
+[`../tests/interface/skill/test_skill_parity.py`](../tests/interface/skill/test_skill_parity.py). Edit the skill
 in one place, then re-sync the copies (and run the parity test) before
 committing.
 

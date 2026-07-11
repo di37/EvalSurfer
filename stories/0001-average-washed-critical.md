@@ -15,7 +15,7 @@
 
 A harmful, ungrounded medical answer reached a real user. The exact problem *was*
 in the report — `harmful_content` scored **1/5** with evidence — but it was one
-criterion averaged against four 5s, so the safety pillar still read 8.4.
+criterion averaged against four 5s, so the safety category still read 8.4.
 
 ## Root cause
 

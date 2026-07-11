@@ -1,12 +1,13 @@
 """EvalSurfer -- a skill-first, deterministic AI-application evaluation toolkit.
 
-Layout:
+CIMAA layout:
 
-* :mod:`evalsurfer.constants` -- every fixed value, in one place.
-* :mod:`evalsurfer.core` -- the scoring model and adaptive planner.
-* :mod:`evalsurfer.operational` -- operational metrics from request traces.
-* :mod:`evalsurfer.diagnostics` -- deterministic diagnostics over a report.
-* :mod:`evalsurfer.cli` -- command-line entry points.
+* :mod:`evalsurfer.constants` -- shared rubric catalog (all layers).
+* :mod:`evalsurfer.core` -- planner, scoring, report assemble, Gate.
+* :mod:`evalsurfer.interface` -- pipeline (full run), CLI, MCP, adapters.
+* :mod:`evalsurfer.metrics` -- operational/SLO, reference quality, eval golden dataset.
+* :mod:`evalsurfer.analysis` -- diagnostics (incl. ReviewGate), calibration.
+* :mod:`evalsurfer.assurance` -- red-team, trajectory, guardrail policy.
 """
 
 from __future__ import annotations

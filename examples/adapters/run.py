@@ -14,13 +14,13 @@ import json
 import os
 from dataclasses import asdict
 
-from evalsurfer.adapters import (
+from evalsurfer.interface.adapters import (
     LangSmithAdapter,
     OtelAdapter,
     PromptfooAdapter,
     RagasAdapter,
 )
-from evalsurfer.operational.metrics import OperationalMetrics, Pricing, RequestTrace
+from evalsurfer.metrics.operational.metrics import OperationalMetrics, Pricing, RequestTrace
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 

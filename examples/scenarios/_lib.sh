@@ -17,7 +17,7 @@ if command -v evalsurfer >/dev/null 2>&1; then
   EJE=(evalsurfer)
   EJE_FALLBACK=0
 else
-  EJE=(python -m evalsurfer.cli.main)
+  EJE=(python -m evalsurfer.interface.cli.main)
   EJE_FALLBACK=1
 fi
 
@@ -52,7 +52,7 @@ peek() { note "inspecting $(basename "$1"):"; python -c "$2"; }
 
 banner_env() {
   if [ "$EJE_FALLBACK" = "1" ]; then
-    note "Using 'python -m evalsurfer.cli.main' (run 'pip install -e .' to get the 'evalsurfer' command)."
+    note "Using 'python -m evalsurfer.interface.cli.main' (run 'pip install -e .' to get the 'evalsurfer' command)."
   fi
   note "Generated reports are written to: $OUT"
 }
@@ -64,12 +64,12 @@ scenario_1() {
   title "SCENARIO 1 — VitalsAI clinical-triage RAG (plan → evaluate → validate → gate → diagnose)"
   note "A RAG assistant tells a warfarin patient to DOUBLE a missed dose — contradicting the retrieved guideline."
 
-  note "1a. Adaptive scoping: infer which pillars/criteria apply from the sample."
-  cli plan "$SCN/01_vitalsai_request.json" --pretty | python -c 'import sys,json;d=json.load(sys.stdin);c=d["plan"]["coverage"];print("   ->",c["applicable_criteria"],"/",c["total_criteria"],"criteria across",c["applicable_pillars"],"/",c["total_pillars"],"pillars (score",str(c["score"])+")")'
+  note "1a. Adaptive scoping: infer which categories/criteria apply from the sample."
+  cli plan "$SCN/01_vitalsai_request.json" --pretty | python -c 'import sys,json;d=json.load(sys.stdin);c=d["plan"]["coverage"];print("   ->",c["applicable_criteria"],"/",c["total_criteria"],"criteria across",c["applicable_categories"],"/",c["total_categories"],"categories (score",str(c["score"])+")")'
 
-  note "1b. Assemble the full report (quality + safety + operational + diagnostics)."
+  note "1b. Full Interface pipeline report (quality + safety + operational + diagnostics)."
   cli evaluate "$SCN/01_vitalsai_request.json" --pretty --out "$OUT/01_vitalsai_report.json" >/dev/null
-  peek "$OUT/01_vitalsai_report.json" 'import json;d=json.load(open("'"$OUT"'/01_vitalsai_report.json"));print("   overall:",d["overall"]["score"],"| safety pillar:",d["pillars"]["safety"]["score"],"| DECISION:",d["decision"]);print("   -> a single CRITICAL safety issue fails the release even though the averages look healthy");print("   review_gate needs human review:",d["diagnostics"]["review_gate"]["needs_human_review"])'
+  peek "$OUT/01_vitalsai_report.json" 'import json;d=json.load(open("'"$OUT"'/01_vitalsai_report.json"));print("   overall:",d["overall"]["score"],"| safety category:",d["assurance"]["safety"]["score"],"| DECISION:",d["decision"]);print("   -> a single CRITICAL safety issue fails the release even though the averages look healthy");print("   review_gate needs human review:",d["diagnostics"]["review_gate"]["needs_human_review"])'
 
   note "1c. Structurally validate the report (exit 0 = valid)."
   cli validate "$OUT/01_vitalsai_report.json"
@@ -109,9 +109,9 @@ scenario_3() {
   note "3a. Raw operational metrics from request traces."
   cli metrics "$SCN/03_briefbot_traces.json" --pretty | python -c 'import sys,json;d=json.load(sys.stdin);s=d["summary"];L=s["latency"];print("   requests",s["request_count"],"| failures",s["failure_count"],"| failure_rate",round(s["failure_rate"],3));print("   latency median/p95/max ms:",L["median_ms"],"/",L["p95_ms"],"/",L["max_ms"]);print("   latency_under_load (p95 by concurrency):",{k:round(v["p95_ms"]) for k,v in sorted(d["latency_under_load"].items(),key=lambda kv:int(kv[0]))})'
 
-  note "3b. Auto-score the operational pillar 1–5 by comparing measured metrics to the SLO."
+  note "3b. Auto-score the operational category 1–5 by comparing measured metrics to the SLO."
   cli evaluate "$SCN/03_briefbot_ops_request.json" --pretty --out "$OUT/03_briefbot_report.json" >/dev/null
-  peek "$OUT/03_briefbot_report.json" 'import json;d=json.load(open("'"$OUT"'/03_briefbot_report.json"));p=d["pillars"]["operational"];print("   DECISION:",d["decision"],"| operational pillar:",p["score"]);[print("     -",c["id"],"=",c["score"],"|",c["evidence"].split(";")[-1].strip()) for c in p["criteria"]]'
+  peek "$OUT/03_briefbot_report.json" 'import json;d=json.load(open("'"$OUT"'/03_briefbot_report.json"));p=d["metrics"]["operational"];print("   DECISION:",d["decision"],"| operational category:",p["score"]);[print("     -",c["id"],"=",c["score"],"|",c["evidence"].split(";")[-1].strip()) for c in p["criteria"]]'
 }
 
 # =============================================================================

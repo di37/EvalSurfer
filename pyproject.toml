@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "evalsurfer"
-version = "0.1.2"
+version = "0.1.3"
 description = "EvalSurfer — a skill-first, agent-native evaluation protocol for AI applications, with supporting operational-metrics utilities."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -32,30 +32,34 @@ Issues = "https://github.com/di37/EvalSurfer/issues"
 Documentation = "https://github.com/di37/EvalSurfer#readme"
 
 [project.optional-dependencies]
-# Only needed to run the report-schema validation test; the core stays zero-dependency.
-dev = ["jsonschema>=4"]
+# Only needed for schema/spec consistency tests; the runtime stays zero-dependency.
+dev = ["jsonschema>=4", "PyYAML>=6", "types-PyYAML"]
 # Optional: the LLM-backed judge example (examples/judge/). The core package never
 # imports anthropic — only the example script does.
 llm = ["anthropic"]
 # Optional: run EvalSurfer as an MCP server so an agent can call the deterministic
 # functions as tools. The core package never imports mcp or pydantic — only
-# evalsurfer.mcp_server and evalsurfer.mcp_models do.
+# the evalsurfer.interface.mcp subpackage does.
 mcp = ["mcp", "pydantic>=2"]
 
 [project.scripts]
-evalsurfer = "evalsurfer.cli.main:main"
-evalsurfer-metrics = "evalsurfer.cli.metrics:main"
-evalsurfer-plan = "evalsurfer.cli.plan:main"
-evalsurfer-mcp = "evalsurfer.mcp_server:main"
+evalsurfer = "evalsurfer.interface.cli.main:main"
+evalsurfer-metrics = "evalsurfer.interface.cli.metrics:main"
+evalsurfer-plan = "evalsurfer.interface.cli.plan:main"
+evalsurfer-quality = "evalsurfer.interface.cli.quality:main"
+evalsurfer-dataset = "evalsurfer.interface.cli.dataset:main"
+evalsurfer-agreement = "evalsurfer.interface.cli.agreement:main"
+evalsurfer-mcp = "evalsurfer.interface.mcp.server:main"
 
 [tool.setuptools.packages.find]
 include = ["evalsurfer*"]
 
 [tool.setuptools.data-files]
 "share/evalsurfer" = [
-  "framework.json",
-  "framework.yaml",
-  "report.schema.json",
+  "spec/framework.json",
+  "spec/framework.yaml",
+  "spec/report.schema.json",
+  "spec/dataset.schema.json",
   "examples/report.json",
   "examples/traces.json",
   "skills/eval-surfer/SKILL.md",

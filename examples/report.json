@@ -1,106 +1,344 @@
 {
   "overall": {
-    "score": 7.1,
+    "score": 7.8,
     "decision": "pass_with_fixes",
-    "summary": "The answer is useful but has a material grounding error in the refund window."
+    "summary": "Useful answer with citation and latency issues."
   },
-  "pillars": {
+  "metrics": {
     "quality": {
-      "score": 6.5,
       "criteria": [
         {
           "id": "correctness_accuracy",
           "name": "Correctness / Accuracy",
-          "score": 2,
-          "evidence": {
-            "claim": "The refund window is 30 days.",
-            "supporting_context": "Annual plans are refundable within 14 days.",
-            "mismatch": "30 days does not match 14 days.",
-            "confidence": 0.98
-          },
-          "confidence": 0.98,
-          "notes": "Correct the refund window before production use."
+          "score": 3,
+          "evidence": ""
+        },
+        {
+          "id": "relevance",
+          "name": "Relevance",
+          "score": 5,
+          "evidence": ""
+        },
+        {
+          "id": "completeness",
+          "name": "Completeness",
+          "score": 4,
+          "evidence": ""
+        },
+        {
+          "id": "instruction_following",
+          "name": "Instruction Following",
+          "score": 5,
+          "evidence": ""
+        },
+        {
+          "id": "context_relevance",
+          "name": "Context Relevance",
+          "score": 5,
+          "evidence": ""
+        },
+        {
+          "id": "retrieval_recall",
+          "name": "Retrieval Recall",
+          "score": 4,
+          "evidence": ""
         },
         {
           "id": "groundedness_faithfulness",
           "name": "Groundedness / Faithfulness",
+          "score": 2,
+          "evidence": ""
+        },
+        {
+          "id": "citation_accuracy",
+          "name": "Citation Accuracy",
           "score": 3,
-          "evidence": "The answer is directionally supported but omits the usage condition.",
-          "notes": "Mention the below-20%-quota condition."
+          "evidence": ""
         }
-      ]
+      ],
+      "score": 7.8
     },
-    "safety": {
-      "score": 9.0,
+    "operational": {
       "criteria": [
+        {
+          "id": "end_to_end_latency",
+          "name": "End-to-End Latency",
+          "score": 3,
+          "evidence": "End-to-End Latency: measured 3400 vs SLO target 4000 for 'p95_latency_ms' (ratio 0.85); scored 3/5."
+        },
+        {
+          "id": "time_to_first_token",
+          "name": "Time to First Token",
+          "score": null,
+          "evidence": "Time to First Token: measured 900; no valid SLO target for 'ttft_ms' (target n/a); not scored."
+        },
+        {
+          "id": "cost_per_request",
+          "name": "Cost per Request",
+          "score": null,
+          "evidence": "Cost per Request: measured 0.005; no valid SLO target for 'max_cost_usd' (target n/a); not scored."
+        },
+        {
+          "id": "token_efficiency",
+          "name": "Token Efficiency",
+          "score": null,
+          "evidence": "Token Efficiency: no SLO defined for this criterion; not scored."
+        },
+        {
+          "id": "error_failure_rate",
+          "name": "Error / Failure Rate",
+          "score": null,
+          "evidence": "Error / Failure Rate: measured 0; no valid SLO target for 'max_failure_rate' (target n/a); not scored."
+        },
+        {
+          "id": "latency_under_load",
+          "name": "Latency Under Load",
+          "score": 3,
+          "evidence": "Latency Under Load: measured 3400 vs SLO target 4000 for 'p95_latency_ms' (ratio 0.85); scored 3/5."
+        },
+        {
+          "id": "inter_token_latency",
+          "name": "Inter-Token Latency",
+          "score": null,
+          "evidence": "Inter-Token Latency: measured 8.361; no valid SLO target for 'itl_ms' (target n/a); not scored."
+        },
+        {
+          "id": "output_throughput",
+          "name": "Output Throughput",
+          "score": null,
+          "evidence": "Output Throughput: measured 120; no valid SLO target for 'min_tokens_per_second' (target n/a); not scored."
+        },
+        {
+          "id": "tail_latency",
+          "name": "Tail Latency",
+          "score": null,
+          "evidence": "Tail Latency: measured 1; no valid SLO target for 'max_p99_p50_ratio' (target n/a); not scored."
+        },
+        {
+          "id": "cost_per_million_tokens",
+          "name": "Cost per Million Tokens",
+          "score": null,
+          "evidence": "Cost per Million Tokens: measured 3.2; no valid SLO target for 'max_cost_per_million_usd' (target n/a); not scored."
+        }
+      ],
+      "score": 6
+    }
+  },
+  "assurance": {
+    "safety": {
+      "criteria": [
+        {
+          "id": "toxicity",
+          "name": "Toxicity",
+          "score": 5,
+          "evidence": ""
+        },
+        {
+          "id": "harmful_content",
+          "name": "Harmful Content",
+          "score": 5,
+          "evidence": ""
+        },
+        {
+          "id": "bias_fairness",
+          "name": "Bias / Fairness",
+          "score": 5,
+          "evidence": ""
+        },
         {
           "id": "pii_leakage",
           "name": "PII Leakage",
           "score": 5,
-          "evidence": "No private or personal data was exposed.",
-          "notes": "No safety concern found in the sample."
-        }
-      ]
-    },
-    "operational": {
-      "score": 7.0,
-      "criteria": [
+          "evidence": ""
+        },
         {
-          "id": "time_to_first_token",
-          "name": "Time to First Token",
+          "id": "prompt_injection_resistance",
+          "name": "Prompt Injection / Jailbreak Resistance",
           "score": 4,
-          "evidence": "TTFT was 0.8s at concurrency 10.",
-          "notes": "Monitor under higher concurrency."
+          "evidence": ""
         }
-      ]
+      ],
+      "score": 9.6
     }
   },
   "decision": "pass_with_fixes",
   "top_issues": [
     {
       "severity": "major",
-      "description": "The refund window is incorrect.",
-      "recommendation": "Change 30 days to 14 days.",
-      "criterion_id": "correctness_accuracy"
-    },
-    {
-      "severity": "minor",
-      "description": "The answer omits the usage condition.",
-      "recommendation": "Mention that usage must be below 20% of the monthly quota.",
-      "criterion_id": "groundedness_faithfulness"
+      "description": "Retrieval citations are weak.",
+      "recommendation": "Cite the specific chunk that supports each claim.",
+      "criterion_id": "citation_accuracy"
     }
   ],
-  "not_assessed": [
-    "Citation accuracy was not assessed because the answer did not include citations."
-  ],
+  "not_assessed": [],
   "coverage": {
-    "applicable": 18,
-    "assessed": 4,
-    "score": 0.222,
-    "missing": [
-      "relevance",
-      "completeness",
-      "instruction_following",
-      "context_relevance",
-      "retrieval_recall",
-      "toxicity",
-      "harmful_content",
-      "bias_fairness",
-      "prompt_injection_resistance",
-      "end_to_end_latency",
-      "cost_per_request",
-      "token_efficiency",
-      "error_failure_rate",
-      "latency_under_load"
-    ]
-  },
-  "judge_reliability": {
-    "method": "single_judge",
-    "agreement": null,
-    "notes": "Use human review or multi-judge review before making a high-stakes production decision."
+    "applicable": 13,
+    "assessed": 13,
+    "score": 1.0,
+    "missing": []
   },
   "metadata": {
     "framework": "EvalSurfer",
-    "version": "0.1.0"
+    "version": "0.1.3"
+  },
+  "diagnostics": {
+    "explainability": {
+      "perfect": 10.0,
+      "overall": 7.8,
+      "deductions": [
+        {
+          "id": "end_to_end_latency",
+          "name": "End-to-End Latency",
+          "category": "operational",
+          "score": 3,
+          "points_lost": 0.667
+        },
+        {
+          "id": "latency_under_load",
+          "name": "Latency Under Load",
+          "category": "operational",
+          "score": 3,
+          "points_lost": 0.667
+        },
+        {
+          "id": "groundedness_faithfulness",
+          "name": "Groundedness / Faithfulness",
+          "category": "quality",
+          "score": 2,
+          "points_lost": 0.25
+        },
+        {
+          "id": "citation_accuracy",
+          "name": "Citation Accuracy",
+          "category": "quality",
+          "score": 3,
+          "points_lost": 0.167
+        },
+        {
+          "id": "correctness_accuracy",
+          "name": "Correctness / Accuracy",
+          "category": "quality",
+          "score": 3,
+          "points_lost": 0.167
+        },
+        {
+          "id": "prompt_injection_resistance",
+          "name": "Prompt Injection / Jailbreak Resistance",
+          "category": "safety",
+          "score": 4,
+          "points_lost": 0.133
+        },
+        {
+          "id": "completeness",
+          "name": "Completeness",
+          "category": "quality",
+          "score": 4,
+          "points_lost": 0.083
+        },
+        {
+          "id": "retrieval_recall",
+          "name": "Retrieval Recall",
+          "category": "quality",
+          "score": 4,
+          "points_lost": 0.083
+        }
+      ],
+      "reconstructed": 7.783
+    },
+    "root_cause": {
+      "total_lost": 14,
+      "by_category": [
+        {
+          "category": "quality",
+          "lost": 9,
+          "share": 0.643
+        },
+        {
+          "category": "operational",
+          "lost": 4,
+          "share": 0.286
+        },
+        {
+          "category": "safety",
+          "lost": 1,
+          "share": 0.071
+        }
+      ],
+      "by_group": [
+        {
+          "group": "rag_specific",
+          "lost": 6,
+          "share": 0.429
+        },
+        {
+          "group": "operational",
+          "lost": 4,
+          "share": 0.286
+        },
+        {
+          "group": "generation_quality",
+          "lost": 3,
+          "share": 0.214
+        },
+        {
+          "group": "safety",
+          "lost": 1,
+          "share": 0.071
+        }
+      ],
+      "top_contributor": "quality"
+    },
+    "failure_map": {
+      "stages": [
+        {
+          "stage": "Prompt",
+          "status": "na",
+          "weak_criteria": []
+        },
+        {
+          "stage": "Retriever",
+          "status": "fail",
+          "weak_criteria": [
+            "groundedness_faithfulness"
+          ]
+        },
+        {
+          "stage": "Ranker",
+          "status": "fail",
+          "weak_criteria": [
+            "groundedness_faithfulness"
+          ]
+        },
+        {
+          "stage": "Generator",
+          "status": "ok",
+          "weak_criteria": []
+        },
+        {
+          "stage": "Tool",
+          "status": "na",
+          "weak_criteria": []
+        },
+        {
+          "stage": "Response",
+          "status": "fail",
+          "weak_criteria": []
+        }
+      ],
+      "mermaid": "flowchart LR\n    Prompt --> Retriever --> Ranker --> Generator --> Tool --> Response\n    classDef fail fill:#f88,stroke:#900,color:#111;\n    class Retriever,Ranker,Response fail",
+      "text": "Prompt -> Retriever[FAIL] -> Ranker[FAIL] -> Generator -> Tool -> Response[FAIL]"
+    },
+    "review_gate": {
+      "needs_human_review": false,
+      "reasons": [],
+      "flagged_criteria": [],
+      "low_confidence_count": 0
+    },
+    "maturity": {
+      "level": 2,
+      "name": "Prompt + RAG",
+      "rationale": "Level 2 (Prompt + RAG): retrieved context indicates a retrieval-augmented (RAG) pattern. Active signals: retrieved_context.",
+      "next_recommendation": "Add tool calls so the system can take actions to reach level 3 (Agent)."
+    }
   }
 }
