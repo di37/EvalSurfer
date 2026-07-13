@@ -50,9 +50,11 @@ jobs:
       - name: Install (with dev + mcp extras)
         run: python -m pip install -e ".[dev,mcp]"
 
-      - name: Run tests (including the 47 MCP tools)
+      - name: Run tests (including the MCP tool suite)
         run: python -m unittest discover -s tests -t . -p "test_*.py" -v
 
+      # The expected count comes from the test suite's pinned _TOOLS set (the
+      # single source of truth), so adding a tool can never desync this step.
       - name: Smoke-test the MCP server (lists all tools)
         run: |
-          python -c "import asyncio, evalsurfer.interface.mcp.server as s; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == 47, n"
+          python -c "import asyncio, evalsurfer.interface.mcp.server as s; from tests.interface.mcp.test_mcp_server import _TOOLS; n = len(asyncio.run(s.mcp.list_tools())); print(n, 'tools'); assert n == len(_TOOLS), (n, len(_TOOLS))"
