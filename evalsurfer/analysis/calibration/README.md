@@ -10,8 +10,9 @@ mutated.
 | [`calibrate/`](calibrate/) | `Calibrator`, `CalibrationCase` | Freeze what a trustworthy judge should conclude, then check one report (`check_report`) or aggregate many (`summarize`). |
 | [`agreement.py`](agreement.py) | chance-corrected κ / α | Cohen's / Fleiss's κ, Krippendorff's α. |
 | [`reference.py`](reference.py) | `ReferenceCalibrator` | Judge-vs-human MAE and rank correlation. |
+| [`harness/`](harness/) | `HarnessInvariance` | Cross-harness reliability: target x harness x replication variance decomposition, gate dependability at the 6.5/8.0 cuts, D-study, per-criterion harness sensitivity. |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate`. See [`../../interface/mcp/`](../../interface/mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate`, `harness_invariance`. See [`../../interface/mcp/`](../../interface/mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
 
 ## What a case pins
 

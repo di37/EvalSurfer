@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from evalsurfer.analysis.calibration.agreement import AgreementStats
 from evalsurfer.analysis.calibration.calibrate import CalibrationCase, Calibrator
+from evalsurfer.analysis.calibration.harness import HarnessInvariance
 from evalsurfer.analysis.calibration.reference import ReferenceCalibrator
 from evalsurfer.core.planner import Signals
 from evalsurfer.interface.mcp import models as m
@@ -67,3 +68,29 @@ def krippendorff_alpha(reliability_data: list[list[str | int | None]]) -> float 
 def reference_calibrate(judge: dict[str, float], gold: dict[str, float]) -> dict:
     """Validate judge scores against human/gold: per-criterion error, MAE, rank correlation."""
     return ReferenceCalibrator.compare(judge, gold)
+
+
+@mcp.tool()
+def harness_invariance(
+    judgments: list[m.HarnessJudgmentInput],
+    dependability_target: float | None = None,
+    dstudy_max_harnesses: int | None = None,
+    dstudy_max_replications: int | None = None,
+) -> dict:
+    """Cross-harness reliability: decompose target x harness x replication judgment variance.
+
+    Feed it the reports from the same skill run across several harnesses (>= 2
+    targets x >= 2 harnesses, complete grid, equal replications; >= 2 replications
+    to separate harness disagreement from run noise). Returns variance components
+    and shares, generalizability / dependability (incl. at the 6.5 / 8.0 gate
+    cuts), a D-study with a recommended harnesses x replications design, decision
+    flip attribution, per-criterion harness sensitivity, and facet diagnostics.
+    """
+    payload: dict = {"judgments": [judgment.model_dump() for judgment in judgments]}
+    if dependability_target is not None:
+        payload["dependability_target"] = dependability_target
+    if dstudy_max_harnesses is not None:
+        payload["dstudy_max_harnesses"] = dstudy_max_harnesses
+    if dstudy_max_replications is not None:
+        payload["dstudy_max_replications"] = dstudy_max_replications
+    return HarnessInvariance.analyze(payload)

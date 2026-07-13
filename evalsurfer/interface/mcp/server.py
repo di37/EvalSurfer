@@ -34,6 +34,7 @@ from evalsurfer.interface.mcp.tools.analysis.calibration import (
     calibrate_one,
     cohen_kappa,
     fleiss_kappa,
+    harness_invariance,
     krippendorff_alpha,
     reference_calibrate,
 )
@@ -138,6 +139,7 @@ __all__ = [
     "fleiss_kappa",
     "krippendorff_alpha",
     "reference_calibrate",
+    "harness_invariance",
     # dataset
     "dataset_from_traces",
     "dataset_diff",

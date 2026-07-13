@@ -197,6 +197,35 @@ class CliMainTest(unittest.TestCase):
     def test_missing_file_exits_one(self) -> None:
         self.assertEqual(run(["evaluate", "does-not-exist.json"]), 1)
 
+    def test_harness_invariance_verb(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            study = _write(
+                tmp,
+                "study.json",
+                {
+                    "judgments": [
+                        {"target": target, "harness": harness, "replication": 1, "report": {"score": score}}
+                        for target, harness, score in (
+                            ("a", "cc", 8), ("a", "cu", 7), ("b", "cc", 6), ("b", "cu", 5),
+                        )
+                    ]
+                },
+            )
+            code, result = run_json(["harness-invariance", study])
+            self.assertEqual(code, 0)
+            # Perfectly additive grid: harness severity 0.5, confounded (n_r=1).
+            self.assertTrue(result["design"]["confounded"])
+            self.assertEqual(result["variance_components"]["harness"], 0.5)
+
+    def test_harness_invariance_invalid_grid_exits_one(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            study = _write(
+                tmp,
+                "bad.json",
+                {"judgments": [{"target": "a", "harness": "cc", "replication": 1, "report": {"score": 8}}]},
+            )
+            self.assertEqual(run(["harness-invariance", study]), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

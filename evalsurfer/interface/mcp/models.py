@@ -227,3 +227,17 @@ class TextMetricsInput(BaseModel):
         default=None, description="explicit metric ids: bleu / rouge_n / rouge_l / meteor"
     )
     n: int = Field(default=constants.ROUGE_DEFAULT_N, description="ROUGE-N order")
+
+
+class HarnessJudgmentInput(BaseModel):
+    """One cross-harness study judgment: harness x target x replication -> report."""
+
+    target: str = Field(description="id of the evaluated target (sample)")
+    harness: str = Field(description="id of the judging harness (e.g. claude-code)")
+    replication: int = Field(description="1-based run number for this (target, harness)")
+    report: dict[str, Any] = Field(
+        description=(
+            "the judgment: a full EvalSurfer report, or a slim "
+            '{"score", "decision", "criteria"} record'
+        )
+    )

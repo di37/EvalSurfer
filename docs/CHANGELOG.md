@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Datasets, deterministic reference metrics, and chance-corrected judge calibration —
 all additive and backward-compatible, all zero-LLM in the `evalsurfer` package. The MCP server grows from
-36 to **47 tools**.
+36 to **48 tools**.
 
 ### Added
 
@@ -35,7 +35,19 @@ all additive and backward-compatible, all zero-LLM in the `evalsurfer` package. 
   binary call.
   - Surfaces: `evalsurfer agreement` CLI verb, the `evalsurfer-agreement` script, and MCP
     tools `cohen_kappa` / `fleiss_kappa` / `krippendorff_alpha` / `reference_calibrate`.
-- MCP server: **36 → 47 tools**. Test suite: 640 → 828 tests.
+- **Harness-invariant judgment reliability** (`evalsurfer/analysis/calibration/harness/`):
+  run the byte-identical skill across several harnesses and decompose the judgment variance
+  of a `target × harness × replication` grid into target / harness / interaction / run-noise
+  components (two-facet crossed G-theory design, expected-mean-squares estimators). Reports
+  generalizability and dependability coefficients — including Brennan–Kane gate dependability
+  at the actual 6.5 / 8.0 decision cuts — a D-study with a recommended `harnesses × runs`
+  design, decision-flip attribution (within- vs between-harness), per-criterion
+  harness-sensitivity profiles for rubric hardening, and fixed- vs random-facet diagnostics.
+  Undefined quantities are `null`, never a fabricated 0.0/1.0; one replication per cell
+  degrades honestly to a flagged confounded mode (classic ICC(2,1)). Design and prior-art
+  positioning: `docs/design/harness-invariance.md`.
+  - Surfaces: `evalsurfer harness-invariance` CLI verb and the `harness_invariance` MCP tool.
+- MCP server: **36 → 48 tools**. Test suite: 640 → 883 tests.
 
 ### Changed
 

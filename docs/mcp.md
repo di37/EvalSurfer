@@ -40,7 +40,7 @@ EvalSurfer tools appear in the agent's toolset.
 
 ## The tools
 
-**Every** deterministic function is a tool (47 total), each with a pydantic input
+**Every** deterministic function is a tool (48 total), each with a pydantic input
 schema. Grouped by **CIMAA** layer:
 
 | Layer | Tools |
@@ -48,7 +48,7 @@ schema. Grouped by **CIMAA** layer:
 | **Core** | `rubric`, `plan`, `coverage`; `score_category`, `score_overall`, `decide`, `score_report`; `validate_report`, `gate` |
 | **Interface** | `evaluate` (full pipeline: Metrics enrich → Core assemble → Analysis diagnose); `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith` |
 | **Metrics** | `metrics`, `operational_score`, `cost_per_request`, `token_efficiency`; `retrieval_metrics`, `match_metrics`, `text_metrics`; `dataset_from_traces`, `dataset_diff`, `dataset_contamination`, `dataset_coverage` |
-| **Analysis** | `explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profiles`, `industry_profile`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`; `calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate` |
+| **Analysis** | `explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profiles`, `industry_profile`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`; `calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate`, `harness_invariance` |
 | **Assurance** | `guardrail_gate`; `redteam_template`, `redteam_check`, `trajectory` |
 
 Every tool is **deterministic**. The one part that isn't — judging quality/safety

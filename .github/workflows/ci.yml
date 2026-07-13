@@ -34,7 +34,7 @@ jobs:
           echo '{"op":"from_traces","traces":[{"query":"q1"},{"query":"q1"}],"name":"d","version":"v1"}' | python -m evalsurfer.interface.cli.dataset -
           echo '{"op":"krippendorff_alpha","reliability_data":[[1,1],[2,2]]}' | python -m evalsurfer.interface.cli.main agreement -
 
-  # Exercises the optional MCP tool server (47 tools). The `test` job above installs
+  # Exercises the optional MCP tool server (48 tools). The `test` job above installs
   # only [dev], which proves the core stays importable with no mcp/pydantic (there
   # test_mcp_server.py self-skips). This job installs [mcp] so those tests run.
   mcp:

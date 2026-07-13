@@ -21,6 +21,7 @@ _TOOLS = {
     "redteam_template", "redteam_check", "trajectory",
     "calibrate", "calibrate_one",
     "cohen_kappa", "fleiss_kappa", "krippendorff_alpha", "reference_calibrate",
+    "harness_invariance",
     "dataset_from_traces", "dataset_diff", "dataset_contamination", "dataset_coverage",
     "adapter_ragas", "adapter_promptfoo", "adapter_otel", "adapter_langsmith",
 }
@@ -106,6 +107,18 @@ class McpServerTest(unittest.TestCase):
         built = s.dataset_from_traces([{"query": "q1"}, {"query": "q1"}, {"query": "q2"}], name="d", version="v1")
         self.assertEqual(len(built["cases"]), 2)  # dedup by content hash
         self.assertEqual(s.dataset_coverage(built)["total"], 2)
+
+        # Harness invariance (v0.1.3): perfectly additive 2x2x1 grid.
+        study = s.harness_invariance(
+            judgments=[
+                m.HarnessJudgmentInput(target=target, harness=harness, replication=1, report={"score": score})
+                for target, harness, score in (
+                    ("a", "cc", 8), ("a", "cu", 7), ("b", "cc", 6), ("b", "cu", 5),
+                )
+            ]
+        )
+        self.assertTrue(study["design"]["confounded"])
+        self.assertEqual(study["variance_components"]["harness"], 0.5)
 
     def test_pydantic_validation_rejects_bad_input(self) -> None:
         from pydantic import ValidationError

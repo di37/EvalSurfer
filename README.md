@@ -21,14 +21,14 @@ Point your coding agent at an answer, a RAG run, or an agent trace, and EvalSurf
 
 ---
 
-> **EvalSurfer is an agent-native evaluation framework. The coding agent you're already running is the judge; EvalSurfer's deterministic tools are the measurement — so the framework itself makes _zero_ LLM API calls. It ships as a portable skill plus an MCP server of 47 deterministic tools that plan scope, score, validate, diagnose, calibrate, and gate releases.**
+> **EvalSurfer is an agent-native evaluation framework. The coding agent you're already running is the judge; EvalSurfer's deterministic tools are the measurement — so the framework itself makes _zero_ LLM API calls. It ships as a portable skill plus an MCP server of 48 deterministic tools that plan scope, score, validate, diagnose, calibrate, and gate releases.**
 
 You point a coding agent — Claude Code, Cursor, OpenClaw, Hermes, or any other [agentskills.io](https://agentskills.io)-compatible harness — at an answer, a RAG run, an agent trace, or production logs, and it works through a fixed rubric the way a careful reviewer would: judging correctness, relevance, groundedness, tool use, multi-turn memory, safety, and operational readiness, then scoring each criterion with evidence and returning a `pass` / `pass with fixes` / `fail` decision. The skill routes that agent to EvalSurfer's deterministic tools for every measurable step; the agent is the judge, the tools only measure, and the one model in the loop is the one you were already using.
 
 ```mermaid
 flowchart LR
     A["AI output<br/>answer · RAG · agent trace · logs"] --> B["🧠 Your coding agent — the judge<br/>scores each criterion 1–5 with evidence"]
-    B -->|"calls as MCP tools"| C["⚙️ EvalSurfer<br/>47 deterministic tools<br/>plan · score · evaluate · diagnose · gate"]
+    B -->|"calls as MCP tools"| C["⚙️ EvalSurfer<br/>48 deterministic tools<br/>plan · score · evaluate · diagnose · gate"]
     C -->|"measurements"| B
     B --> D["Report<br/>pass · pass with fixes · fail"]
 ```
@@ -46,7 +46,7 @@ assurance. Everything below is organized as exactly these five layers, and so is
 | Layer | What the layer is for | How EvalSurfer implements it |
 | --- | --- | --- |
 | **C — [Core](#core)** | Plan, score, assemble, and gate a run. | `EvaluationPlanner`, `ScoringModel`, `report` (`ReportValidator`, `Gate`), and `Evaluator` — [`core/`](evalsurfer/core/) |
-| **I — [Interface](#interface)** | Connect users, agents, APIs, and external tools to the system. | The portable agent skill, the 47-tool MCP server, the CLI, the CI-gate Action, and RAGAS / promptfoo / OTel / LangSmith adapters — [`interface/`](evalsurfer/interface/) |
+| **I — [Interface](#interface)** | Connect users, agents, APIs, and external tools to the system. | The portable agent skill, the 48-tool MCP server, the CLI, the CI-gate Action, and RAGAS / promptfoo / OTel / LangSmith adapters — [`interface/`](evalsurfer/interface/) |
 | **M — [Metrics](#metrics)** | Measure latency, cost, reliability, and reference (gold) quality metrics. | Operational metrics (latency, TTFT, cost, throughput, failure rate), reference metrics (Recall@k / BLEU / ROUGE / METEOR), and the eval golden dataset — [`metrics/`](evalsurfer/metrics/) |
 | **A — [Analysis](#analysis)** | Diagnose failures, find patterns, and explain behavior across runs. | Explainability, root-cause, failure map, regression, `ReviewGate` (human-review), and judge calibration — [`analysis/`](evalsurfer/analysis/) |
 | **A — [Assurance](#assurance)** | Validate safety, reliability, compliance, and release readiness. | Guardrail policy (`guardrail_gate` on Core's gate), safety red-team + PII detection, trajectory checks — [`assurance/`](evalsurfer/assurance/) |
@@ -243,7 +243,7 @@ How agent-judged Quality criteria typically score (skill material — not Analys
 
 ## Interface
 
-> **I · Interface — run it anywhere.** The portable skill, the 47-tool MCP server, the CLI,
+> **I · Interface — run it anywhere.** The portable skill, the 48-tool MCP server, the CLI,
 > the CI-gate Action, and ecosystem adapters — how users, agents, and external tools reach
 > EvalSurfer ([`interface/`](evalsurfer/interface/)). Installing it is covered in [Get started](#get-started).
 
@@ -257,12 +257,12 @@ How agent-judged Quality criteria typically score (skill material — not Analys
 
 EvalSurfer's **native interface** is an MCP server: the harness LLM judges, and it calls EvalSurfer's deterministic functions as **tools** — so nothing external is ever called. Setup is zero-install (the agent's MCP config fetches it on first launch; see [Get started](#get-started)).
 
-All **47** deterministic functions are exposed as tools, grouped by CIMAA layer:
+All **48** deterministic functions are exposed as tools, grouped by CIMAA layer:
 
 - **Core** — `rubric`, `plan`, `coverage`; `score_category`, `score_overall`, `decide`, `score_report`; `validate_report`, `gate`.
 - **Interface** — `evaluate` (full CIMAA pipeline: Metrics enrich → Core assemble → Analysis diagnose); `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`.
 - **Metrics** — `metrics`, `operational_score`, `cost_per_request`, `token_efficiency`; `retrieval_metrics`, `match_metrics`, `text_metrics`; `dataset_from_traces`, `dataset_diff`, `dataset_contamination`, `dataset_coverage`.
-- **Analysis** — `explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profile(s)`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`; `calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate`.
+- **Analysis** — `explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profile(s)`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`; `calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate`, `harness_invariance`.
 - **Assurance** — `guardrail_gate`; `redteam_template`, `redteam_check`, `trajectory`.
 
 The one thing that is **not** a tool is the judgment itself — you score each quality/safety criterion 1–5 with evidence. `SKILL.md` routes the agent through the tools (scope → judge → Interface `evaluate` → Core `gate` / Assurance `guardrail_gate`). Full guide: [docs/mcp.md](docs/mcp.md).
@@ -282,6 +282,7 @@ Not running the MCP server? The same deterministic functions are also a single `
 | `evalsurfer quality metrics.json` | Reference metrics — retrieval (Recall@k / MRR), match (exact-match / F1), text (BLEU / ROUGE / METEOR) |
 | `evalsurfer calibrate examples/golden/calibration.json` | Eval-of-the-eval: agreement / false-pass / false-fail / variance |
 | `evalsurfer agreement stats.json` | Chance-corrected agreement (Cohen's / Fleiss's κ, Krippendorff's α) and judge-vs-human error (MAE, rank correlation) |
+| `evalsurfer harness-invariance study.json` | Cross-harness reliability — is the verdict a property of the target or of the judging harness? Variance decomposition + D-study |
 | `evalsurfer dataset ops.json` | Golden dataset — build from traces, split, diff versions, contamination report |
 | `evalsurfer redteam-template --rag --agent --pii` | Emit adversarial safety probes matched to a target's shape |
 | `evalsurfer redteam-check outputs.json` | Triage probe outputs (deterministic PII detection; the rest flagged for the skill) |
@@ -395,6 +396,7 @@ The CLI accepts either a list of trace objects or an object with `traces` and op
 
 - **Diagnostics, not just a score** — SHAP-style attribution, root-cause breakdown, regression diffs between versions, a maturity level, industry weighting, and a framework **GoldenSet** self-test (not the Metrics eval golden dataset).
 - **Eval of the eval** — judge calibration: agreement, false-pass / false-fail rate, score variance; chance-corrected agreement (Cohen's / Fleiss's κ, Krippendorff's α) and judge-vs-human error (MAE, rank correlation).
+- **Harness invariance** — run the same skill across several harnesses and decompose the judgment variance into target / harness / interaction / run-noise components: a dependability coefficient for the release gate (at the actual 6.5 / 8.0 cuts), a "how many harnesses × runs do you need" D-study, and a per-criterion harness-sensitivity profile that feeds rubric hardening ([design](docs/design/harness-invariance.md)).
 
 ### Diagnostics
 

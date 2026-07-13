@@ -5,7 +5,8 @@ verb: ``evaluate`` (Interface full CIMAA pipeline), ``validate`` (structural
 check), ``gate`` (Core decision bar; ``--policy`` for Assurance), ``diagnose``
 (Analysis diagnostics block), ``plan`` (adaptive plan), ``metrics`` (operational
 metrics), ``quality`` (reference quality metrics), ``dataset`` (golden-dataset
-operations), ``agreement`` (judge agreement), ``calibrate`` (eval of the eval),
+operations), ``agreement`` (judge agreement), ``harness-invariance``
+(cross-harness reliability decomposition), ``calibrate`` (eval of the eval),
 ``redteam-template`` / ``redteam-check`` (safety probes), and ``trajectory``
 (agent-trajectory diff). No model calls anywhere.
 """
@@ -27,6 +28,7 @@ from evalsurfer.core.planner import Signals
 from evalsurfer.core.report import Gate, ReportValidator
 from evalsurfer.interface.cli import agreement as agreement_cli
 from evalsurfer.interface.cli import dataset as dataset_cli
+from evalsurfer.interface.cli import harness as harness_cli
 from evalsurfer.interface.cli import metrics as metrics_cli
 from evalsurfer.interface.cli import plan as plan_cli
 from evalsurfer.interface.cli import quality as quality_cli
@@ -206,6 +208,12 @@ def _cmd_agreement(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_harness_invariance(args: argparse.Namespace) -> int:
+    """Cross-harness judgment-reliability decomposition over a study payload."""
+    emit(harness_cli.build_report(load_json(args.input)), args.out, args.pretty)
+    return 0
+
+
 def _cmd_calibrate(args: argparse.Namespace) -> int:
     """Score a judge against a calibration case ("eval of the eval")."""
     case_data = load_json(args.input)
@@ -357,6 +365,13 @@ def _build_parser() -> argparse.ArgumentParser:
             "agreement",
             _cmd_agreement,
             help="Chance-corrected agreement + judge-vs-human stats.",
+        )
+    )
+    with_input_out(
+        add(
+            "harness-invariance",
+            _cmd_harness_invariance,
+            help="Cross-harness reliability: target x harness x replication decomposition.",
         )
     )
     with_input_out(
