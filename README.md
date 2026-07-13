@@ -149,8 +149,6 @@ python -m evalsurfer.interface.cli.metrics examples/traces.json --pretty
 python -m unittest discover -s tests -t . -p "test_*.py"
 ```
 
-> **Not published yet?** Until the first PyPI/npm release, the `uvx` / `pipx` / `npx` commands resolve only from a local checkout (`pip install -e ".[mcp]"`); see [RELEASING.md](docs/RELEASING.md).
-
 ---
 
 ## Core
@@ -525,7 +523,7 @@ If you use EvalSurfer in your research or product, please cite it. On GitHub, th
   author  = {Hasan, Doula Isham Rashik},
   title   = {{EvalSurfer: A skill-first, agent-native evaluation protocol for AI applications}},
   year    = {2026},
-  version = {0.1.0},
+  version = {0.1.3},
   url     = {https://github.com/di37/EvalSurfer},
   license = {MIT}
 }

@@ -53,7 +53,3 @@ cd npm && npm publish --access public
 uvx --from "evalsurfer[mcp]" evalsurfer-mcp --help   # Python path (no install)
 npx -y evalsurfer --help                             # npm launcher path
 ```
-
-> Until the first release lands, the `uvx` / `pipx` / `npx` commands in the README
-> resolve only from a local checkout (`pip install -e ".[mcp]"`). They go live for
-> everyone the moment `v0.1.0` is published.
