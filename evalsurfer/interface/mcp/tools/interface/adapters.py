@@ -1,8 +1,9 @@
-"""Ecosystem adapter tools — import RAGAS / promptfoo / OTel / LangSmith data."""
+"""Ecosystem adapter tools — import RAGAS / promptfoo / OTel / LangSmith / Langfuse data."""
 
 from __future__ import annotations
 
 from evalsurfer.interface.adapters import (
+    LangfuseAdapter,
     LangSmithAdapter,
     OtelAdapter,
     PromptfooAdapter,
@@ -33,3 +34,9 @@ def adapter_otel(spans: list[dict]) -> list[dict]:
 def adapter_langsmith(runs: list[dict]) -> list[dict]:
     """Import LangSmith runs as EvalSurfer request traces."""
     return LangSmithAdapter.to_traces(runs)
+
+
+@mcp.tool()
+def adapter_langfuse(observations: list[dict]) -> list[dict]:
+    """Import Langfuse observations (or traces nesting them) as EvalSurfer request traces."""
+    return LangfuseAdapter.to_traces(observations)

@@ -24,6 +24,7 @@ _TOOLS = {
     "harness_invariance",
     "dataset_from_traces", "dataset_diff", "dataset_contamination", "dataset_coverage",
     "adapter_ragas", "adapter_promptfoo", "adapter_otel", "adapter_langsmith",
+    "adapter_langfuse",
 }
 
 
@@ -68,6 +69,12 @@ class McpServerTest(unittest.TestCase):
             "missing_tool",
         )
         self.assertEqual(len(s.adapter_ragas({"faithfulness": 0.4})), 1)
+        self.assertEqual(
+            s.adapter_langfuse(
+                [{"startTime": "2026-07-08T12:00:00Z", "usage": {"input": 5, "output": 2}}]
+            ),
+            [{"request_started_at": "2026-07-08T12:00:00Z", "input_tokens": 5, "output_tokens": 2}],
+        )
         self.assertEqual(
             s.cost_per_request(1000, 500, m.Pricing(input_per_million=2.0, output_per_million=8.0)),
             0.006,

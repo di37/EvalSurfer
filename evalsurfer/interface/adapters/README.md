@@ -10,8 +10,9 @@ shape — with no model, network, or API calls, and no mutation of the input.
 | [`promptfoo.py`](promptfoo.py) | `PromptfooAdapter.to_report` | a promptfoo results object (`{"results": [{"success": …}]}`) | a minimal report (pass rate → `correctness_accuracy`) |
 | [`otel.py`](otel.py) | `OtelAdapter.to_traces` | OpenTelemetry spans (epoch-nanosecond timestamps + GenAI token attributes) | request traces for Metrics operational scoring |
 | [`langsmith.py`](langsmith.py) | `LangSmithAdapter.to_traces` | LangSmith runs (ISO timestamps + token usage) | request traces for Metrics operational scoring |
+| [`langfuse.py`](langfuse.py) | `LangfuseAdapter.to_traces` | Langfuse observations / traces (ISO timestamps, `completionStartTime`, token usage, error level) | request traces for Metrics operational scoring — incl. TTFT |
 
-> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`. See [`../mcp/`](../mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
+> **As MCP tools:** the harness LLM calls these directly via the `evalsurfer[mcp]` server — `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`, `adapter_langfuse`. See [`../mcp/`](../mcp/) and [`../../../docs/mcp.md`](../../../docs/mcp.md).
 
 ## Example
 
@@ -25,7 +26,7 @@ summary  = OperationalMetrics.summarize([RequestTrace.from_mapping(t) for t in t
 ```
 
 The adapters have no CLI verb, but they are exposed as MCP tools
-(`adapter_ragas` / `adapter_promptfoo` / `adapter_otel` / `adapter_langsmith`) and
+(`adapter_ragas` / `adapter_promptfoo` / `adapter_otel` / `adapter_langsmith` / `adapter_langfuse`) and
 can also be called from Python. A runnable driver lives at
 [`../../examples/scenarios/06_adapters.py`](../../../examples/scenarios/06_adapters.py).
 Releases can be gated straight from CI via the repo's GitHub Action

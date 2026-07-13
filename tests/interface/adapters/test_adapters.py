@@ -4,6 +4,7 @@ import unittest
 
 import evalsurfer.constants as constants
 from evalsurfer.interface.adapters import (
+    LangfuseAdapter,
     LangSmithAdapter,
     OtelAdapter,
     PromptfooAdapter,
@@ -319,6 +320,138 @@ class LangSmithAdapterTest(unittest.TestCase):
         LangSmithAdapter.to_traces(runs)
         self.assertEqual(
             runs, [{"start_time": "2026-07-08T12:00:00Z", "input_tokens": 1}]
+        )
+
+
+class LangfuseAdapterTest(unittest.TestCase):
+    def test_maps_timestamps_usage_and_completion_start(self) -> None:
+        (trace,) = LangfuseAdapter.to_traces(
+            [
+                {
+                    "type": "GENERATION",
+                    "startTime": "2026-07-08T12:00:00Z",
+                    "completionStartTime": "2026-07-08T12:00:00.800Z",
+                    "endTime": "2026-07-08T12:00:03Z",
+                    "usage": {"input": 120, "output": 45, "total": 165, "unit": "TOKENS"},
+                }
+            ]
+        )
+        self.assertEqual(trace["request_started_at"], "2026-07-08T12:00:00Z")
+        self.assertEqual(trace["first_token_at"], "2026-07-08T12:00:00.800Z")
+        self.assertEqual(trace["response_completed_at"], "2026-07-08T12:00:03Z")
+        self.assertEqual(trace["input_tokens"], 120)
+        self.assertEqual(trace["output_tokens"], 45)
+
+    def test_reads_snake_case_and_legacy_token_fields(self) -> None:
+        (trace,) = LangfuseAdapter.to_traces(
+            [
+                {
+                    "start_time": "2026-07-08T12:00:00Z",
+                    "completion_start_time": "2026-07-08T12:00:01Z",
+                    "promptTokens": 30,
+                    "completionTokens": 7,
+                }
+            ]
+        )
+        self.assertEqual(trace["first_token_at"], "2026-07-08T12:00:01Z")
+        self.assertEqual(trace["input_tokens"], 30)
+        self.assertEqual(trace["output_tokens"], 7)
+
+    def test_reads_usage_details_block(self) -> None:
+        (trace,) = LangfuseAdapter.to_traces(
+            [
+                {
+                    "startTime": "2026-07-08T12:00:00Z",
+                    "usageDetails": {"input": 11, "output": 3},
+                }
+            ]
+        )
+        self.assertEqual(trace["input_tokens"], 11)
+        self.assertEqual(trace["output_tokens"], 3)
+
+    def test_error_level_marks_the_trace_failed(self) -> None:
+        (trace,) = LangfuseAdapter.to_traces(
+            [
+                {
+                    "startTime": "2026-07-08T12:00:00Z",
+                    "level": "ERROR",
+                    "statusMessage": "upstream timeout",
+                }
+            ]
+        )
+        self.assertEqual(trace["error"], "upstream timeout")
+        self.assertTrue(RequestTrace.from_mapping(trace).failed)
+
+    def test_error_level_without_message_still_fails(self) -> None:
+        (trace,) = LangfuseAdapter.to_traces(
+            [{"startTime": "2026-07-08T12:00:00Z", "level": "ERROR"}]
+        )
+        self.assertEqual(trace["error"], "ERROR")
+
+    def test_default_level_is_not_failed(self) -> None:
+        (trace,) = LangfuseAdapter.to_traces(
+            [{"startTime": "2026-07-08T12:00:00Z", "level": "DEFAULT"}]
+        )
+        self.assertNotIn("error", trace)
+
+    def test_trace_object_flattens_to_its_generations_only(self) -> None:
+        traces = LangfuseAdapter.to_traces(
+            [
+                {
+                    "id": "trace-1",
+                    "timestamp": "2026-07-08T12:00:00Z",
+                    "observations": [
+                        {"type": "SPAN", "startTime": "2026-07-08T12:00:00Z"},
+                        {
+                            "type": "GENERATION",
+                            "startTime": "2026-07-08T12:00:01Z",
+                            "endTime": "2026-07-08T12:00:02Z",
+                        },
+                        {"type": "EVENT", "startTime": "2026-07-08T12:00:02Z"},
+                    ],
+                }
+            ]
+        )
+        self.assertEqual(len(traces), 1)
+        self.assertEqual(traces[0]["request_started_at"], "2026-07-08T12:00:01Z")
+
+    def test_output_feeds_ttft_and_latency_metrics(self) -> None:
+        traces = LangfuseAdapter.to_traces(
+            [
+                {
+                    "startTime": "2026-07-08T12:00:00Z",
+                    "completionStartTime": "2026-07-08T12:00:00.500Z",
+                    "endTime": "2026-07-08T12:00:02Z",
+                    "usage": {"input": 10, "output": 20},
+                }
+            ]
+        )
+        parsed = RequestTrace.from_mapping(traces[0])
+        self.assertEqual(OperationalMetrics.ttft_ms(parsed), 500)
+        self.assertEqual(OperationalMetrics.end_to_end_latency_ms(parsed), 2000)
+
+    def test_missing_start_raises(self) -> None:
+        with self.assertRaises(ValueError):
+            LangfuseAdapter.to_traces([{"endTime": "2026-07-08T12:00:02Z"}])
+
+    def test_rejects_non_mapping_entries(self) -> None:
+        with self.assertRaises(TypeError):
+            LangfuseAdapter.to_traces(["nope"])  # type: ignore[list-item]
+        with self.assertRaises(TypeError):
+            LangfuseAdapter.to_traces(
+                [{"observations": ["nope"]}]  # type: ignore[list-item]
+            )
+
+    def test_rejects_non_list_input(self) -> None:
+        with self.assertRaises(TypeError):
+            LangfuseAdapter.to_traces({"startTime": "x"})  # type: ignore[arg-type]
+
+    def test_does_not_mutate_input(self) -> None:
+        observations = [{"startTime": "2026-07-08T12:00:00Z", "usage": {"input": 1}}]
+        LangfuseAdapter.to_traces(observations)
+        self.assertEqual(
+            observations,
+            [{"startTime": "2026-07-08T12:00:00Z", "usage": {"input": 1}}],
         )
 
 

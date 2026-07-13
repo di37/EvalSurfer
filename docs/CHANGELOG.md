@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Datasets, deterministic reference metrics, and chance-corrected judge calibration —
 all additive and backward-compatible, all zero-LLM in the `evalsurfer` package. The MCP server grows from
-36 to **48 tools**.
+36 to **49 tools**.
 
 ### Added
 
@@ -47,7 +47,14 @@ all additive and backward-compatible, all zero-LLM in the `evalsurfer` package. 
   degrades honestly to a flagged confounded mode (classic ICC(2,1)). Design and prior-art
   positioning: `docs/design/harness-invariance.md`.
   - Surfaces: `evalsurfer harness-invariance` CLI verb and the `harness_invariance` MCP tool.
-- MCP server: **36 → 48 tools**. Test suite: 640 → 883 tests.
+- **Langfuse adapter** (`evalsurfer/interface/adapters/langfuse.py`): import Langfuse
+  observations — or trace objects nesting them — as EvalSurfer request traces, mapping
+  `completionStartTime` onto `first_token_at` so Langfuse telemetry feeds TTFT and
+  inter-token-latency metrics directly; reads camelCase API and snake_case SDK shapes,
+  current `usage`/`usageDetails` and legacy token fields, and marks `level: ERROR`
+  observations failed. Joins the RAGAS / promptfoo / OTel / LangSmith adapters.
+  - Surfaces: the `adapter_langfuse` MCP tool and `LangfuseAdapter.to_traces` in Python.
+- MCP server: **36 → 49 tools**. Test suite: 640 → 895 tests.
 
 ### Changed
 

@@ -24,6 +24,7 @@ from __future__ import annotations
 
 from evalsurfer.interface.mcp.instance import mcp
 from evalsurfer.interface.mcp.tools.interface.adapters import (
+    adapter_langfuse,
     adapter_langsmith,
     adapter_otel,
     adapter_promptfoo,
@@ -150,6 +151,7 @@ __all__ = [
     "adapter_promptfoo",
     "adapter_otel",
     "adapter_langsmith",
+    "adapter_langfuse",
 ]
 
 

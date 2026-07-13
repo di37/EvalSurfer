@@ -39,7 +39,7 @@ Three categories — Application Quality / Safety / Operational (judged rubric c
 (attribution, root-cause, regression diff, maturity, industry profiles, Analysis `ReviewGate`,
 personas, failure map, golden self-test) · operational metrics from traces · calibration
 (judge agreement, false-pass/fail, variance) · red-team + PII detection · agent-trajectory
-diffs · RAGAS/promptfoo/OTel/LangSmith adapters · guardrails + CI gate · a **48-tool** MCP
+diffs · RAGAS/promptfoo/OTel/LangSmith/Langfuse adapters · guardrails + CI gate · a **49-tool** MCP
 server + a portable skill. (0.1.3 added datasets, deterministic quality metrics, and
 chance-corrected calibration on top of the earlier 36-tool surface.)
 
@@ -47,7 +47,7 @@ chance-corrected calibration on top of the earlier 36-tool surface.)
 
 ## v0.1.3 — Datasets, deterministic metrics & judge calibration — ✅ implemented
 
-**Status:** implemented and tested on `main` (full suite green; **48 MCP tools**) and staged
+**Status:** implemented and tested on `main` (full suite green; **49 MCP tools**) and staged
 for the 0.1.3 release. The widest, most-repeated gap was a **first-class golden dataset** and
 the **reference-based** and **programmatic** methods that ride on it — all deterministic, all
 in the Metrics / Analysis layers. What shipped, per item:

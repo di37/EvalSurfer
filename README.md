@@ -21,14 +21,14 @@ Point your coding agent at an answer, a RAG run, or an agent trace, and EvalSurf
 
 ---
 
-> **EvalSurfer is an agent-native evaluation framework. The coding agent you're already running is the judge; EvalSurfer's deterministic tools are the measurement — so the framework itself makes _zero_ LLM API calls. It ships as a portable skill plus an MCP server of 48 deterministic tools that plan scope, score, validate, diagnose, calibrate, and gate releases.**
+> **EvalSurfer is an agent-native evaluation framework. The coding agent you're already running is the judge; EvalSurfer's deterministic tools are the measurement — so the framework itself makes _zero_ LLM API calls. It ships as a portable skill plus an MCP server of 49 deterministic tools that plan scope, score, validate, diagnose, calibrate, and gate releases.**
 
 You point a coding agent — Claude Code, Cursor, OpenClaw, Hermes, or any other [agentskills.io](https://agentskills.io)-compatible harness — at an answer, a RAG run, an agent trace, or production logs, and it works through a fixed rubric the way a careful reviewer would: judging correctness, relevance, groundedness, tool use, multi-turn memory, safety, and operational readiness, then scoring each criterion with evidence and returning a `pass` / `pass with fixes` / `fail` decision. The skill routes that agent to EvalSurfer's deterministic tools for every measurable step; the agent is the judge, the tools only measure, and the one model in the loop is the one you were already using.
 
 ```mermaid
 flowchart LR
     A["AI output<br/>answer · RAG · agent trace · logs"] --> B["🧠 Your coding agent — the judge<br/>scores each criterion 1–5 with evidence"]
-    B -->|"calls as MCP tools"| C["⚙️ EvalSurfer<br/>48 deterministic tools<br/>plan · score · evaluate · diagnose · gate"]
+    B -->|"calls as MCP tools"| C["⚙️ EvalSurfer<br/>49 deterministic tools<br/>plan · score · evaluate · diagnose · gate"]
     C -->|"measurements"| B
     B --> D["Report<br/>pass · pass with fixes · fail"]
 ```
@@ -46,7 +46,7 @@ assurance. Everything below is organized as exactly these five layers, and so is
 | Layer | What the layer is for | How EvalSurfer implements it |
 | --- | --- | --- |
 | **C — [Core](#core)** | Plan, score, assemble, and gate a run. | `EvaluationPlanner`, `ScoringModel`, `report` (`ReportValidator`, `Gate`), and `Evaluator` — [`core/`](evalsurfer/core/) |
-| **I — [Interface](#interface)** | Connect users, agents, APIs, and external tools to the system. | The portable agent skill, the 48-tool MCP server, the CLI, the CI-gate Action, and RAGAS / promptfoo / OTel / LangSmith adapters — [`interface/`](evalsurfer/interface/) |
+| **I — [Interface](#interface)** | Connect users, agents, APIs, and external tools to the system. | The portable agent skill, the 49-tool MCP server, the CLI, the CI-gate Action, and RAGAS / promptfoo / OTel / LangSmith / Langfuse adapters — [`interface/`](evalsurfer/interface/) |
 | **M — [Metrics](#metrics)** | Measure latency, cost, reliability, and reference (gold) quality metrics. | Operational metrics (latency, TTFT, cost, throughput, failure rate), reference metrics (Recall@k / BLEU / ROUGE / METEOR), and the eval golden dataset — [`metrics/`](evalsurfer/metrics/) |
 | **A — [Analysis](#analysis)** | Diagnose failures, find patterns, and explain behavior across runs. | Explainability, root-cause, failure map, regression, `ReviewGate` (human-review), and judge calibration — [`analysis/`](evalsurfer/analysis/) |
 | **A — [Assurance](#assurance)** | Validate safety, reliability, compliance, and release readiness. | Guardrail policy (`guardrail_gate` on Core's gate), safety red-team + PII detection, trajectory checks — [`assurance/`](evalsurfer/assurance/) |
@@ -243,24 +243,24 @@ How agent-judged Quality criteria typically score (skill material — not Analys
 
 ## Interface
 
-> **I · Interface — run it anywhere.** The portable skill, the 48-tool MCP server, the CLI,
+> **I · Interface — run it anywhere.** The portable skill, the 49-tool MCP server, the CLI,
 > the CI-gate Action, and ecosystem adapters — how users, agents, and external tools reach
 > EvalSurfer ([`interface/`](evalsurfer/interface/)). Installing it is covered in [Get started](#get-started).
 
 - **Skill-first, no eval API** — the agent running `SKILL.md` is the judge; scoring happens in your existing session with your existing model.
 - **MCP tools** — run EvalSurfer as an MCP server so your agent calls the deterministic functions as tools: it *judges* and *invokes*, with no external API.
 - **End-to-end, one command** — the `evalsurfer` CLI runs the Interface pipeline (Metrics enrich → Core assemble → Analysis diagnose) and exposes Core's `gate` for CI.
-- **Ecosystem adapters** — import RAGAS metrics, promptfoo results, and OpenTelemetry / LangSmith traces.
+- **Ecosystem adapters** — import RAGAS metrics, promptfoo results, and OpenTelemetry / LangSmith / Langfuse traces.
 - **Portable across harnesses** — one [agentskills.io](https://agentskills.io) `SKILL.md` that runs in Claude Code, Cursor, OpenClaw, Hermes, OpenCode, Codex, and more.
 
 ### MCP server
 
 EvalSurfer's **native interface** is an MCP server: the harness LLM judges, and it calls EvalSurfer's deterministic functions as **tools** — so nothing external is ever called. Setup is zero-install (the agent's MCP config fetches it on first launch; see [Get started](#get-started)).
 
-All **48** deterministic functions are exposed as tools, grouped by CIMAA layer:
+All **49** deterministic functions are exposed as tools, grouped by CIMAA layer:
 
 - **Core** — `rubric`, `plan`, `coverage`; `score_category`, `score_overall`, `decide`, `score_report`; `validate_report`, `gate`.
-- **Interface** — `evaluate` (full CIMAA pipeline: Metrics enrich → Core assemble → Analysis diagnose); `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`.
+- **Interface** — `evaluate` (full CIMAA pipeline: Metrics enrich → Core assemble → Analysis diagnose); `adapter_ragas`, `adapter_promptfoo`, `adapter_otel`, `adapter_langsmith`, `adapter_langfuse`.
 - **Metrics** — `metrics`, `operational_score`, `cost_per_request`, `token_efficiency`; `retrieval_metrics`, `match_metrics`, `text_metrics`; `dataset_from_traces`, `dataset_diff`, `dataset_contamination`, `dataset_coverage`.
 - **Analysis** — `explain`, `root_cause`, `regression_diff`, `maturity`, `industry_profile(s)`, `review_gate`, `personas`, `failure_map`, `diagnose`, `golden_set`, `build_evidence`; `calibrate`, `calibrate_one`, `cohen_kappa`, `fleiss_kappa`, `krippendorff_alpha`, `reference_calibrate`, `harness_invariance`.
 - **Assurance** — `guardrail_gate`; `redteam_template`, `redteam_check`, `trajectory`.
@@ -299,7 +299,7 @@ Gate a release from CI with the bundled GitHub Action:
 
 ### Ecosystem adapters
 
-Bring existing signals in without leaving EvalSurfer's shapes — the `adapter_*` tools (and [`interface/adapters/`](evalsurfer/interface/adapters/)) import **RAGAS** metrics, **promptfoo** results, and **OpenTelemetry** / **LangSmith** traces into native reports and request traces.
+Bring existing signals in without leaving EvalSurfer's shapes — the `adapter_*` tools (and [`interface/adapters/`](evalsurfer/interface/adapters/)) import **RAGAS** metrics, **promptfoo** results, and **OpenTelemetry** / **LangSmith** / **Langfuse** traces into native reports and request traces.
 
 ---
 

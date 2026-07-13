@@ -8,7 +8,7 @@ runs across many harnesses.
 | --- | --- |
 | [`eval-surfer/SKILL.md`](eval-surfer/SKILL.md) | The skill itself — the workflow the agent follows to run an evaluation. **This is the product;** the Python package is its supporting toolkit. |
 
-Beyond the workflow, `SKILL.md` routes the agent to EvalSurfer's 48 deterministic
+Beyond the workflow, `SKILL.md` routes the agent to EvalSurfer's 49 deterministic
 [MCP tools](../docs/mcp.md) — install `evalsurfer[mcp]` and run `evalsurfer-mcp` —
 with the CLI and Python API as a fallback when the server isn't connected.
 

@@ -22,7 +22,7 @@ catalog (package-wide — not Core-owned).
 | Layer | Subpackages | What lives here |
 | --- | --- | --- |
 | **Core** | [`core/`](core/) | CIMAA **Core**: `planner/`, `scoring`, `report/` (`ReportValidator`, `Gate`), `evaluate` (assemble only). |
-| **Interface** | [`pipeline.py`](interface/pipeline.py) · [`cli/`](interface/cli/) · [`mcp/`](interface/mcp/) · [`adapters/`](interface/adapters/) | CIMAA **Interface**: full-run pipeline (Metrics enrich → Core → Analysis), CLI, 48-tool MCP server, adapters. |
+| **Interface** | [`pipeline.py`](interface/pipeline.py) · [`cli/`](interface/cli/) · [`mcp/`](interface/mcp/) · [`adapters/`](interface/adapters/) | CIMAA **Interface**: full-run pipeline (Metrics enrich → Core → Analysis), CLI, 49-tool MCP server, adapters. |
 | **Metrics** | [`operational/`](metrics/operational/) · [`quality/`](metrics/quality/) · [`dataset/`](metrics/dataset/) | CIMAA **Metrics**: operational + SLO, reference quality metrics, eval golden dataset (≠ Analysis `GoldenSet`). |
 | **Analysis** | [`diagnostics/`](analysis/diagnostics/) · [`calibration/`](analysis/calibration/) | CIMAA **Analysis**: diagnostics (incl. `ReviewGate`), judge calibration. |
 | **Assurance** | [`safety/`](assurance/safety/) · [`trajectory/`](assurance/trajectory/) · [`policy/`](assurance/policy/) | CIMAA **Assurance**: red-team + PII, trajectory, `guardrail_gate` policy on Core's `Gate`. |

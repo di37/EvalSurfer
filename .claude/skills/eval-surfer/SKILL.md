@@ -130,7 +130,7 @@ measurement.** No tool calls a model. Tools map to the **CIMAA** layers:
 - **Metrics — measure:** `metrics(traces)`, `operational_score(traces, slo)`, `cost_per_request`, `token_efficiency`; reference metrics when gold exists — `retrieval_metrics`, `match_metrics`, `text_metrics`; golden dataset — `dataset_from_traces`, `dataset_contamination`, `dataset_diff`, `dataset_coverage`.
 - **Analysis — explain:** `explain`, `root_cause`, `failure_map`, `regression_diff(before, after)`, `maturity(signals)`, or `diagnose(report, signals?, before?)` for the combined applicable diagnostics; calibration — `calibrate`, `cohen_kappa` / `fleiss_kappa` / `krippendorff_alpha`, `reference_calibrate`; cross-harness reliability — `harness_invariance(judgments)`.
 - **Assurance — harden:** `guardrail_gate(report, policy, changed_files)`; `redteam_template` / `redteam_check`; `trajectory(actual, expected)`. Analysis `review_gate(report)` for the human-review call.
-- **Interface — import:** `adapter_ragas` / `adapter_promptfoo` / `adapter_otel` / `adapter_langsmith`.
+- **Interface — import:** `adapter_ragas` / `adapter_promptfoo` / `adapter_otel` / `adapter_langsmith` / `adapter_langfuse`.
 
 `gate` is Core's decision-vs-minimum bar; `guardrail_gate` applies Assurance policy on top of it.
 

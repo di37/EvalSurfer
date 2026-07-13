@@ -1,8 +1,9 @@
 """Scenario 6 — Ecosystem adapters: import external eval/trace artifacts.
 
-Exercises RAGAS -> criteria, promptfoo -> report, OpenTelemetry -> traces, and
-LangSmith -> traces, then feeds the imported telemetry back through the
-deterministic operational metrics to show the adapters compose with the core.
+Exercises RAGAS -> criteria, promptfoo -> report, OpenTelemetry -> traces,
+LangSmith -> traces, and Langfuse -> traces, then feeds the imported telemetry
+back through the deterministic operational metrics to show the adapters compose
+with the core.
 """
 
 from __future__ import annotations
@@ -11,6 +12,7 @@ import json
 from dataclasses import asdict
 
 from evalsurfer.interface.adapters import (
+    LangfuseAdapter,
     LangSmithAdapter,
     OtelAdapter,
     PromptfooAdapter,
@@ -83,9 +85,33 @@ langsmith_runs = [
 langsmith_traces = LangSmithAdapter.to_traces(langsmith_runs)
 show("LangSmith runs -> traces", langsmith_traces)
 
+# --- Langfuse: generations (completionStartTime -> TTFT) -> request traces -----
+langfuse_observations = [
+    {
+        "type": "GENERATION",
+        "startTime": "2026-07-09T10:00:00Z",
+        "completionStartTime": "2026-07-09T10:00:00.600Z",
+        "endTime": "2026-07-09T10:00:02.100Z",
+        "usage": {"input": 1000, "output": 260, "total": 1260, "unit": "TOKENS"},
+    },
+    {
+        "type": "GENERATION",
+        "startTime": "2026-07-09T10:00:03Z",
+        "completionStartTime": "2026-07-09T10:00:03.900Z",
+        "endTime": "2026-07-09T10:00:07.500Z",
+        "usage": {"input": 1400, "output": 330, "total": 1730, "unit": "TOKENS"},
+    },
+]
+langfuse_traces = LangfuseAdapter.to_traces(langfuse_observations)
+show("Langfuse observations -> traces", langfuse_traces)
+
 # --- Compose: imported telemetry -> core operational metrics -------------------
 pricing = Pricing(input_per_million=1.0, output_per_million=5.0)
-for label, payload in (("OTel", otel_traces), ("LangSmith", langsmith_traces)):
+for label, payload in (
+    ("OTel", otel_traces),
+    ("LangSmith", langsmith_traces),
+    ("Langfuse", langfuse_traces),
+):
     summary = OperationalMetrics.summarize(
         [RequestTrace.from_mapping(t) for t in payload], pricing=pricing
     )
