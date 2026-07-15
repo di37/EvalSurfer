@@ -118,6 +118,11 @@ Top issues:
 2. [Concrete improvement]
 ```
 
+For compliance or governance evidence requests (UNESCO EIA, NIST AI RMF, EU AI
+Act, ISO/IEC 42001), cite specific report fields per the
+[governance mapping](https://github.com/di37/EvalSurfer/blob/main/docs/governance-mapping.md)
+— the report is the evidence artifact; do not certify compliance.
+
 ## Tools (EvalSurfer MCP server)
 
 When the EvalSurfer MCP server is connected, call its tools for every

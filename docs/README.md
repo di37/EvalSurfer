@@ -8,6 +8,7 @@ the CIMAA-aligned framework, framed as the failure modes it defends against.
 | [`failure-modes.md`](failure-modes.md) | An *Evaluation Failure Modes* catalog (S1/S2/S3) — how AI evaluation itself fails, each mapped to the EvalSurfer feature that mitigates it. |
 | [`anti-patterns.md`](anti-patterns.md) | Ten *Evaluation Anti-Patterns* with "do this instead → EvalSurfer feature". |
 | [`mcp.md`](mcp.md) | Run EvalSurfer as an **MCP server** (Interface) — deterministic tools grouped by CIMAA layer. |
+| [`governance-mapping.md`](governance-mapping.md) | Cite EvalSurfer reports as **assessment evidence** — mappings to UNESCO's EIA, the NIST AI RMF, the EU AI Act, and ISO/IEC 42001 themes. |
 | [`ROADMAP.md`](ROADMAP.md) | Where EvalSurfer is heading. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Release history. |
 | [`RELEASING.md`](RELEASING.md) | Publish checklist. |
